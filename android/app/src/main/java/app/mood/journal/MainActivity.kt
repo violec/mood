@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.webkit.JavascriptInterface
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -62,6 +64,22 @@ class MainActivity : ComponentActivity() {
         else jsError("health permissions were not granted")
     }
 
+    // webview file inputs (<input type="file">) do nothing unless the app opens
+    // a chooser for them — this is why import/upload buttons were dead on the phone
+    private var fileCallback: ValueCallback<Array<Uri>>? = null
+    private val fileChooser = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val uris = mutableListOf<Uri>()
+        val data = result.data
+        if (result.resultCode == RESULT_OK && data != null) {
+            data.clipData?.let { cd -> for (i in 0 until cd.itemCount) uris.add(cd.getItemAt(i).uri) }
+            if (uris.isEmpty()) data.data?.let { uris.add(it) }
+        }
+        fileCallback?.onReceiveValue(if (uris.isEmpty()) null else uris.toTypedArray())
+        fileCallback = null
+    }
+
     private val folderLauncher = registerForActivityResult(
         ActivityResultContracts.OpenDocumentTree()
     ) { uri: Uri? ->
@@ -104,6 +122,14 @@ class MainActivity : ComponentActivity() {
                 return if (url.startsWith("http")) {
                     startActivity(Intent(Intent.ACTION_VIEW, req.url)); true
                 } else false
+            }
+        }
+        web.webChromeClient = object : WebChromeClient() {
+            override fun onShowFileChooser(view: WebView, callback: ValueCallback<Array<Uri>>, params: FileChooserParams): Boolean {
+                fileCallback?.onReceiveValue(null)
+                fileCallback = callback
+                return try { fileChooser.launch(params.createIntent()); true }
+                catch (e: Exception) { fileCallback = null; jsError("no file picker available: ${e.message}"); false }
             }
         }
         web.addJavascriptInterface(Bridge(), "MoodNative")
