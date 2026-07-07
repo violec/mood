@@ -1,0 +1,14 @@
+# android build junk — never commit
+android/build/
+android/app/build/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/app/release/
+android/captures/
+*.apk
+*.iml
+
+# local artifacts
+mood-app.zip
+mood-backup-*.json
