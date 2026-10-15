@@ -59,18 +59,18 @@ MOCK = r"""
 </script>
 """
 
-PAGE = """<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>mood phone preview</title>
+# No <html>/<head>/<body>: the claude.ai artifact host wraps the page in its own skeleton.
+PAGE = """<title>mood phone preview</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <style>
-  :root { --bg:#1e1d1b; --panel:#2a2825; --ink:#eee6d6; --muted:#9a917f; --line:#3b3833; --accent:#DE5426; }
+  /* single dark look: a workbench around the phone */
+  :root { color-scheme:dark; --bg:#1e1d1b; --panel:#2a2825; --ink:#eee6d6; --muted:#9a917f; --line:#3b3833; --accent:#DE5426; }
   * { box-sizing: border-box; }
   body { margin:0; min-height:100vh; background:var(--bg); color:var(--ink);
          font:13px/1.45 ui-monospace, Menlo, Consolas, monospace;
-         display:flex; gap:24px; justify-content:center; align-items:flex-start; padding:24px 16px; flex-wrap:wrap; }
+         display:flex; gap:24px; justify-content:center; align-items:flex-start; flex-wrap:wrap;
+         padding-block:24px; padding-left:max(16px, env(safe-area-inset-left, 0px));
+         padding-right:max(16px, env(safe-area-inset-right, 0px)); }
   .phone { width:390px; height:844px; max-width:100%; border-radius:46px; background:#0b0b0b;
            padding:12px; box-shadow:0 0 0 2px #444, 0 20px 60px rgba(0,0,0,.5); flex-shrink:0; }
   .screen { width:100%; height:100%; border-radius:36px; overflow:hidden; display:flex; flex-direction:column; background:#EDE4CF; }
@@ -90,9 +90,14 @@ PAGE = """<!doctype html>
   #log { height:300px; overflow:auto; white-space:pre-wrap; word-break:break-word; font-size:12px; color:#cfc6b4; }
   #log div { border-bottom:1px solid var(--line); padding:3px 0; }
   .note { color:var(--muted); font-size:12px; margin:0; }
+  button:focus-visible, textarea:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  /* on a real phone, drop the frame and let the app fill the width */
+  @media (max-width: 460px) {
+    .phone { width:100%; height:85vh; padding:0; border-radius:0; box-shadow:none; }
+    .screen { border-radius:0; }
+  }
 </style>
-</head>
-<body>
+
   <div class="phone"><div class="screen">
     <div class="bar" id="bar"><span id="clock"></span><span>▾ ▴ ▮</span></div>
     <iframe id="app" srcdoc="__SRCDOC__"></iframe>
@@ -156,8 +161,6 @@ PAGE = """<!doctype html>
     else log('app has no onNativeShare handler');
   };
 </script>
-</body>
-</html>
 """
 
 
