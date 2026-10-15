@@ -120,7 +120,7 @@ object Reminders {
         return cal.timeInMillis
     }
 
-    /** next slot in the daily window [from..to] at every-N-minutes cadence */
+    /** next slot in the daily window (from..to) at every-N-minutes cadence */
     fun nextWaterSlot(water: JSONObject): Long? {
         val every = water.optInt("everyMin", 120).coerceAtLeast(15)
         val from = water.optString("from", "10:00").split(":")

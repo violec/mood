@@ -51,8 +51,11 @@ body{
   background-color:var(--bg);
   color:var(--ink);
   min-height:100vh;
+  overflow-x:hidden;   /* stray wide inputs must never make the page pan sideways */
   transition:background-color .35s, color .35s;
 }
+.input{min-width:0; max-width:100%}
+.grid2 > *{min-width:0}
 /* journal paper patterns — pick yours in settings */
 [data-pattern="dots"] body{background-image:radial-gradient(circle, var(--dot) 1px, transparent 1.4px); background-size:22px 22px}
 [data-pattern="grid"] body{background-image:linear-gradient(var(--pat) 1px, transparent 1px), linear-gradient(90deg, var(--pat) 1px, transparent 1px); background-size:30px 30px}
@@ -443,6 +446,44 @@ hr.tear{border:none; border-top:2px dashed var(--line); margin:16px 0}
 .swatches .sw2.on{border-color:var(--ink)}
 .wd-chips{display:flex; gap:5px; flex-wrap:wrap}
 .wd-chips .chip{padding:6px 10px}
+.pillbox-wrap{position:relative; width:min(390px, 100%); margin:4px auto 0}
+.pillbox{display:block; width:100%; filter:drop-shadow(0 3px 5px var(--shadow-soft))}
+.pillbox [data-slot]:hover{filter:brightness(1.04)}
+#pill3dc{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:2}
+.pillbox-sub{display:flex; flex-direction:column; align-items:center; gap:2px; margin-top:6px}
+/* frosted glass lid — hinged at the left, swings open in 3d on tap */
+.pill-lid{
+  position:absolute; left:50%; top:50.1%; width:79.5%; aspect-ratio:1;
+  transform:translate(-50%,-50%); transform-origin:6% 50%;
+  border-radius:50%; cursor:pointer; z-index:3;
+  background:
+    radial-gradient(120% 90% at 32% 24%, rgba(255,255,255,.36), rgba(255,255,255,.09) 45%, rgba(255,255,255,.03) 72%),
+    linear-gradient(155deg, rgba(255,255,255,.15), rgba(185,196,201,.06));
+  border:1.5px solid rgba(255,255,255,.6);
+  box-shadow:inset 0 1px 10px rgba(255,255,255,.28), inset 0 -8px 16px rgba(28,32,34,.14), 0 2px 7px rgba(18,20,22,.2);
+  backdrop-filter:blur(1.8px) saturate(.9);
+  -webkit-backdrop-filter:blur(1.8px) saturate(.9);
+  transition:transform .65s cubic-bezier(.42,1.25,.4,1), opacity .5s;
+}
+.pill-lid::before{
+  content:''; position:absolute; left:13%; top:9%; width:36%; height:22%; border-radius:50%;
+  background:linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,0)); transform:rotate(-24deg);
+}
+.pill-lid::after{
+  content:''; position:absolute; right:5.5%; top:46%; width:11px; height:11px; border-radius:50%;
+  background:linear-gradient(145deg, #F2F4F5, #9CA1A3); box-shadow:0 1px 2px rgba(0,0,0,.35), inset 0 1px 0 #fff;
+}
+.pill-lid.open{
+  transform:translate(-50%,-50%) perspective(1100px) rotateY(-107deg);
+  opacity:.3; pointer-events:none;
+}
+.pill-latch{
+  position:absolute; right:1.5%; top:5%; z-index:4; width:34px; height:34px; border-radius:50%;
+  border:1px solid var(--ink-2); background:linear-gradient(160deg, #EFF1F2, #A8ADAF);
+  box-shadow:0 2px 0 var(--ink-2), inset 0 1px 0 #fff; cursor:pointer;
+  font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:#3B3E40; line-height:1;
+}
+.pill-latch:active{transform:translateY(2px); box-shadow:none}
 
 /* ================= projects ================= */
 .proj-card{margin-bottom:14px}
@@ -457,13 +498,48 @@ hr.tear{border:none; border-top:2px dashed var(--line); margin:16px 0}
 .proj-notes{font-family:'Caveat',cursive; font-size:17px; color:var(--sepia); margin-top:6px}
 
 /* ================= kitchen ================= */
-.fridge-row{display:grid; grid-template-columns:minmax(0,1.6fr) auto auto auto; gap:8px; align-items:center; padding:7px 2px; border-bottom:1px dashed var(--line)}
+.fridge-cat{font-family:'Space Mono',monospace; font-size:9px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--sepia); margin:14px 0 2px; display:flex; align-items:center; gap:8px}
+.fridge-cat::after{content:''; flex:1; border-top:1px dashed var(--line)}
+.fridge-row{display:grid; grid-template-columns:minmax(0,1.4fr) auto auto auto auto; gap:6px 8px; align-items:center; padding:7px 2px; border-bottom:1px dashed var(--line)}
 .fridge-row .fn{font-weight:700; font-size:14px; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.fridge-row .fq{font-family:'Space Mono',monospace; font-size:11px; color:var(--ink-2); white-space:nowrap}
+.fridge-row .fq{font-family:'Space Mono',monospace; font-size:10.5px; color:var(--ink-2); white-space:nowrap}
 .fridge-row .fe{font-family:'Space Mono',monospace; font-size:9px; padding:2px 7px; border-radius:9px; border:1px solid var(--sepia-2); color:var(--ink-3); white-space:nowrap}
 .fridge-row .fe.soon{border-color:var(--accent); color:var(--accent)}
 .fridge-row .fe.over{border-color:var(--bad); color:var(--bad)}
-.fridge-add{display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:8px; margin-top:10px}
+.fridge-row .ftip{grid-column:1 / -1; font-family:'Caveat',cursive; font-size:15px; color:var(--sepia); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:-3px}
+.fridge-add{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr); gap:8px; margin-top:12px}
+.fridge-add .rowb{display:flex; gap:8px; grid-column:1 / -1}
+.fridge-add .rowb .input{flex:1}
+@media (max-width:560px){
+  .fridge-row{grid-template-columns:minmax(0,1fr) auto auto auto}
+  .fridge-row .fq{display:none}
+  .fridge-add{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+}
+/* shopping list */
+.shop-row{display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:6px 10px; align-items:center; padding:8px 2px; border-bottom:1px dashed var(--line)}
+.shop-row .sdot{
+  width:21px; height:21px; border-radius:50%; border:1.7px solid var(--sepia-2); cursor:pointer; flex:none;
+  display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:11px; font-weight:700; color:#F6EFDD;
+}
+.shop-row .sdot.on{background:var(--accent); border-color:var(--accent-2)}
+.shop-row .sn{min-width:0; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.shop-row .sn .nm{font-weight:700; font-size:14.5px}
+.shop-row.done .sn .nm{text-decoration:line-through; text-decoration-color:var(--sepia); color:var(--ink-3)}
+.shop-row .sn .sq{font-family:'Space Mono',monospace; font-size:10px; color:var(--ink-2); margin-left:7px}
+.shop-row .sn .sf{font-family:'Caveat',cursive; font-size:14px; color:var(--sepia); margin-left:8px}
+.merge-chip{
+  grid-column:2 / -1; justify-self:start; margin-top:-2px;
+  font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.5px; padding:3px 9px;
+  border:1px dashed var(--accent); color:var(--accent); border-radius:10px; background:none; cursor:pointer;
+}
+.merge-bar{
+  position:sticky; bottom:calc(100px + env(safe-area-inset-bottom)); z-index:5;
+  display:flex; gap:8px; align-items:center; padding:10px 12px; margin-top:12px; border-radius:8px;
+  background:var(--ink); color:var(--bg-hi); box-shadow:0 6px 16px var(--shadow);
+}
+.merge-bar .mono{font-size:10px; letter-spacing:1px}
+.merge-bar .btn{box-shadow:none}
+.merge-bar .btn:not(.primary){color:var(--ink)}  /* dark bar inherits light text — the plain key needs its ink back */
 .recipe-card{cursor:pointer; margin-bottom:12px}
 .recipe-card .rt{font-size:17px; font-weight:700}
 .recipe-card .ro{font-family:'Space Mono',monospace; font-size:9.5px; color:var(--ink-3); letter-spacing:1px; text-transform:uppercase; margin-top:2px}
@@ -982,7 +1058,7 @@ const DEFAULTS = () => ({
   pillLog: {},        // 'YYYY-MM-DD' -> { pillId: { 'HH:MM': true } }
   habits: [],         // [{id, name, color, days:{'YYYY-MM-DD':1}}]
   projects: [],       // [{id, name, color, deadline, notes, todos:[{id,text,done}]}]
-  kitchen: { fridge: [], recipes: [] },
+  kitchen: { fridge: [], recipes: [], shopping: [] },
   waterLog: {},       // 'YYYY-MM-DD' -> [{t:'HH:MM', ml}] — today's records list
   queue: [],          // ordered entry ids — the "up next" thread
   lists: [],          // [{id, name, items:[entryIds]}] — custom reading/playing orders
@@ -1011,6 +1087,7 @@ try {
   if (!db.kitchen || typeof db.kitchen !== 'object') db.kitchen = { fridge: [], recipes: [] };
   if (!Array.isArray(db.kitchen.fridge)) db.kitchen.fridge = [];
   if (!Array.isArray(db.kitchen.recipes)) db.kitchen.recipes = [];
+  if (!Array.isArray(db.kitchen.shopping)) db.kitchen.shopping = [];
 } catch(e) { console.warn('load failed', e); }
 
 const persist = debounce(() => {
@@ -1034,6 +1111,7 @@ const ui = {
   spendTab: 'ledger',
   spendFlat: false,
   pillWeek: 0,
+  pillView: 'day',
 };
 
 /* ============ toast / modal ============ */
@@ -2015,7 +2093,7 @@ function vitalsHTML(){
         ${tankSVG(w, goal)}
         <div class="water-side">
           <div class="wq">
-            ${[200, 250, 330, 500].map(ml => `<button class="btn wqk ${ml === 250 ? 'primary' : ''}" data-wadd="${ml}" title="+${ml} ml">${cupIcon(ml)}<span>${ml}</span></button>`).join('')}
+            ${[250, 330, 500].map(ml => `<button class="btn wqk ${ml === 250 ? 'primary' : ''}" data-wadd="${ml}" title="+${ml} ml">${cupIcon(ml)}<span>${ml}</span></button>`).join('')}
           </div>
           ${recs.length ? `
           <div class="wrecs">
@@ -2092,42 +2170,312 @@ function wireVitals(v){
 
 /* ---- pills: weekly medication grid ---- */
 const PILL_SHAPES = ['round','tablet','oval','capsule','drop'];
-const PILL_COLORS = ['#B3542E','#4F6E72','#67754A','#7D5875','#96852F','#A84B4B'];
-/* hand-inked pill doodles — micron-pen outlines, wobbly shapes, echo strokes,
-   the pill's colour as a translucent marker wash */
+const PILL_COLORS = ['#FBF8EF','#B3542E','#4F6E72','#67754A','#7D5875','#96852F','#A84B4B'];
+/* bold ink pill icons — heavy uniform strokes, scored tablets, echo arc on the
+   lower edge, highlight dashes tracing the inner curve; faint colour wash */
 function pillIcon(p, px = 22){
   const c = p.color || PILL_COLORS[0];
-  const ink = `fill="none" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"`;
-  const echo = `fill="none" stroke="var(--ink)" stroke-width="1" stroke-linecap="round" opacity=".5"`;
-  const wash = `fill="${c}" fill-opacity=".4" stroke="none"`;
+  const isWhite = c.toLowerCase() === '#fbf8ef';
+  const washOp = isWhite ? '.9' : '.28';   // white pills need a solid body to read on paper
+  const ink = `fill="none" stroke="var(--ink)" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"`;
+  const dash = `fill="none" stroke="var(--ink)" stroke-width="1.1" stroke-linecap="round"`;
   const shapes = {
     round: `
-      <path d="M12 4.7 C16.4 4.5 19.6 7.8 19.4 12 C19.2 16.3 15.9 19.5 11.8 19.3 C7.7 19.1 4.5 15.9 4.7 11.7 C4.9 7.6 8 4.9 12 4.7 Z" ${wash}/>
-      <path d="M12 4.7 C16.4 4.5 19.6 7.8 19.4 12 C19.2 16.3 15.9 19.5 11.8 19.3 C7.7 19.1 4.5 15.9 4.7 11.7 C4.9 7.6 8 4.9 12 4.7 Z" ${ink}/>
-      <path d="M19.9 13.6 C19.4 16.6 17 19.1 14 19.9" ${echo}/>`,
+      <circle cx="12" cy="11.6" r="8" fill="${c}" fill-opacity="${washOp}"/>
+      <circle cx="12" cy="11.6" r="8" ${ink}/>
+      <path d="M4.7 14.9 C5.8 17.5 8 19.5 10.7 20.2" ${ink}/>
+      <path d="M8.1 6.3 C8.6 6 9.1 5.7 9.7 5.5" ${dash}/>
+      <path d="M11.6 4.9 C13.3 4.9 14.9 5.4 16.2 6.3" ${dash}/>
+      <path d="M14.4 18 C15 17.8 15.5 17.5 16 17.1" ${dash}/>`,
     tablet: `
-      <path d="M12 4.4 C16.7 4.2 19.9 7.6 19.7 12 C19.5 16.5 16 19.7 11.7 19.5 C7.4 19.3 4.2 16 4.4 11.6 C4.6 7.3 7.8 4.6 12 4.4 Z" ${wash}/>
-      <path d="M12 4.4 C16.7 4.2 19.9 7.6 19.7 12 C19.5 16.5 16 19.7 11.7 19.5 C7.4 19.3 4.2 16 4.4 11.6 C4.6 7.3 7.8 4.6 12 4.4 Z" ${ink}/>
-      <path d="M5.5 12.8 C8.8 11.5 15.2 11.4 18.6 12.3" ${ink}/>
-      <path d="M20.2 13.8 C19.6 16.9 17.2 19.4 14.2 20.2" ${echo}/>`,
+      <circle cx="12" cy="11.6" r="8" fill="${c}" fill-opacity="${washOp}"/>
+      <circle cx="12" cy="11.6" r="8" ${ink}/>
+      <path d="M5.6 15.1 L18.4 8.1" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+      <path d="M4.7 14.9 C5.8 17.5 8 19.5 10.7 20.2" ${ink}/>
+      <path d="M8.1 6.3 C8.6 6 9.1 5.7 9.7 5.5" ${dash}/>
+      <path d="M11.6 4.9 C13.3 4.9 14.9 5.4 16.2 6.3" ${dash}/>
+      <path d="M13.9 18.1 C14.5 17.9 15.1 17.6 15.6 17.2" ${dash}/>`,
     oval: `
-      <path d="M12 7 C17.2 6.7 20.8 8.7 20.9 11.8 C21 15 17.3 17.2 12.1 17.4 C7 17.6 3.3 15.4 3.2 12.3 C3.1 9.1 6.9 7.2 12 7 Z" ${wash}/>
-      <path d="M12 7 C17.2 6.7 20.8 8.7 20.9 11.8 C21 15 17.3 17.2 12.1 17.4 C7 17.6 3.3 15.4 3.2 12.3 C3.1 9.1 6.9 7.2 12 7 Z" ${ink}/>
-      <path d="M20.6 14 C19.3 16.1 16.4 17.6 13 18" ${echo}/>`,
-    capsule: `<g transform="rotate(-24 12 12)">
-      <path d="M8.2 6.6 L16 6.8 C18.1 6.9 19.6 8.4 19.5 10.4 C19.4 12.4 17.8 13.8 15.7 13.7 L7.9 13.5 C5.8 13.4 4.3 11.9 4.4 9.9 C4.5 8 6.1 6.5 8.2 6.6 Z" ${wash}/>
-      <path d="M8.2 6.6 L16 6.8 C18.1 6.9 19.6 8.4 19.5 10.4 C19.4 12.4 17.8 13.8 15.7 13.7 L7.9 13.5 C5.8 13.4 4.3 11.9 4.4 9.9 C4.5 8 6.1 6.5 8.2 6.6 Z" ${ink}/>
-      <path d="M11.6 6.7 L11.4 13.5" ${ink}/>
-      <path d="M13.1 6.8 L12.9 13.6" ${echo}/>
-      <path d="M19.2 12 C18.6 13.4 17.3 14.3 15.6 14.4" ${echo}/></g>`,
+      <ellipse cx="12" cy="11.8" rx="9" ry="5.3" fill="${c}" fill-opacity="${washOp}"/>
+      <ellipse cx="12" cy="11.8" rx="9" ry="5.3" ${ink}/>
+      <path d="M4.6 14.3 C6.3 16.2 9 17.3 12.2 17.3" ${ink}/>
+      <path d="M6.6 9.3 C7.5 8.6 8.7 8 10 7.7" ${dash}/>
+      <path d="M15.5 15.6 C16.4 15.3 17.2 14.9 17.9 14.4" ${dash}/>`,
+    capsule: `<g transform="rotate(-24 12 11.8)">
+      <path d="M7.6 8.2 h8.8 a3.5 3.5 0 0 1 0 7 h-8.8 a3.5 3.5 0 0 1 0 -7 z" fill="${c}" fill-opacity="${washOp}"/>
+      <path d="M7.6 8.2 h8.8 a3.5 3.5 0 0 1 0 7 h-8.8 a3.5 3.5 0 0 1 0 -7 z" ${ink}/>
+      <path d="M12 8.4 v6.6" ${ink}/>
+      <path d="M5.9 16.7 C7.7 17.4 9.8 17.7 11.9 17.6" ${ink}/>
+      <path d="M6.3 10.4 C6.1 10.8 6 11.2 6 11.7" ${dash}/>
+      <path d="M14.6 9.4 C15.3 9.4 16 9.6 16.6 9.9" ${dash}/></g>`,
     drop: `
-      <path d="M12 3.6 C15.4 8 17.8 10.9 17.7 13.8 C17.6 17.1 15.1 19.5 11.9 19.4 C8.7 19.3 6.3 16.8 6.4 13.6 C6.5 10.7 8.8 7.9 12 3.6 Z" ${wash}/>
-      <path d="M12 3.6 C15.4 8 17.8 10.9 17.7 13.8 C17.6 17.1 15.1 19.5 11.9 19.4 C8.7 19.3 6.3 16.8 6.4 13.6 C6.5 10.7 8.8 7.9 12 3.6 Z" ${ink}/>
-      <path d="M17.9 15 C17.5 17.2 15.8 19 13.6 19.6" ${echo}/>`,
+      <path d="M12 3.8 C15.3 8.1 17.6 10.9 17.5 13.7 C17.4 16.9 15 19.3 11.9 19.2 C8.8 19.1 6.5 16.6 6.6 13.5 C6.7 10.7 8.9 8 12 3.8 Z" fill="${c}" fill-opacity="${washOp}"/>
+      <path d="M12 3.8 C15.3 8.1 17.6 10.9 17.5 13.7 C17.4 16.9 15 19.3 11.9 19.2 C8.8 19.1 6.5 16.6 6.6 13.5 C6.7 10.7 8.9 8 12 3.8 Z" ${ink}/>
+      <path d="M7.4 16.9 C8.3 18.2 9.8 19.1 11.5 19.3" ${ink}/>
+      <path d="M9.3 11.6 C9 12.2 8.9 12.8 8.9 13.5" ${dash}/>`,
   };
-  const sc = { s: .72, m: 1, l: 1.25 }[p.size || 'm'];
+  const sc = 1.25;   // large by default — the size picker is gone
   return `<svg viewBox="0 0 24 24" style="width:${Math.round(px*sc)}px;height:${Math.round(px*sc)}px" xmlns="http://www.w3.org/2000/svg">${shapes[p.shape] || shapes.round}</svg>`;
 }
+/* raw 24-unit pill markup, for embedding inside the pillbox svg */
+function pillShape(p){
+  const m = pillIcon(p, 24).match(/<svg[^>]*>([\s\S]*)<\/svg>/);
+  return m ? m[1] : '';
+}
+/* physically-lit pills for the tray: svg phong lighting (feDiffuse/feSpecular
+   over the shape's silhouette) — real curvature shading + true hotspot,
+   rendered by the browser like a tiny 3d engine. shared filter: #pf3 */
+const PILL3D_DEFS = `
+  <filter id="pf3" x="-45%" y="-45%" width="190%" height="190%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="1.7" result="bump"/>
+    <feDiffuseLighting in="bump" surfaceScale="3" diffuseConstant="1.05" lighting-color="#ffffff" result="diff">
+      <feDistantLight azimuth="232" elevation="56"/>
+    </feDiffuseLighting>
+    <feComposite in="diff" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="lit"/>
+    <feSpecularLighting in="bump" surfaceScale="3" specularConstant=".8" specularExponent="15" lighting-color="#ffffff" result="spec">
+      <feDistantLight azimuth="232" elevation="60"/>
+    </feSpecularLighting>
+    <feComposite in="spec" in2="SourceAlpha" operator="in" result="specIn"/>
+    <feComposite in="lit" in2="specIn" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+  </filter>
+  <filter id="pfs" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="1.7"/>
+  </filter>`;
+/* count-based poses: lying, leaning, piled — offsets from the compartment
+   centroid + resting height (dz) + lean angles. real objects don't line up. */
+function slotPoses(n){
+  // [dx, dy, dz(stack height ABOVE resting contact), lean, roll] — pre-simulated,
+  // spread wide so each pill reads on its own; only the pile-topper overlaps
+  switch (Math.min(n, 6)){
+    case 1: return [[0, 2, 0, .06, 0]];
+    case 2: return [[-23, 8, 0, .07, -.4], [21, -6, 0, .1, .5]];
+    case 3: return [[-28, 10, 0, .07, -.55], [26, 7, 0, .07, .45], [0, -17, 0, .12, .05]];
+    case 4: return [[-29, 12, 0, .07, -.55], [27, 9, 0, .07, .5], [-5, -19, 0, .1, .1], [3, 4, 8, .5, .8]];
+    case 5: return [[-31, 11, 0, .07, -.6], [29, 10, 0, .07, .55], [-24, -17, 0, .1, -.15], [22, -18, 0, .07, .2], [0, -2, 9, .52, .9]];
+    default: return [[-31, 12, 0, .07, -.6], [29, 11, 0, .07, .55], [-25, -17, 0, .1, -.2], [23, -18, 0, .07, .25], [-4, -2, 8.5, .5, .85], [7, 0, 15, .58, -.7]];
+  }
+}
+function dosePositions(s, doses){
+  const rad = a => a * Math.PI / 180;
+  const cx = 190 + 96 * Math.cos(rad(s.mid)), cy = 193 + 96 * Math.sin(rad(s.mid));
+  const poses = slotPoses(doses.length);
+  return doses.slice(0, 6).map((d, i) => {
+    const [dx, dy, dz, lean, roll] = poses[i];
+    const h = (() => { let h2 = 0; for (const ch of d.p.id + d.tm) h2 = (h2 * 31 + ch.charCodeAt(0)) % 997; return h2; })();
+    return { d, x: cx + dx, y: cy + dy, z: dz, lean, roll, yaw: ((h % 63) / 10) - 3.1 };
+  });
+}
+function pill3D(p){
+  const c = p.color || PILL_COLORS[0];
+  const F = `filter="url(#pf3)"`;
+  const shapes = {
+    round: `<g ${F}><circle cx="12" cy="12" r="8.4" fill="${c}"/></g>`,
+    tablet: `<g ${F}><circle cx="12" cy="12" r="8.6" fill="${c}"/></g>
+      <path d="M4.9 12 h14.2" stroke="rgba(30,12,2,.4)" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M5.3 13.1 h13.4" stroke="rgba(255,255,255,.4)" stroke-width=".9" stroke-linecap="round"/>`,
+    oval: `<g ${F}><ellipse cx="12" cy="12" rx="9.6" ry="5.8" fill="${c}"/></g>`,
+    capsule: `<g ${F} transform="rotate(-24 12 12)">
+        <path d="M12 8 h4.3 a4 4 0 0 1 0 8 h-4.3 z" fill="${c}"/>
+        <path d="M12 8 h-4.3 a4 4 0 0 0 0 8 h4.3 z" fill="#F4EBD8"/>
+      </g>
+      <path d="M9.4 6.9 L14.6 17.1" stroke="rgba(30,12,2,.22)" stroke-width=".8" transform="rotate(66 12 12)" style="display:none"/>`,
+    drop: `<g ${F}><path d="M12 3.6 C15.4 8 17.8 10.9 17.7 13.8 C17.6 17.1 15.1 19.6 11.9 19.5 C8.7 19.4 6.3 16.8 6.4 13.6 C6.5 10.7 8.8 7.9 12 3.6 Z" fill="${c}"/></g>`,
+  };
+  return shapes[p.shape] || shapes.round;
+}
+/* ---- real 3d pills: three.js overlay above the metal tray ---- */
+let P3MODE = null;
+function p3mode(){
+  if (P3MODE) return P3MODE;
+  try {
+    const c = document.createElement('canvas');
+    P3MODE = (c.getContext('webgl') || c.getContext('experimental-webgl')) ? 'webgl' : 'svg';
+  } catch(_){ P3MODE = 'svg'; }
+  return P3MODE;
+}
+let _p3layout = [];
+let _three = null;   // persistent offscreen renderer (webgl contexts are precious)
+function ensureThree(cb){
+  if (window.THREE) return cb();
+  if (ensureThree._q){ ensureThree._q.push(cb); return; }
+  ensureThree._q = [cb];
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  s.onload = () => { const q = ensureThree._q; ensureThree._q = null; q.forEach(f => f()); };
+  s.onerror = () => { ensureThree._q = null; P3MODE = 'svg'; if (ui.view === 'health') renderHealth(); };
+  document.head.appendChild(s);
+}
+/* studio environment: tiny procedural cubemap (warm room + softbox) — pbr
+   materials are dead without something to reflect */
+function makeEnvTexture(T){
+  const faces = [];
+  for (let i = 0; i < 6; i++){
+    const c = document.createElement('canvas'); c.width = c.height = 64;
+    const g = c.getContext('2d');
+    const gr = g.createLinearGradient(0, 0, 0, 64);
+    gr.addColorStop(0, '#FAF4E4'); gr.addColorStop(.55, '#CFC3A8'); gr.addColorStop(1, '#6E5F48');
+    g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+    if (i === 2){ g.fillStyle = 'rgba(255,255,255,.95)'; g.fillRect(10, 14, 44, 28); }        // ceiling softbox
+    if (i === 0){ g.fillStyle = 'rgba(255,251,238,.55)'; g.fillRect(22, 6, 16, 48); }          // side window
+    faces.push(c);
+  }
+  const tex = new T.CubeTexture(faces);
+  tex.needsUpdate = true;
+  return tex;
+}
+/* powder-compact micro texture for matte tablets */
+function makeBumpTexture(T){
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d');
+  const img = g.createImageData(64, 64);
+  let s = 7;
+  for (let i = 0; i < img.data.length; i += 4){
+    s = (s * 16807) % 2147483647;
+    const v = 116 + (s % 24);
+    img.data[i] = img.data[i+1] = img.data[i+2] = v; img.data[i+3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  const t = new T.CanvasTexture(c);
+  t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(2, 2);
+  return t;
+}
+/* rounded-rim tablet profile — real tablets have chamfered edges, not tubes */
+function tabletGeo(T, r, h){
+  const pts = [];
+  const rim = h * .42;
+  pts.push(new T.Vector2(0, -h / 2));
+  pts.push(new T.Vector2(r - rim, -h / 2));
+  for (let i = 0; i <= 6; i++){
+    const a = -Math.PI / 2 + (i / 6) * Math.PI;
+    pts.push(new T.Vector2(r - rim + Math.cos(a) * rim, Math.sin(a) * (h / 2)));
+  }
+  pts.push(new T.Vector2(0, h / 2));
+  return new T.LatheGeometry(pts, 48);
+}
+function pillMesh(T, p, env, bump){
+  let seed = 0; for (const ch of String(p.id || p.name || 'x')) seed = (seed * 31 + ch.charCodeAt(0)) % 9973;
+  const col = new T.Color(p.color || '#B3542E');
+  col.offsetHSL(0, 0, ((seed % 9) - 4) / 120);          // no two pills identical
+  const matte = extra => new T.MeshPhysicalMaterial(Object.assign({
+    color: col, roughness: .68, metalness: 0,
+    envMap: env, envMapIntensity: .45,
+    bumpMap: bump, bumpScale: .16,
+  }, extra));
+  const gel = extra => new T.MeshPhysicalMaterial(Object.assign({
+    color: col, roughness: .22, metalness: 0,
+    envMap: env, envMapIntensity: .85,
+    clearcoat: 1, clearcoatRoughness: .12,
+  }, extra));
+  const shell = c2 => new T.MeshPhysicalMaterial({
+    color: c2, roughness: .3, metalness: 0,
+    envMap: env, envMapIntensity: .7,
+    clearcoat: .8, clearcoatRoughness: .2,
+  });
+  const g = new T.Group();
+  const add = (geo, m, x = 0, rz = 0) => {
+    const mesh = new T.Mesh(geo, m);
+    mesh.position.x = x;
+    if (rz) mesh.rotation.z = rz;
+    mesh.castShadow = true;
+    g.add(mesh);
+    return mesh;
+  };
+  if (p.shape === 'capsule'){
+    const a = shell(col), b = shell(new T.Color(0xEFE6D0));
+    add(new T.CylinderGeometry(6, 6, 8.6, 48), a, 4.2, Math.PI / 2);
+    add(new T.SphereGeometry(6, 48, 24), a, 8.5);
+    add(new T.CylinderGeometry(6, 6, 8.6, 48), b, -4.2, Math.PI / 2);
+    add(new T.SphereGeometry(6, 48, 24), b, -8.5);
+  } else if (p.shape === 'tablet'){
+    const tb = add(tabletGeo(T, 8.6, 5.4), matte());
+    tb.rotation.x = Math.PI / 2;
+    const score = add(new T.BoxGeometry(14.4, 1, .8), matte({ color: col.clone().multiplyScalar(.62), bumpScale: .05 }));
+    score.position.z = 2.85; score.castShadow = false;
+  } else if (p.shape === 'oval'){
+    const sp = add(new T.SphereGeometry(8, 48, 28), gel());
+    sp.scale.set(1.5, .85, .62);
+  } else if (p.shape === 'drop'){
+    add(new T.SphereGeometry(6.6, 48, 24), gel());
+    const cone = add(new T.ConeGeometry(6.38, 10.5, 48), gel());
+    cone.position.y = 6.7;
+    g.scale.set(1, 1, .64);
+  } else {
+    const sp = add(new T.SphereGeometry(8.4, 48, 28), matte());
+    sp.scale.set(1, 1, .55);
+  }
+  g.scale.multiplyScalar(2.2 * (1 + ((seed % 7) - 3) / 55));   // presence + natural size variance
+  return g;
+}
+/* resting contact height per shape (half-thickness × the 2.2 scale) */
+const PILL_REST = { round: 10.3, tablet: 6, oval: 11, capsule: 13.2, drop: 9.3 };
+function renderPills3D(){
+  try {
+    const canvas = $('#pill3dc');
+    if (!canvas || !window.THREE || p3mode() !== 'webgl') return;
+    const T = window.THREE;
+    const W = 380, H = 386, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (!_three){
+      const off = document.createElement('canvas');
+      const renderer = new T.WebGLRenderer({ canvas: off, alpha: true, antialias: true });
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = T.VSMShadowMap;                 // properly soft contact shadows
+      renderer.toneMapping = T.ACESFilmicToneMapping;           // filmic response, not raw cg
+      renderer.toneMappingExposure = 1.02;
+      renderer.outputEncoding = T.sRGBEncoding;
+      _three = { renderer, env: makeEnvTexture(T), bump: makeBumpTexture(T) };
+    }
+    _three.renderer.setSize(W * dpr, H * dpr, false);
+    _three.renderer.setClearColor(0x000000, 0);
+    const scene = new T.Scene();
+    const cam = new T.OrthographicCamera(0, W, 0, -H, 1, 700);
+    cam.position.set(0, 0, 320);
+    // three-point-ish rig: warm hemisphere bounce, warm key with soft shadow, cool fill
+    scene.add(new T.HemisphereLight(0xfff3dd, 0x574836, .52));
+    const dl = new T.DirectionalLight(0xfff0da, .75);
+    dl.position.set(120, -80, 520);
+    dl.castShadow = true;
+    dl.shadow.mapSize.set(1024, 1024);
+    dl.shadow.radius = 5.5;
+    dl.shadow.bias = -0.0004;
+    Object.assign(dl.shadow.camera, { left: -240, right: 240, top: 240, bottom: -240, near: 1, far: 1000 });
+    dl.target.position.set(190, -193, 0);
+    scene.add(dl); scene.add(dl.target);
+    const fill = new T.DirectionalLight(0xcdd8e6, .22);
+    fill.position.set(-260, -320, 260);
+    scene.add(fill);
+    const floor = new T.Mesh(new T.PlaneGeometry(W, H), new T.ShadowMaterial({ opacity: .26 }));
+    floor.position.set(W / 2, -H / 2, 0);
+    floor.receiveShadow = true;
+    scene.add(floor);
+    _p3layout.forEach(L => {
+      const m = pillMesh(T, L.p, _three.env, _three.bump);
+      m.position.set(L.x, -L.y, (PILL_REST[L.p.shape] || 9) + L.z);
+      m.rotation.set(L.lean, L.roll, L.yaw);
+      if (L.taken) m.traverse(o => {
+        if (o.isMesh){ o.material = o.material.clone(); o.material.transparent = true; o.material.opacity = .3; o.castShadow = false; }
+      });
+      scene.add(m);
+    });
+    _three.renderer.render(scene, cam);
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(_three.renderer.domElement, 0, 0);
+    scene.traverse(o => {
+      if (o.isMesh){
+        o.geometry.dispose();
+        (Array.isArray(o.material) ? o.material : [o.material]).forEach(mm => mm.dispose());
+      }
+    });
+  } catch(e){
+    // any webview/gl hiccup → fall back to the shaded svg pills, never a blank tray
+    P3MODE = 'svg';
+    try { _three?.renderer?.dispose(); } catch(_){}
+    _three = null;
+    if (ui.view === 'health') renderHealth();
+  }
+}
+
 function weekDates(offset){
   const now2 = new Date();
   const mon = addDays(now2, -((now2.getDay() + 6) % 7) + offset * 7);
@@ -2137,30 +2485,171 @@ function pillTaken(p, ds){
   const log = db.pillLog[ds]?.[p.id] || {};
   return Object.keys(log).length;
 }
-function pillsHTML(){
+/* ---- daily pillbox: four time-of-day compartments, pills as objects ---- */
+const PSLOTS = [
+  // label rows sit fully above/below the disc (|dy| > tray radius) — no overlap
+  { id:'morning', label:'MORNING', mid:-45, a:[-87,-3],  lx:336, ly:16,  anchor:'end',   tw:60 },
+  { id:'noon',    label:'NOON',    mid:45,  a:[3,87],    lx:336, ly:380, anchor:'end',   tw:35 },
+  { id:'evening', label:'EVENING', mid:135, a:[93,177],  lx:24,  ly:380, anchor:'start', tw:60 },
+  { id:'night',   label:'NIGHT',   mid:225, a:[183,267], lx:24,  ly:16,  anchor:'start', tw:43 },
+];
+const SLOT_ICONS = {
+  morning:`<path d="M-14 3 h9 M5 3 h9 M0 3 a5.5 5.5 0 0 1 0 -0.01 M-5.5 3 a5.5 5.5 0 0 1 11 0 M0 -7.5 v-3 M-6.5 -4.5 l-2 -2 M6.5 -4.5 l2 -2" fill="none" stroke="var(--ink-2)" stroke-width="1.6" stroke-linecap="round"/>`,
+  noon:`<circle r="4.6" fill="none" stroke="var(--ink-2)" stroke-width="1.6"/><path d="M0 -8 v-2.4 M0 8 v2.4 M-8 0 h-2.4 M8 0 h2.4 M-5.8 -5.8 l-1.7 -1.7 M5.8 -5.8 l1.7 -1.7 M-5.8 5.8 l-1.7 1.7 M5.8 5.8 l1.7 1.7" stroke="var(--ink-2)" stroke-width="1.6" stroke-linecap="round" fill="none"/>`,
+  evening:`<path d="M-14 4 h28 M-5.5 4 a5.5 5.5 0 0 1 11 0 M0 -4 v2.5 M-2.5 -8.5 l1.6 1.9 M2.5 -8.5 l-1.6 1.9" fill="none" stroke="var(--ink-2)" stroke-width="1.6" stroke-linecap="round"/>`,
+  night:`<path d="M3.5 -7 a7.6 7.6 0 1 0 4.5 10.5 a6.4 6.4 0 0 1 -4.5 -10.5 z" fill="none" stroke="var(--ink-2)" stroke-width="1.6" stroke-linejoin="round"/>`,
+};
+function slotOf(time){ const h = +String(time).split(':')[0] || 0; if (h >= 5 && h < 11) return 'morning'; if (h >= 11 && h < 17) return 'noon'; if (h >= 17 && h < 22) return 'evening'; return 'night'; }
+function slotDoses(sid){
+  const wd = (new Date().getDay() + 6) % 7;
+  const out = [];
+  db.pills.forEach(p => {
+    if (!p.weekdays.includes(wd)) return;
+    p.times.forEach(tm => { if (slotOf(tm) === sid) out.push({ p, tm }); });
+  });
+  return out.sort((a, b) => a.tm.localeCompare(b.tm));
+}
+function doseTaken(p, tm, d){ return !!db.pillLog[d]?.[p.id]?.[tm]; }
+function sectorPath(a0, a1, r1, r2){
+  const rad = a => a * Math.PI / 180;
+  const pt = (r, a) => `${(190 + r * Math.cos(rad(a))).toFixed(1)} ${(193 + r * Math.sin(rad(a))).toFixed(1)}`;
+  return `M ${pt(r1, a0)} L ${pt(r2, a0)} A ${r2} ${r2} 0 0 1 ${pt(r2, a1)} L ${pt(r1, a1)} A ${r1} ${r1} 0 0 0 ${pt(r1, a0)} Z`;
+}
+function pillBoxHTML(){
+  const t = todayStr();
+  const cur = slotOf(pad2(new Date().getHours()) + ':00');
+  const rad = a => a * Math.PI / 180;
+  const arc = (r, a0, a1) => `M ${(190 + r * Math.cos(rad(a0))).toFixed(1)} ${(193 + r * Math.sin(rad(a0))).toFixed(1)} A ${r} ${r} 0 0 1 ${(190 + r * Math.cos(rad(a1))).toFixed(1)} ${(193 + r * Math.sin(rad(a1))).toFixed(1)}`;
+  const hashRot = s => { let h = 0; for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) % 997; return (h % 37) - 18; };
+  let takenN = 0, totalN = 0;
+  _p3layout = [];
+  const secFills = [], secDecor = [], pillLayer = [];
+  PSLOTS.forEach(s => {
+    const doses = slotDoses(s.id);
+    totalN += doses.length;
+    const done = doses.filter(d => doseTaken(d.p, d.tm, t)).length;
+    takenN += done;
+    const full = doses.length > 0 && done === doses.length;
+    const shown = doses.slice(0, 6);
+    secFills.push(`<path d="${sectorPath(s.a[0], s.a[1], 36, 150)}" fill="url(#mdish)" stroke="#7E8284" stroke-width=".8" data-slot="${s.id}" style="cursor:pointer"/>`);
+    secDecor.push(`
+      <path d="${arc(147, s.a[0] + 3, s.a[1] - 3)}" fill="none" stroke="rgba(30,32,33,.4)" stroke-width="4" filter="url(#pfs)" style="pointer-events:none"/>
+      <path d="${arc(40, s.a[0] + 8, s.a[1] - 8)}" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2" filter="url(#pfs)" style="pointer-events:none"/>
+      ${full ? `<path d="${sectorPath(s.a[0], s.a[1], 36, 150)}" fill="var(--ok)" fill-opacity=".15" style="pointer-events:none"/>` : ''}
+      ${cur === s.id ? `<path d="${sectorPath(s.a[0] + 1, s.a[1] - 1, 152, 158)}" fill="var(--accent)" opacity=".85" style="pointer-events:none"/>` : ''}
+      ${full ? `<text x="${(190 + 138 * Math.cos(rad(s.mid))).toFixed(0)}" y="${(197 + 138 * Math.sin(rad(s.mid))).toFixed(0)}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--ok)" font-family="Space Mono,monospace" style="pointer-events:none">✓</text>` : ''}`);
+    pillLayer.push(dosePositions(s, doses).map(({ d, x, y, z, lean, roll, yaw }) => {
+      const tk = doseTaken(d.p, d.tm, t);
+      const hy = y - z * .6;   // raised pills hit-test a little higher
+      _p3layout.push({ p: d.p, x, y, z, lean, roll, yaw, taken: tk });
+      const badge = tk ? `<circle cx="${(x + 13).toFixed(1)}" cy="${(hy - 12).toFixed(1)}" r="6" fill="var(--ok)"/><text x="${(x + 13).toFixed(1)}" y="${(hy - 9).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#F6EFDD" font-family="Space Mono,monospace">✓</text>` : '';
+      if (p3mode() === 'webgl'){
+        // real meshes render on the canvas above — svg only carries the tap target
+        return `<g data-dose="${d.p.id}|${d.tm}" style="cursor:pointer"><circle cx="${x.toFixed(1)}" cy="${hy.toFixed(1)}" r="24" fill="transparent"/>${badge}</g>`;
+      }
+      const rot = Math.round(yaw * 28.6);
+      return `<g data-dose="${d.p.id}|${d.tm}" style="cursor:pointer" opacity="${tk ? .45 : 1}">
+        <ellipse cx="${(x + 1.5).toFixed(1)}" cy="${(y + 11).toFixed(1)}" rx="8.5" ry="2.6" fill="rgba(25,28,30,.42)" filter="url(#pfs)" style="pointer-events:none"/>
+        <g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot}) translate(-16 -16) scale(1.34)">${pill3D(d.p)}</g>
+        ${badge}
+      </g>`;
+    }).join('') + (doses.length > 6 ? `<text x="${(190 + 60 * Math.cos(rad(s.mid))).toFixed(0)}" y="${(196 + 60 * Math.sin(rad(s.mid))).toFixed(0)}" text-anchor="middle" font-size="9" fill="#4B4E50" font-family="Space Mono,monospace">+${doses.length - 6}</text>` : ''));
+  });
+  // engine-turned machining lines + spoke ridges + brushed sheen
+  const machining = Array.from({ length: 34 }, (_, i) => {
+    const r = 40 + i * 3.3;
+    return `<circle cx="190" cy="193" r="${r.toFixed(1)}" fill="none" stroke="${i % 2 ? 'rgba(255,255,255,.17)' : 'rgba(40,43,45,.1)'}" stroke-width=".55"/>`;
+  }).join('');
+  const spokes = PSLOTS.map(s => {
+    const a = rad(s.a[0] - 3);
+    const x1 = 190 + 36 * Math.cos(a), y1 = 193 + 36 * Math.sin(a);
+    const x2 = 190 + 150 * Math.cos(a), y2 = 193 + 150 * Math.sin(a);
+    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#E9EBEC" stroke-width="4" stroke-linecap="round"/>
+      <line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#84888A" stroke-width="1.4" stroke-linecap="round" transform="translate(1 1.4)"/>`;
+  }).join('');
+  const sectors = `
+    ${secFills.join('')}
+    <g style="pointer-events:none" clip-path="url(#mclip)">${machining}</g>
+    <circle cx="190" cy="193" r="150" fill="#9EA3A5" filter="url(#mnoise)" clip-path="url(#mclip)" style="pointer-events:none"/>
+    <circle cx="190" cy="193" r="150" fill="url(#mvig)" style="pointer-events:none"/>
+    <g style="pointer-events:none">${spokes}</g>
+    <g style="pointer-events:none">${secDecor.join('')}</g>
+    <ellipse cx="130" cy="120" rx="150" ry="52" fill="url(#msheen)" transform="rotate(-32 130 120)" clip-path="url(#mclip)" style="pointer-events:none"/>
+    <ellipse cx="256" cy="270" rx="146" ry="46" fill="url(#msheenD)" transform="rotate(-32 256 270)" clip-path="url(#mclip)" style="pointer-events:none"/>
+    ${pillLayer.join('')}`;
+  const labels = PSLOTS.map(s => `
+    <g transform="translate(${s.anchor === 'end' ? s.lx - s.tw - 22 : s.lx + s.tw + 22} ${s.ly - 4})">${SLOT_ICONS[s.id]}</g>
+    <text x="${s.lx}" y="${s.ly}" text-anchor="${s.anchor}" font-family="Space Mono,monospace" font-size="10.5" font-weight="700" letter-spacing="2"
+      fill="${cur === s.id ? 'var(--accent)' : 'var(--ink-3)'}">${s.label}</text>`).join('');
+  const d2 = new Date();
+  return `
+  <div class="pillbox-wrap">
+  <svg viewBox="0 0 380 386" class="pillbox" xmlns="http://www.w3.org/2000/svg">
+    <defs>${PILL3D_DEFS}
+      <radialGradient id="mbase" cx="42%" cy="36%" r="75%">
+        <stop offset="0%" stop-color="#E9EBEC"/><stop offset="55%" stop-color="#C2C6C8"/><stop offset="100%" stop-color="#9AA0A2"/>
+      </radialGradient>
+      <linearGradient id="mdish" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#9EA3A5"/><stop offset="50%" stop-color="#BDC1C3"/><stop offset="100%" stop-color="#D6D9DA"/>
+      </linearGradient>
+      <radialGradient id="mrim" cx="40%" cy="32%" r="80%">
+        <stop offset="0%" stop-color="#F2F4F5"/><stop offset="60%" stop-color="#B7BBBD"/><stop offset="100%" stop-color="#7F8486"/>
+      </radialGradient>
+      <radialGradient id="mhub" cx="42%" cy="34%" r="75%">
+        <stop offset="0%" stop-color="#F0F2F3"/><stop offset="55%" stop-color="#B9BDBF"/><stop offset="100%" stop-color="#85898B"/>
+      </radialGradient>
+      <linearGradient id="msheen" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".3"/><stop offset="55%" stop-color="#FFFFFF" stop-opacity=".05"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="msheenD" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="#14161A" stop-opacity=".15"/><stop offset="100%" stop-color="#14161A" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="mvig" gradientUnits="userSpaceOnUse" cx="190" cy="193" r="152">
+        <stop offset="60%" stop-color="#1A1C1E" stop-opacity="0"/><stop offset="100%" stop-color="#1A1C1E" stop-opacity=".24"/>
+      </radialGradient>
+      <filter id="mnoise">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+        <feColorMatrix type="saturate" values="0"/>
+        <feComponentTransfer><feFuncA type="linear" slope="0.13" intercept="0"/></feComponentTransfer>
+        <feComposite operator="in" in2="SourceGraphic"/>
+      </filter>
+      <clipPath id="mclip"><circle cx="190" cy="193" r="150"/></clipPath>
+    </defs>
+    <circle cx="190" cy="198" r="171" fill="rgba(20,22,24,.35)" filter="url(#pfs)"/>
+    <circle cx="190" cy="193" r="170" fill="url(#mrim)" stroke="var(--ink)" stroke-width="2.2"/>
+    <circle cx="190" cy="193" r="163" fill="none" stroke="#6E7375" stroke-width="4" stroke-dasharray="1.6 4.4" opacity=".7"/>
+    <path d="${arc(166.5, -162, -18)}" fill="none" stroke="#F8FAFB" stroke-width="2.4" opacity=".8" stroke-linecap="round"/>
+    <path d="${arc(166.5, 22, 158)}" fill="none" stroke="#484C4E" stroke-width="2.6" opacity=".45" stroke-linecap="round"/>
+    <circle cx="190" cy="193" r="156" fill="url(#mbase)" stroke="#6E7375" stroke-width="1.6"/>
+    ${sectors}
+    <circle cx="190" cy="193" r="30" fill="url(#mhub)" stroke="#6E7375" stroke-width="1.4"/>
+    <circle cx="190" cy="193" r="24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".8"/>
+    <circle cx="190" cy="193" r="18" fill="none" stroke="rgba(40,43,45,.3)" stroke-width=".8"/>
+    <path d="${arc(26, -150, -30)}" fill="none" stroke="#F8FAFB" stroke-width="1.6" opacity=".8" stroke-linecap="round"/>
+    <circle cx="190" cy="193" r="7" fill="#3B3E40"/>
+    <circle cx="188.3" cy="191.3" r="2" fill="#8B9092" opacity=".9"/>
+    ${labels}
+  </svg>
+  ${p3mode() === 'webgl' ? '<canvas id="pill3dc"></canvas>' : ''}
+  <div class="pill-lid ${ui.pillLidOpen ? 'open' : ''}" id="pill-lid" title="tap to open"></div>
+  <button class="pill-latch" id="pill-latch" title="open / close the lid">${ui.pillLidOpen ? '⌄' : '⌃'}</button>
+  </div>
+  <div class="pillbox-sub">
+    <span class="serif" style="font-size:16px; font-weight:700">${d2.getDate()} ${MONTHS[d2.getMonth()].slice(0,3)}, today</span>
+    <span class="mono" style="font-size:10px; letter-spacing:1px; color:var(--ink-3)">${takenN}/${totalN} doses taken${totalN && takenN === totalN ? ' · all done ✓' : ''}</span>
+  </div>`;
+}
+function pillWeekHTML(){
   const wk = weekDates(ui.pillWeek);
   const t = todayStr();
   const dows = ['M','T','W','T','F','S','S'];
-  const dueToday = db.pills.filter(p => p.weekdays.includes((new Date().getDay() + 6) % 7));
-  const takenToday = dueToday.filter(p => pillTaken(p, t) >= p.times.length).length;
   return `
-  <div class="panel screws" style="margin-top:16px">
-    <div class="section-label"><span class="tag">pills</span> ${fmtNice(wk[0])} – ${fmtNice(wk[6])}
-      ${dueToday.length ? `· today ${takenToday}/${dueToday.length} taken` : ''}</div>
-    <div class="row" style="margin-bottom:4px">
-      <button class="btn ghost" id="pw-prev">${ICONS.left} </button>
-      <button class="btn ghost" id="pw-today">this week</button>
-      <button class="btn ghost" id="pw-next"> ${ICONS.right}</button>
-      <div class="spacer"></div>
-      <button class="btn primary" id="p-new">+ pill</button>
-    </div>
-    ${db.pills.length ? `
     <div class="pill-grid">
       <span></span>
       ${wk.map((d, i) => `<span class="pgh ${d === t ? 'today' : ''}">${dows[i]}<br>${parseDate(d).getDate()}</span>`).join('')}
       ${db.pills.map(p => `
         <div class="pill-name" data-pedit="${p.id}" title="edit ${esc(p.name)}">
-          ${pillIcon(p, 22)}
+          ${pillIcon(p, 20)}
           <span style="min-width:0"><span class="pn">${esc(p.name)}</span>${p.dose ? `<br><span class="pd">${esc(p.dose)} · ${p.times.join(' ')}</span>` : `<br><span class="pd">${p.times.join(' ')}</span>`}</span>
         </div>
         ${wk.map((d, wi) => {
@@ -2168,17 +2657,87 @@ function pillsHTML(){
           if (!sched) return `<span class="pcell na"></span>`;
           const tk = pillTaken(p, d), tot = p.times.length;
           const cls = tk >= tot ? 'taken' : tk > 0 ? 'partial' : '';
-          return `<span class="pcell ${cls} ${d === t ? 'tdy' : ''}" data-pid="${p.id}" data-pd="${d}">${pillIcon(p, 19)}</span>`;
+          return `<span class="pcell ${cls} ${d === t ? 'tdy' : ''}" data-pid="${p.id}" data-pd="${d}">${pillIcon(p, 16)}</span>`;
         }).join('')}
       `).join('')}
-    </div>` : `<div class="mono small muted" style="padding:8px 0">no pills set up — press [+ pill] to add one (shape, colour, times, weekdays)</div>`}
+    </div>`;
+}
+function pillsHTML(){
+  const view = ui.pillView || 'day';
+  const dueToday = slotDoses('morning').length + slotDoses('noon').length + slotDoses('evening').length + slotDoses('night').length;
+  return `
+  <div class="panel screws" style="margin-top:16px">
+    <div class="section-label"><span class="tag">pills</span> ${view === 'day' ? "today's box" : fmtNice(weekDates(ui.pillWeek)[0]) + ' – ' + fmtNice(weekDates(ui.pillWeek)[6])}</div>
+    <div class="row" style="margin-bottom:4px">
+      <button class="chip ${view === 'day' ? 'on' : ''}" data-pv="day">daily box</button>
+      <button class="chip ${view === 'week' ? 'on' : ''}" data-pv="week">weekly</button>
+      <div class="spacer"></div>
+      ${view === 'week' ? `<button class="btn ghost" id="pw-prev">${ICONS.left}</button><button class="btn ghost" id="pw-today">now</button><button class="btn ghost" id="pw-next">${ICONS.right}</button>` : ''}
+      <button class="btn primary" id="p-new">+ pill</button>
+    </div>
+    ${db.pills.length
+      ? (view === 'day'
+          ? (dueToday ? pillBoxHTML() : `${pillBoxHTML()}`)
+          : pillWeekHTML())
+      : `<div class="mono small muted" style="padding:8px 0">no pills set up — press [+ pill] to add one (shape, colour, times, weekdays)</div>`}
+    ${db.pills.length && view === 'day' ? `<div class="mono small muted" style="margin-top:6px; text-align:center">tap the glass to open the tin · tap a pill to take it · compartments open the checklist</div>` : ''}
   </div>`;
 }
+function openSlotModal(sid){
+  const t = todayStr();
+  const s = PSLOTS.find(x => x.id === sid);
+  const doses = slotDoses(sid);
+  openModal(`
+    <h2>${s.label.toLowerCase()}</h2>
+    <div class="modal-sub">${fmtNice(t)} — tick what you've taken</div>
+    <div style="display:flex; flex-direction:column; gap:6px">
+      ${doses.length ? doses.map(d => `
+      <div class="ep ${doseTaken(d.p, d.tm, t) ? 'watched' : ''}" data-sdose="${d.p.id}|${d.tm}" style="font-size:15px; padding:8px 4px">
+        <span class="box"></span>
+        <span style="display:inline-flex; width:26px">${pillIcon(d.p, 18)}</span>
+        <span class="num">${d.tm}</span>
+        <span class="name">${esc(d.p.name)}${d.p.dose ? ' · ' + esc(d.p.dose) : ''}</span>
+      </div>`).join('') : `<div class="mono small muted">nothing scheduled for this slot today</div>`}
+      <button class="btn" id="sl-done" style="align-self:flex-end; margin-top:6px">✕ done</button>
+    </div>`);
+  $$('#modal-body [data-sdose]').forEach(row => row.addEventListener('click', () => {
+    const [pid, tm] = row.dataset.sdose.split('|');
+    db.pillLog[t] = db.pillLog[t] || {};
+    db.pillLog[t][pid] = db.pillLog[t][pid] || {};
+    if (db.pillLog[t][pid][tm]) delete db.pillLog[t][pid][tm]; else db.pillLog[t][pid][tm] = true;
+    save(); openSlotModal(sid);
+  }));
+  $('#sl-done').addEventListener('click', () => { closeModal(); renderHealth(); });
+}
 function wirePills(v){
+  $$('[data-pv]', v).forEach(c => c.addEventListener('click', () => { ui.pillView = c.dataset.pv; renderHealth(); }));
   $('#pw-prev')?.addEventListener('click', () => { ui.pillWeek--; renderHealth(); });
   $('#pw-next')?.addEventListener('click', () => { ui.pillWeek++; renderHealth(); });
   $('#pw-today')?.addEventListener('click', () => { ui.pillWeek = 0; renderHealth(); });
   $('#p-new')?.addEventListener('click', () => openPillEdit(null));
+  // daily box: pills toggle directly, compartments open the checklist
+  $$('.pillbox [data-dose]', v).forEach(g => g.addEventListener('click', ev => {
+    ev.stopPropagation();
+    const [pid, tm] = g.dataset.dose.split('|');
+    const p = db.pills.find(x => x.id === pid); if (!p) return;
+    const t = todayStr();
+    db.pillLog[t] = db.pillLog[t] || {};
+    db.pillLog[t][pid] = db.pillLog[t][pid] || {};
+    if (db.pillLog[t][pid][tm]) delete db.pillLog[t][pid][tm];
+    else { db.pillLog[t][pid][tm] = true; toast(`${p.name} ✓`); }
+    save(); renderHealth();
+  }));
+  $$('.pillbox [data-slot]', v).forEach(sec => sec.addEventListener('click', () => openSlotModal(sec.dataset.slot)));
+  // glass lid: animate open/close in place (no re-render, so the hinge swings)
+  const toggleLid = () => {
+    ui.pillLidOpen = !ui.pillLidOpen;
+    $('#pill-lid')?.classList.toggle('open', ui.pillLidOpen);
+    const latch = $('#pill-latch');
+    if (latch) latch.textContent = ui.pillLidOpen ? '⌄' : '⌃';
+  };
+  $('#pill-lid')?.addEventListener('click', toggleLid);
+  $('#pill-latch')?.addEventListener('click', toggleLid);
+  if ((ui.pillView || 'day') === 'day' && db.pills.length && p3mode() === 'webgl') ensureThree(renderPills3D);
   $$('[data-pedit]', v).forEach(el => el.addEventListener('click', () => openPillEdit(el.dataset.pedit)));
   $$('.pcell[data-pid]', v).forEach(c => c.addEventListener('click', () => {
     const p = db.pills.find(x => x.id === c.dataset.pid); if (!p) return;
@@ -2215,7 +2774,7 @@ function openPillTimes(p, d){
   $('#pt-done').addEventListener('click', () => { closeModal(); renderHealth(); });
 }
 function openPillEdit(id){
-  const p = id ? db.pills.find(x => x.id === id) : { id: uid(), name: '', dose: '', shape: 'round', color: PILL_COLORS[0], size: 'm', times: ['08:00'], weekdays: [0,1,2,3,4,5,6] };
+  const p = id ? db.pills.find(x => x.id === id) : { id: uid(), name: '', dose: '', shape: 'round', color: PILL_COLORS[0], times: ['08:00'], weekdays: [0,1,2,3,4,5,6] };
   if (!p) return;
   const dows = ['mon','tue','wed','thu','fri','sat','sun'];
   openModal(`
@@ -2229,13 +2788,8 @@ function openPillEdit(id){
       <div class="field"><label>shape</label>
         <div class="shape-tiles" id="p-shapes">${PILL_SHAPES.map(s => `<span class="stile ${p.shape === s ? 'on' : ''}" data-shape="${s}">${pillIcon({ ...p, shape: s, size: 'm' }, 26)}</span>`).join('')}</div>
       </div>
-      <div class="grid2">
-        <div class="field"><label>colour</label>
-          <div class="swatches" id="p-colors">${PILL_COLORS.map(c => `<span class="sw2 ${p.color === c ? 'on' : ''}" data-color="${c}" style="background:${c}"></span>`).join('')}</div>
-        </div>
-        <div class="field"><label>size</label>
-          <div class="row" id="p-sizes">${['s','m','l'].map(s => `<button class="chip ${p.size === s ? 'on' : ''}" data-size="${s}">${s}</button>`).join('')}</div>
-        </div>
+      <div class="field"><label>colour</label>
+        <div class="swatches" id="p-colors">${PILL_COLORS.map(c => `<span class="sw2 ${p.color === c ? 'on' : ''}" data-color="${c}" style="background:${c}"></span>`).join('')}</div>
       </div>
       <div class="field"><label>times — comma separated (24h)</label><input class="input mono" id="p-times" value="${p.times.join(', ')}" placeholder="08:00, 20:00"></div>
       <div class="field"><label>days</label>
@@ -2247,10 +2801,9 @@ function openPillEdit(id){
         <button class="btn primary" id="p-save">✕ save pill</button>
       </div>
     </div>`);
-  const state = { shape: p.shape, color: p.color, size: p.size, weekdays: [...p.weekdays] };
+  const state = { shape: p.shape, color: p.color, weekdays: [...p.weekdays] };
   $$('#p-shapes .stile').forEach(s => s.addEventListener('click', () => { state.shape = s.dataset.shape; $$('#p-shapes .stile').forEach(x => x.classList.toggle('on', x === s)); }));
   $$('#p-colors .sw2').forEach(s => s.addEventListener('click', () => { state.color = s.dataset.color; $$('#p-colors .sw2').forEach(x => x.classList.toggle('on', x === s)); }));
-  $$('#p-sizes .chip').forEach(s => s.addEventListener('click', () => { state.size = s.dataset.size; $$('#p-sizes .chip').forEach(x => x.classList.toggle('on', x === s)); }));
   $$('#p-days .chip').forEach(s => s.addEventListener('click', () => {
     const i = +s.dataset.wd;
     state.weekdays.includes(i) ? state.weekdays.splice(state.weekdays.indexOf(i), 1) : state.weekdays.push(i);
@@ -2268,7 +2821,7 @@ function openPillEdit(id){
     const times = $('#p-times').value.split(',').map(s => s.trim()).filter(s => /^\d{1,2}:\d{2}$/.test(s)).map(s => s.padStart(5, '0'));
     if (!times.length){ toast('⚠ at least one valid time (e.g. 08:00)'); return; }
     if (!state.weekdays.length){ toast('⚠ pick at least one day'); return; }
-    Object.assign(p, { name, dose: $('#p-dose').value.trim(), shape: state.shape, color: state.color, size: state.size, times, weekdays: state.weekdays.sort() });
+    Object.assign(p, { name, dose: $('#p-dose').value.trim(), shape: state.shape, color: state.color, times, weekdays: state.weekdays.sort() });
     if (!id) db.pills.push(p);
     save(); scheduleReminders(); closeModal(); renderHealth();
     toast(`${name} saved ✕`);
@@ -2622,53 +3175,225 @@ function fridgeHas(ing){
 function renderKitchen(){
   const v = $('#view-kitchen');
   const tab = ui.kitchenTab || 'fridge';
+  const shopN = db.kitchen.shopping.filter(x => !x.done).length;
   v.innerHTML = `
     <div class="row" style="margin-bottom:16px">
       <button class="chip ${tab === 'fridge' ? 'on' : ''}" data-ktab="fridge">❄ fridge</button>
       <button class="chip ${tab === 'recipes' ? 'on' : ''}" data-ktab="recipes">✎ recipes</button>
+      <button class="chip ${tab === 'shopping' ? 'on' : ''}" data-ktab="shopping">⛒ market${shopN ? ' · ' + shopN : ''}</button>
     </div>
     <div id="k-body"></div>`;
   $$('[data-ktab]', v).forEach(c => c.addEventListener('click', () => { ui.kitchenTab = c.dataset.ktab; renderKitchen(); }));
-  if (tab === 'fridge') renderFridge($('#k-body')); else renderRecipes($('#k-body'));
+  if (tab === 'fridge') renderFridge($('#k-body'));
+  else if (tab === 'shopping') renderShopping($('#k-body'));
+  else renderRecipes($('#k-body'));
+}
+
+/* ---- shopping list: manual + from recipes, with lookalike merging ---- */
+function normName(s){ return String(s).toLowerCase().replace(/i̇/g, 'i').trim(); }
+function simNames(a, b){
+  a = normName(a); b = normName(b);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  if (a.length >= 4 && b.length >= 4 && (a.includes(b) || b.includes(a))) return true;
+  return a.split(/\s+/).some(w => w.length >= 5 && b.includes(w));
+}
+function addToShopping(name, qty, from, dedupe){
+  name = String(name || '').trim();
+  if (!name) return 'skip';
+  if (dedupe){
+    const ex = db.kitchen.shopping.find(x => !x.done && simNames(x.name, name));
+    if (ex) return 'dupe';
+  }
+  db.kitchen.shopping.push({ id: uid(), name, qty: String(qty || '').trim(), from: String(from || '').trim(), done: false });
+  return 'added';
+}
+function mergeShopItems(ids){
+  const items = ids.map(id => db.kitchen.shopping.find(x => x.id === id)).filter(Boolean);
+  if (items.length < 2) return;
+  const shortest = items.slice().sort((a, b) => a.name.length - b.name.length)[0].name;
+  const name = (prompt('Birleşik ürün adı:', shortest) || '').trim();
+  if (!name) return;
+  const qty = items.map(x => x.qty).filter(Boolean).join(' + ');
+  const from = [...new Set(items.map(x => x.from).filter(Boolean))].join(', ');
+  const at = db.kitchen.shopping.indexOf(items[0]);
+  db.kitchen.shopping = db.kitchen.shopping.filter(x => !ids.includes(x.id));
+  db.kitchen.shopping.splice(at, 0, { id: uid(), name, qty, from, done: false });
+  ui.shopSel = new Set();
+  save(); renderKitchen();
+  toast(`${items.length} ürün birleşti → ${name} ✕`);
+}
+function renderShopping(box){
+  const list = db.kitchen.shopping;
+  if (!ui.shopSel) ui.shopSel = new Set();
+  const sel = ui.shopSel;
+  const doneN = list.filter(x => x.done).length;
+  box.innerHTML = `
+    <div class="panel screws">
+      <div class="section-label"><span class="tag">market</span> ${list.length - doneN} alınacak${doneN ? ` · ${doneN} sepette` : ''}</div>
+      ${doneN ? `<div class="row" style="margin-bottom:8px">
+        <button class="btn" id="sh-tofridge">alınanları dolaba taşı</button>
+        <button class="btn ghost" id="sh-clear">✕ alınanları sil</button>
+      </div>` : ''}
+      ${list.map((it, i) => {
+        const simEarlier = !it.done && list.slice(0, i).find(x => !x.done && simNames(x.name, it.name));
+        return `
+        <div class="shop-row ${it.done ? 'done' : ''}" data-sid="${it.id}">
+          <span class="sdot ${sel.has(it.id) ? 'on' : ''}" data-ssel="${it.id}" title="birleştirmek için seç">${sel.has(it.id) ? '✓' : ''}</span>
+          <span class="sn" data-stgl="${it.id}">
+            <span class="nm">${esc(it.name)}</span>${it.qty ? `<span class="sq">${esc(it.qty)}</span>` : ''}${it.from ? `<span class="sf">${esc(it.from)}</span>` : ''}
+          </span>
+          <button class="tx-del" data-sdel="${it.id}">✕</button>
+          ${simEarlier ? `<button class="merge-chip" data-smerge="${it.id}|${simEarlier.id}">≈ "${esc(simEarlier.name)}" ile birleştir</button>` : ''}
+        </div>`;
+      }).join('')}
+      ${list.length ? '' : `<div class="mono small muted" style="padding:6px 0">liste boş — elle ekle ya da bir tariften "eksikleri listeye" bas</div>`}
+      <div class="fridge-add" style="grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) auto">
+        <input class="input" id="sh-name" placeholder="süt">
+        <input class="input" id="sh-qty" placeholder="1 lt">
+        <button class="btn primary" id="sh-add">+ ekle</button>
+      </div>
+      ${sel.size >= 2 ? `
+      <div class="merge-bar">
+        <span class="mono">${sel.size} ürün seçili</span>
+        <div class="spacer"></div>
+        <button class="btn primary" id="sh-merge">birleştir</button>
+        <button class="btn" id="sh-selclear">vazgeç</button>
+      </div>` : ''}
+    </div>`;
+  const add = () => {
+    const n = $('#sh-name').value.trim(); if (!n){ toast('⚠ ürün adı'); return; }
+    addToShopping(n, $('#sh-qty').value, '', false);
+    save(); renderKitchen();
+  };
+  $('#sh-add').addEventListener('click', add);
+  $('#sh-name').addEventListener('keydown', ev => { if (ev.key === 'Enter') add(); });
+  $$('[data-stgl]', box).forEach(el => el.addEventListener('click', () => {
+    const it = list.find(x => x.id === el.dataset.stgl);
+    if (it){ it.done = !it.done; save(); renderKitchen(); }
+  }));
+  $$('[data-sdel]', box).forEach(b => b.addEventListener('click', () => {
+    db.kitchen.shopping = list.filter(x => x.id !== b.dataset.sdel);
+    sel.delete(b.dataset.sdel);
+    save(); renderKitchen();
+  }));
+  $$('[data-ssel]', box).forEach(d => d.addEventListener('click', () => {
+    const id = d.dataset.ssel;
+    sel.has(id) ? sel.delete(id) : sel.add(id);
+    renderKitchen();
+  }));
+  $$('[data-smerge]', box).forEach(c => c.addEventListener('click', () => mergeShopItems(c.dataset.smerge.split('|'))));
+  $('#sh-merge')?.addEventListener('click', () => mergeShopItems([...sel]));
+  $('#sh-selclear')?.addEventListener('click', () => { ui.shopSel = new Set(); renderKitchen(); });
+  $('#sh-clear')?.addEventListener('click', () => {
+    db.kitchen.shopping = list.filter(x => !x.done);
+    save(); renderKitchen();
+  });
+  $('#sh-tofridge')?.addEventListener('click', () => {
+    const bought = list.filter(x => x.done);
+    bought.forEach(x => db.kitchen.fridge.push({ id: uid(), name: x.name, qty: x.qty, cat: 'Diğer', expiry: '', addedAt: todayStr() }));
+    db.kitchen.shopping = list.filter(x => !x.done);
+    save(); renderKitchen();
+    toast(`${bought.length} ürün dolaba taşındı ✕`);
+  });
+}
+const FRIDGE_CATS = ['Sebze','Meyve','Et & Tavuk','Süt Ürünleri','İçecek','Kuru Gıda','Donuk','Diğer'];
+function fridgeExpiry(f){
+  // manual expiry wins; otherwise gemini's shelf-life estimate from the day it was added
+  if (f.expiry) return { d: f.expiry, est: false };
+  if (f.shelfDays){
+    const base = parseDate(f.addedAt || f.estFrom || todayStr());
+    return { d: dateStr(addDays(base, f.shelfDays)), est: true };
+  }
+  return null;
 }
 function renderFridge(box){
   const t = todayStr();
-  const items = db.kitchen.fridge.slice().sort((a, b) => (a.expiry || '9999') < (b.expiry || '9999') ? -1 : 1);
+  const items = db.kitchen.fridge;
+  const rowHTML = f => {
+    const ex = fridgeExpiry(f);
+    let chip = '<span></span>';
+    if (ex){
+      const days = Math.ceil((parseDate(ex.d) - parseDate(t)) / 86400000);
+      chip = `<span class="fe ${days < 0 ? 'over' : days <= 3 ? 'soon' : ''}" title="${ex.est ? 'gemini tahmini' : 'son kullanma'}">${ex.est ? '≈' : ''}${days < 0 ? 'geçti!' : days === 0 ? 'bugün' : days + 'g'}</span>`;
+    }
+    return `<div class="fridge-row" data-f="${f.id}">
+      <span class="fn">${esc(f.name)}</span>
+      <span class="fq">${esc(f.qty || '')}</span>
+      <select class="input mini" data-fcat="${f.id}">${FRIDGE_CATS.map(c => `<option ${c === (f.cat || 'Diğer') ? 'selected' : ''}>${c}</option>`).join('')}</select>
+      ${chip}
+      <button class="tx-del" data-fdel="${f.id}">✕</button>
+      ${f.tip ? `<span class="ftip" title="${esc(f.tip)}">✎ ${esc(f.tip)}</span>` : ''}
+    </div>`;
+  };
+  const groups = FRIDGE_CATS.map(c => ({ c, list: items.filter(f => (f.cat || 'Diğer') === c) })).filter(g => g.list.length);
   box.innerHTML = `
     <div class="panel screws">
-      <div class="section-label"><span class="tag">fridge</span> ${items.length} items</div>
-      ${items.map(f => {
-        let ex = '';
-        if (f.expiry){
-          const days = Math.ceil((parseDate(f.expiry) - parseDate(t)) / 86400000);
-          ex = `<span class="fe ${days < 0 ? 'over' : days <= 3 ? 'soon' : ''}">${days < 0 ? 'expired' : days === 0 ? 'today!' : days + 'd'}</span>`;
-        }
-        return `<div class="fridge-row" data-f="${f.id}">
-          <span class="fn">${esc(f.name)}</span>
-          <span class="fq">${esc(f.qty || '')}</span>
-          ${ex || '<span></span>'}
-          <button class="tx-del" data-fdel="${f.id}">✕</button>
-        </div>`;
-      }).join('')}
+      <div class="section-label"><span class="tag">fridge</span> ${items.length} items
+        ${items.length ? `<button class="btn ghost" id="f-ai" style="padding:4px 10px; font-size:9px">⌁ raf ömrü analizi</button>` : ''}
+      </div>
+      ${groups.map(g => `<div class="fridge-cat">${g.c}</div>${g.list.map(rowHTML).join('')}`).join('')}
       ${items.length ? '' : `<div class="mono small muted" style="padding:6px 0">empty fridge — add what you've got</div>`}
       <div class="fridge-add">
         <input class="input" id="f-name2" placeholder="yumurta">
         <input class="input" id="f-qty2" placeholder="10 adet">
-        <input type="date" class="input" id="f-exp2" title="expiry">
-        <button class="btn primary" id="f-add2">+</button>
+        <select class="input" id="f-cat2">${FRIDGE_CATS.map(c => `<option>${c}</option>`).join('')}</select>
+        <div class="rowb">
+          <input type="date" class="input" id="f-exp2" title="son kullanma (opsiyonel)">
+          <button class="btn primary" id="f-add2" style="flex:0 0 auto">+ ekle</button>
+        </div>
       </div>
     </div>`;
   const add = () => {
     const name = $('#f-name2').value.trim(); if (!name){ toast('⚠ name it'); return; }
-    db.kitchen.fridge.push({ id: uid(), name, qty: $('#f-qty2').value.trim(), expiry: $('#f-exp2').value || '' });
+    db.kitchen.fridge.push({ id: uid(), name, qty: $('#f-qty2').value.trim(), cat: $('#f-cat2').value, expiry: $('#f-exp2').value || '', addedAt: todayStr() });
     save(); renderKitchen();
   };
   $('#f-add2').addEventListener('click', add);
   $('#f-name2').addEventListener('keydown', ev => { if (ev.key === 'Enter') add(); });
+  $('#f-ai')?.addEventListener('click', geminiFridge);
   $$('[data-fdel]', box).forEach(b => b.addEventListener('click', () => {
     db.kitchen.fridge = db.kitchen.fridge.filter(x => x.id !== b.dataset.fdel);
     save(); renderKitchen();
   }));
+  $$('[data-fcat]', box).forEach(sel => sel.addEventListener('change', () => {
+    const f = db.kitchen.fridge.find(x => x.id === sel.dataset.fcat);
+    if (f){ f.cat = sel.value; save(); renderKitchen(); }
+  }));
+}
+/* gemini: shelf life (days) + one turkish storage tip per fridge item */
+async function geminiFridge(){
+  const key = db.settings.geminiKey;
+  if (!key){ toast('⚠ add a gemini api key in settings first'); return; }
+  const items = db.kitchen.fridge; if (!items.length) return;
+  toast('⌁ gemini raf ömürlerini hesaplıyor…');
+  const q = `For each fridge item below, estimate the typical refrigerated shelf life in days (integer, counted from purchase, standard home fridge at 4°C — for pantry items give their usual room-storage life) and give ONE short Turkish tip for optimal preservation (max 8 words).
+Items: ${items.map(f => f.name).join(', ')}
+Reply with ONLY this JSON array, names matching the input EXACTLY:
+[{"name":"yumurta","days":21,"tip":"kapalı kutuda, orta rafta saklayın"}]`;
+  const body = JSON.stringify({ contents: [{ parts: [{ text: q }] }], generationConfig: { response_mime_type: 'application/json', temperature: 0.1 } });
+  try {
+    let resp = null, lastErr = null;
+    for (const model of ['gemini-2.5-flash', 'gemini-2.0-flash']){
+      try {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,
+          { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+        if (r.status === 404) continue;
+        if (!r.ok){ const err = await r.json().catch(() => null); throw new Error(err?.error?.message || 'HTTP ' + r.status); }
+        resp = await r.json(); break;
+      } catch(e){ lastErr = e; }
+    }
+    if (!resp) throw lastErr || new Error('no response');
+    let text = (resp.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+    const arr = JSON.parse(text.trim().replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/, ''));
+    let hit = 0;
+    (Array.isArray(arr) ? arr : []).forEach(r => {
+      const f = items.find(x => x.name.toLowerCase() === String(r.name || '').toLowerCase());
+      if (f && +r.days > 0){ f.shelfDays = Math.round(+r.days); f.tip = String(r.tip || '').slice(0, 90); f.estFrom = f.addedAt || todayStr(); hit++; }
+    });
+    save(); renderKitchen();
+    toast(hit ? `${hit} ürün için raf ömrü işlendi ✕` : '⚠ eşleşen ürün bulunamadı');
+  } catch(e){ toast('⚠ gemini: ' + e.message); }
 }
 function renderRecipes(box){
   box.innerHTML = `
@@ -2710,9 +3435,26 @@ function openRecipe(id){
     <div class="section-label" style="margin-top:16px"><span class="tag">tarif</span> adım adım</div>
     ${(r.stepsTr || r.steps || []).map((s, i) => `<div class="step-row"><span class="sn">${pad2(i+1)}</span><span>${esc(s)}</span></div>`).join('')}
     <hr class="tear">
-    <div class="row" style="justify-content:flex-end">
+    <div class="row">
+      ${r.ingredients.filter(i => !fridgeHas(i)).length ? `<button class="btn primary" id="r-shop-miss">eksikleri listeye ekle (${r.ingredients.filter(i => !fridgeHas(i)).length})</button>` : ''}
+      <button class="btn ghost" id="r-shop-all">hepsini listeye ekle</button>
+      <div class="spacer"></div>
       <button class="btn danger" id="r-del">${ICONS.trash} delete</button>
     </div>`);
+  const shopFrom = ings => {
+    let added = 0, dupes = 0;
+    ings.forEach(i => {
+      const res = addToShopping(i.nameTr || i.name, i.amount, r.titleTr || r.title, true);
+      if (res === 'added') added++; else if (res === 'dupe') dupes++;
+    });
+    save();
+    toast(`${added} ürün listeye eklendi${dupes ? ` · ${dupes} zaten vardı` : ''} ✕`);
+    closeModal();
+    ui.kitchenTab = 'shopping';
+    renderKitchen();
+  };
+  $('#r-shop-miss')?.addEventListener('click', () => shopFrom(r.ingredients.filter(i => !fridgeHas(i))));
+  $('#r-shop-all')?.addEventListener('click', () => shopFrom(r.ingredients));
   $('#r-del').addEventListener('click', () => {
     if (!confirm('Delete this recipe?')) return;
     db.kitchen.recipes = db.kitchen.recipes.filter(x => x.id !== id);
@@ -3340,6 +4082,93 @@ function spendImportHTML(withIntro){
     </div>`;
 }
 
+/* instagram reel → recipe, tier 1: fetch the reel page ON THE DEVICE (the
+   webview may cross origins, and a phone on home wifi looks like a normal
+   visitor where server scrapers get login-walled), mine the caption out of
+   the html, feed it to the recipe pipeline. fails → screenshot fallback. */
+function igUrlOf(text){
+  const m = String(text).match(/https?:\/\/(www\.)?instagram\.com\/(reel|reels|p|tv)\/[A-Za-z0-9_\-]+/);
+  return m ? m[0].replace(/\/?$/, '/') : null;
+}
+function igCaption(pageHtml){
+  const cands = [];
+  const unesc = s => { const ta = document.createElement('textarea'); ta.innerHTML = s; return ta.value; };
+  // 1) json-ld blocks (often carry the full caption as articleBody/description)
+  for (const m of pageHtml.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g)){
+    try {
+      const j = JSON.parse(m[1]);
+      const objs = Array.isArray(j) ? j : [j];
+      objs.forEach(o => { if (o && typeof o === 'object')
+        ['articleBody', 'description', 'caption'].forEach(k => { if (typeof o[k] === 'string') cands.push(o[k]); }); });
+    } catch(_){}
+  }
+  // 2) og:title / og:description / description meta tags
+  for (const prop of ['og:title', 'og:description', 'description']){
+    const re1 = new RegExp(`<meta[^>]+(?:property|name)=["']${prop}["'][^>]+content=["']([^"']+)["']`);
+    const re2 = new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']${prop}["']`);
+    const m = pageHtml.match(re1) || pageHtml.match(re2);
+    if (m) cands.push(unesc(m[1]));
+  }
+  // 3) embedded caption json ("caption":{"text":"…"})
+  const cm = pageHtml.match(/"caption"\s*:\s*\{[^{}]*?"text"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+  if (cm){ try { cands.push(JSON.parse('"' + cm[1] + '"')); } catch(_){} }
+  // clean instagram wrappers: `user on Instagram: "…"` and `X likes, Y comments - …: "…"`
+  const cleaned = cands.map(raw => {
+    let s = String(raw).trim();
+    const q = s.match(/:\s*["“„]([\s\S]+)["”]\s*$/);
+    if (q) s = q[1];
+    s = s.replace(/^[\d.,KM]+\s+likes?,\s*[\d.,KM]+\s+comments?\s*[-–]\s*/i, '');
+    return s.trim();
+  }).filter(Boolean);
+  return cleaned.sort((a, b) => b.length - a.length)[0] || '';
+}
+/* the /embed/captioned/ page is built for iframes — it usually dodges the
+   login wall and carries the caption as plain html */
+function igEmbedCaption(pageHtml){
+  const m = pageHtml.match(/<div[^>]*class="[^"]*Caption[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+  if (!m) return '';
+  let s = m[1]
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<a[^>]*>([\s\S]*?)<\/a>/gi, '$1')
+    .replace(/<[^>]+>/g, ' ');
+  const ta = document.createElement('textarea'); ta.innerHTML = s;
+  return ta.value.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+}
+async function igImport(url){
+  switchView('kitchen'); ui.kitchenTab = 'recipes';
+  toast('⌁ reading the reel’s caption…');
+  let reason = '', best = '';
+  // tier 1a: the reel page itself
+  try {
+    const r = await fetch(url, { headers: { 'Accept': 'text/html' } });
+    if (!r.ok) reason = 'sayfa ' + r.status;
+    else {
+      const html2 = await r.text();
+      if (/loginForm|Log in to Instagram|Giriş yap/i.test(html2) && !/og:title/i.test(html2)) reason = 'giriş duvarı';
+      const c = igCaption(html2);
+      if (c.length > best.length) best = c;
+    }
+  } catch(e){ reason = 'ağ hatası'; }
+  // tier 1b: the embeddable captioned page
+  if (best.length < 60){
+    try {
+      const r2 = await fetch(url.replace(/\/?$/, '/') + 'embed/captioned/', { headers: { 'Accept': 'text/html' } });
+      if (r2.ok){
+        const h2 = await r2.text();
+        const c2 = igEmbedCaption(h2) || igCaption(h2);
+        if (c2.length > best.length) best = c2;
+      }
+    } catch(_){}
+  }
+  if (best.length >= 60){
+    await geminiRecipe([{ text: 'Instagram reel caption (may contain hashtags and chatter — extract only the recipe):\n' + best }], 'instagram');
+    return;
+  }
+  // give whatever scraps we found to the manual sheet instead of discarding them
+  openRecipeImport(best || '');
+  toast(`⚠ reel okunamadı${reason ? ' (' + reason + ')' : best ? ' (açıklama çok kısa)' : ''} — captionun ekran görüntüsünü paylaş`);
+}
+
 /* gemini: recipe import — structure, translate to turkish, localize ingredients */
 const RECIPE_PROMPT = `You are a recipe assistant for a user living in Turkey. Read the recipe in the provided text and/or images.
 Reply with ONLY this JSON (no markdown fences, no commentary):
@@ -3419,6 +4248,8 @@ function openRecipeImport(prefillText){
   $('#ri-go').addEventListener('click', async () => {
     const parts = [];
     const txt = $('#ri-text').value.trim();
+    const ig = igUrlOf(txt);
+    if (ig && txt.length < 140){ closeModal(); igImport(ig); return; }   // pasted a reel link → tier 1
     if (txt) parts.push({ text: 'Recipe text:\n' + txt });
     for (const f of shots){
       const b64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.readAsDataURL(f); });
@@ -3622,7 +4453,10 @@ window.onNativeShare = function(json){
       if (j.text) parts.unshift({ text: 'Shared text:\n' + j.text });
       geminiRecipe(parts, 'shared');
     } else if (j.text){
-      if (/^https?:\/\/\S+$/.test(j.text.trim()) && /instagram|tiktok|youtu/.test(j.text)){
+      const ig = igUrlOf(j.text);
+      if (ig){
+        igImport(ig);   // tier 1: caption straight off the reel page
+      } else if (/^https?:\/\/\S+$/.test(j.text.trim()) && /tiktok|youtu/.test(j.text)){
         switchView('kitchen');
         openRecipeImport('');
         toast('⚠ video links can\'t be read — share a screenshot of the recipe caption instead');

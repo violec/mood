@@ -204,7 +204,11 @@ class MainActivity : ComponentActivity() {
             runOnUiThread {
                 if (!ensureAvailable()) return@runOnUiThread
                 lifecycleScope.launch {
-                    if (hasAnyPerm()) syncHealth(days) else permLauncher.launch(healthPerms)
+                    // ask again whenever ANY permission is missing — otherwise users who
+                    // granted the old steps-only set never get asked for sleep/hydration
+                    val granted = client()?.permissionController?.getGrantedPermissions() ?: emptySet()
+                    if (granted.containsAll(healthPerms)) syncHealth(days)
+                    else permLauncher.launch(healthPerms)
                 }
             }
         }
