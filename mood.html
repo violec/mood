@@ -2750,6 +2750,9 @@ const I18N = {
     "that's your own code": 'bu senin kendi kodun', 'already your friend': 'zaten arkadaşın', 'looking them up…': 'aranıyor…', '{name} added — {n} titles': '{name} eklendi — {n} başlık', 'refreshing…': 'yenileniyor…',
     'see what friends rated · they see yours': 'arkadaşların ne puan verdi · onlar da seninkini görür', '{n} friends': '{n} arkadaş', 'sharing': 'paylaşılıyor',
     'friends: share your ratings and add friends with their code — see what they rated and what they loved': 'arkadaşlar: puanlarını paylaş, arkadaşlarını kodlarıyla ekle — neye kaç puan verdiklerini ve neleri sevdiklerini gör',
+    'github asks to slow down — sync tries again in {m} min': 'github yavaşlamamızı istiyor — senkron {m} dk sonra kendiliğinden tekrar dener',
+    'this token can\'t save gists — make a new one with the button (a classic token with "gist" ticked)': 'bu token gist kaydedemiyor — düğmeyle yeni bir tane oluştur ("gist" işaretli klasik token)',
+    'the journal is too big for one gist — tell can': 'günlük tek bir gist için çok büyük — can\'e haber ver',
     'more tabs': 'diğer sekmeler', '{n}m': '{n} dk', '{n}h': '{n} sa', 'gemini estimate': 'gemini tahmini', 'expiry date': 'son kullanma', 'expired': 'geçti', '{n}d': '{n} gün',
     // default spending categories (stored in english, shown translated)
     'Groceries': 'Market', 'Dining Out': 'Dışarıda yemek', 'Transport': 'Ulaşım', 'Subscriptions': 'Abonelikler', 'Shopping': 'Alışveriş',
@@ -10614,6 +10617,20 @@ async function unseal(text, pass){
 }
 
 /* ---- github gist ---- */
+// github's reply → a readable error. rate limits (403/429) carry when to try again
+async function ghFail(r){
+  let msg = '';
+  try { msg = (await r.clone().json()).message || ''; } catch(_){}
+  const ra = +(r.headers.get('retry-after') || 0), reset = +(r.headers.get('x-ratelimit-reset') || 0);
+  if (r.status === 429 || (r.status === 403 && (/rate limit|abuse/i.test(msg) || r.headers.get('x-ratelimit-remaining') === '0'))){
+    const wait = Math.max(60e3, ra ? ra * 1000 : reset ? reset * 1000 - Date.now() : 10 * 60e3);
+    const e = new Error(tl('github asks to slow down — sync tries again in {m} min', { m: Math.ceil(wait / 60000) }));
+    e.retryAt = Date.now() + wait; return e;
+  }
+  if (r.status === 403 && /not accessible|permission|forbidden/i.test(msg)) return new Error(tl('this token can\'t save gists — make a new one with the button (a classic token with "gist" ticked)'));
+  if (r.status === 422 && /too large|size/i.test(msg)) return new Error(tl('the journal is too big for one gist — tell can'));
+  return new Error('github ' + r.status + (msg ? ' — ' + msg : ''));
+}
 async function gh(cfg, path, opt = {}){
   const r = await fetch('https://api.github.com' + path, { ...opt, cache: 'no-store',
     headers: { Authorization: 'Bearer ' + cfg.token, Accept: 'application/vnd.github+json', ...(opt.body ? { 'Content-Type': 'application/json' } : {}) } });
@@ -10623,7 +10640,7 @@ async function gh(cfg, path, opt = {}){
 async function findGist(cfg){
   for (let page = 1; page <= 5; page++){
     const r = await gh(cfg, `/gists?per_page=100&page=${page}`);
-    if (!r.ok) throw new Error('github ' + r.status);
+    if (!r.ok) throw await ghFail(r);
     const list = await r.json();
     const hit = list.find(g => g.files && g.files[SYNC_FILE]);
     if (hit) return hit.id;
@@ -10634,7 +10651,7 @@ async function findGist(cfg){
 async function readGist(cfg){
   const r = await gh(cfg, `/gists/${cfg.gistId}`);
   if (r.status === 404) return null;
-  if (!r.ok) throw new Error('github ' + r.status);
+  if (!r.ok) throw await ghFail(r);
   const f = (await r.json()).files?.[SYNC_FILE];
   if (!f) return null;
   return f.truncated ? await (await fetch(f.raw_url, { cache: 'no-store' })).text() : f.content;
@@ -10642,8 +10659,9 @@ async function readGist(cfg){
 async function writeGist(cfg, content){
   const body = JSON.stringify({ description: 'mood sync — encrypted, only your mood app can read it', files: { [SYNC_FILE]: { content } } });
   const r = cfg.gistId ? await gh(cfg, `/gists/${cfg.gistId}`, { method: 'PATCH', body }) : await gh(cfg, '/gists', { method: 'POST', body: JSON.stringify({ ...JSON.parse(body), public: false }) });
-  if (!r.ok) throw new Error('github ' + r.status);
+  if (!r.ok) throw await ghFail(r);
   if (!cfg.gistId){ cfg.gistId = (await r.json()).id; setSyncCfg(cfg); }
+  cfg.lastPush = Date.now(); setSyncCfg(cfg);
 }
 
 /* ---- three-way merge ---- */
@@ -10694,6 +10712,7 @@ async function syncNow(reason){
   const cfg = syncCfg(); if (!cfg?.token || !cfg?.pass) return false;
   if (syncing){ syncAgain = true; return false; }
   if (!navigator.onLine && reason !== 'manual') return false;
+  if (cfg.retryAt && cfg.retryAt > Date.now()){ if (reason === 'manual') toast(cfg.err || tl('syncing…')); syncSoon(cfg.retryAt - Date.now() + 2000); return false; }
   syncing = true; refreshSyncUI();
   try {
     await storeReady;
@@ -10715,21 +10734,29 @@ async function syncNow(reason){
       await writeGist(cfg, await seal(JSON.parse(JSON.stringify(db)), cfg.pass, remote?.salt));
     }
     await syncBaseSet(JSON.stringify(db));
-    cfg.lastSync = Date.now(); cfg.err = ''; setSyncCfg(cfg);
+    cfg.lastSync = Date.now(); cfg.err = ''; delete cfg.retryAt; setSyncCfg(cfg);
     if (changedHere && reason !== 'start') toast(tl('synced — changes from your other device are in') + ' ✓');
     publishProfile(); loadFriends();
     return true;
   } catch(e){
     syncWriting = false;
-    cfg.err = e.message || String(e); setSyncCfg(cfg);
-    if (reason === 'manual' || reason === 'connect') toast('⚠ ' + cfg.err);
+    const c2 = { ...(syncCfg() || cfg), err: e.message || String(e) };
+    if (e.retryAt){ c2.retryAt = e.retryAt; syncSoon(e.retryAt - Date.now() + 2000); }      // github said wait — try again by itself
+    setSyncCfg(c2);
+    if (reason === 'manual' || reason === 'connect') toast('⚠ ' + c2.err);
     return false;
   } finally {
     syncing = false; refreshSyncUI();
     if (syncAgain){ syncAgain = false; syncSoon(1500); }
   }
 }
-function syncSoon(ms = 6000){ if (!syncOn() || syncWriting) return; clearTimeout(syncTimer); syncTimer = setTimeout(() => syncNow('change'), ms); }
+// changes are gathered for 20 s and sent at most once a minute — github limits how often content can be written
+function syncSoon(ms = 20000){
+  if (!syncOn() || syncWriting) return;
+  const c = syncCfg();
+  const gap = c?.lastPush ? c.lastPush + 60e3 - Date.now() : 0;
+  clearTimeout(syncTimer); syncTimer = setTimeout(() => syncNow('change'), Math.max(ms, gap));
+}
 // when to sync: on start, when the app comes back to the front, when the network returns, a few seconds after each change
 let lastFocusSync = 0;
 document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastFocusSync > 20000){ lastFocusSync = Date.now(); syncNow('focus'); } });
@@ -10824,6 +10851,7 @@ async function publishProfile(force){
   const prof = buildProfile(), json = JSON.stringify({ ...prof, updated: '' });
   const h = hashStr(json);
   if (!force && S.lastHash === h && S.gistId) return;
+  if (!force && S.pubAt && Date.now() - S.pubAt < 10 * 60e3) return;      // ratings change a lot; friends don't need every one live
   publishing = true;
   try {
     const body = { description: 'mood profile — titles and ratings shared with friends', files: { [PROFILE_FILE]: { content: JSON.stringify(prof) } } };
@@ -10834,7 +10862,7 @@ async function publishProfile(force){
     const r = S.gistId ? await gh(cfg, `/gists/${S.gistId}`, { method: 'PATCH', body: JSON.stringify(body) })
       : await gh(cfg, '/gists', { method: 'POST', body: JSON.stringify({ ...body, public: false }) });
     if (r.status === 404 && S.gistId){ delete S.gistId; publishing = false; return publishProfile(true); }
-    if (!r.ok) throw new Error('github ' + r.status);
+    if (!r.ok) throw await ghFail(r);
     if (!S.gistId) S.gistId = (await r.json()).id;
     S.lastHash = h; S.pubAt = Date.now(); save();
   } catch(e){ S.err = e.message; } finally { publishing = false; }
@@ -10873,7 +10901,7 @@ async function fetchProfile(id){
   const cfg = syncCfg();
   const r = await fetch(`https://api.github.com/gists/${id}`, { cache: 'no-store', headers: { Accept: 'application/vnd.github+json', ...(cfg?.token ? { Authorization: 'Bearer ' + cfg.token } : {}) } });
   if (r.status === 404) throw new Error(tl('that friend code doesn\'t work anymore — they may have stopped sharing'));
-  if (!r.ok) throw new Error('github ' + r.status);
+  if (!r.ok) throw await ghFail(r);
   const f = (await r.json()).files?.[PROFILE_FILE];
   if (!f) throw new Error(tl('that isn\'t a mood friend code'));
   const p = JSON.parse(f.truncated ? await (await fetch(f.raw_url, { cache: 'no-store' })).text() : f.content);
