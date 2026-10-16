@@ -11,15 +11,15 @@ android {
         applicationId = "app.mood.journal"
         minSdk = 26
         targetSdk = 34
-        versionCode = 12
-        versionName = "2.8"
+        versionCode = 13
+        versionName = "2.9"
     }
 
     // one fixed key for every build (this pc and github actions alike), so a new apk
     // always installs over the old one and keeps your data. it is the key the installed
-    // app was first signed with — personal sideloaded app, not for a store, so the
+    // app was first signed with â€” personal sideloaded app, not for a store, so the
     // password can live here.
-    // the key file is not in the public repo — builds elsewhere (github actions) fall back to their own debug key
+    // the key file is not in the public repo â€” builds elsewhere (github actions) fall back to their own debug key
     val moodKey = file("mood-signing.keystore")
     signingConfigs {
         create("mood") {

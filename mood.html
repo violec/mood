@@ -1278,6 +1278,125 @@ body:has(#sel-actions) #lib-grid{padding-bottom:90px}
 .cp-item span{font-family:'Space Mono',monospace; font-size:9px; color:var(--ink-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .cp-item.on img{outline:3px solid var(--accent); outline-offset:2px}
 #d-cover{cursor:pointer}
+
+/* ===== what next? ===== */
+.wn-home .wn-types{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin:4px 0 10px; scrollbar-width:none}
+.wn-home .wn-types::-webkit-scrollbar{display:none}
+.wn-types button{flex:none; display:inline-flex; align-items:center; gap:5px; padding:7px 12px; border-radius:16px; border:1px solid var(--line); background:var(--bg-hi); color:var(--ink-2); font-family:'Space Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.5px}
+.wn-types button svg{width:14px; height:14px}
+.wn-types button.on{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+[data-theme="ink"] .wn-types button{background:var(--surface)}
+[data-theme="ink"] .wn-types button.on{background:var(--accent); border-color:var(--accent); color:#fff}
+.wn-sels{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:6px; margin-bottom:10px}
+.wn-sels select.input{min-width:0; padding-left:8px; padding-right:4px; font-size:13px}
+.wn-go{width:100%; justify-content:center}
+.wn-go svg{width:17px; height:17px}
+
+.wn-deck{position:fixed; inset:0; z-index:1100; display:none; flex-direction:column; background:var(--bg);
+  background-image:radial-gradient(circle, var(--line) 1px, transparent 1.4px); background-size:14px 14px;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom); touch-action:none; -webkit-user-select:none; user-select:none}
+.wn-deck.open{display:flex}
+.wn-top{display:flex; align-items:center; gap:10px; padding:10px 14px}
+.wn-x{width:40px; height:40px; flex:none; border-radius:50%; border:1.5px solid var(--ink-2); background:var(--bg-hi); color:var(--ink); display:flex; align-items:center; justify-content:center}
+.wn-x svg{width:18px; height:18px}
+.wn-tt{flex:1; min-width:0; display:flex; flex-direction:column}
+.wn-tt b{font-family:'Libre Caslon Text', Georgia, serif; font-size:19px}
+.wn-tt em{font-style:normal; font-family:'Space Mono',monospace; font-size:10px; color:var(--ink-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.wn-done{flex:none}
+.wn-done span{display:inline-flex; min-width:20px; height:20px; padding:0 5px; border-radius:10px; background:rgba(255,255,255,.25); align-items:center; justify-content:center; font-size:11px; margin-left:4px}
+.wn-stage{flex:1; min-height:0; position:relative; display:grid; grid-template:minmax(0, 1fr) / minmax(0, 1fr); place-items:center; padding:6px 16px 10px; overflow:hidden}
+.wn-stage > *{grid-area:1 / 1}
+.wn-card, .wn-under{width:min(100%, 430px, calc((100vh - 215px) * .6667)); width:min(100%, 430px, calc((100dvh - 215px) * .6667)); aspect-ratio:2 / 3; border-radius:18px}
+.wn-under{background:var(--bg-hi); border:1.5px solid var(--line); transform:translateY(10px) scale(.95); opacity:.8}
+.wn-under.two{transform:translateY(20px) scale(.9); opacity:.5}
+.wn-card{position:relative; overflow:hidden; background:#1d1915; border:1.5px solid var(--ink); box-shadow:0 0 0 4px var(--glow, transparent), 0 14px 34px var(--shadow-soft); touch-action:none; cursor:grab; will-change:transform}
+.wn-card:active{cursor:grabbing}
+.wn-card::after{content:''; position:absolute; inset:0; background:var(--glow, transparent); opacity:.45; pointer-events:none; z-index:3}
+.wn-cov{position:absolute; inset:0}
+.wn-cov img{width:100%; height:100%; object-fit:cover; display:block; pointer-events:none}
+.wn-cov .ph{width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#d9cdb8; background:repeating-linear-gradient(45deg, #2a241e 0 10px, #241f1a 10px 20px)}
+.wn-cov .ph .init{font-family:'Libre Caslon Text', serif; font-size:80px; font-weight:700}
+.wn-cov .ph svg{width:34px; height:34px}
+.wn-card.sq .wn-cov{bottom:auto; aspect-ratio:1}
+.wn-tag{position:absolute; top:12px; right:12px; z-index:2; padding:4px 10px; border-radius:12px; background:rgba(20,16,12,.72); color:#fff; font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.6px}
+.wn-tag.queue{background:var(--accent)}
+.wn-tag.friend{background:#4F6E72}
+.wn-tag.ai{background:#7D5875}
+.wn-tag.wild{top:42px; background:#96852F}
+.wn-info{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:70px 16px 16px; color:#fff; background:linear-gradient(transparent, rgba(12,10,8,.72) 34%, rgba(12,10,8,.94))}
+.wn-info b{display:block; font-family:'Libre Caslon Text', Georgia, serif; font-size:24px; line-height:1.15; margin-bottom:4px}
+.wn-info > em{display:flex; align-items:center; gap:6px; font-style:normal; font-family:'Space Mono',monospace; font-size:10.5px; color:rgba(255,255,255,.8)}
+.wn-info > em svg{width:13px; height:13px; flex:none}
+.wn-genres{display:flex; flex-wrap:wrap; gap:5px; margin-top:8px}
+.wn-genres span{padding:2px 9px; border-radius:10px; border:1px solid rgba(255,255,255,.4); font-size:11.5px}
+.wn-why{display:flex; gap:6px; margin:9px 0 0; font-family:'Libre Caslon Text', Georgia, serif; font-style:italic; font-size:13.5px; color:#f3e7d3}
+.wn-why svg{width:14px; height:14px; flex:none; margin-top:2px}
+.wn-syn{margin:6px 0 0; font-size:12.5px; line-height:1.45; color:rgba(255,255,255,.78); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
+.wn-stamp{position:absolute; top:62px; z-index:4; padding:4px 12px; border:4px solid; border-radius:8px; font-family:'Space Mono',monospace; font-weight:700; font-size:26px; letter-spacing:2px; background:rgba(255,255,255,.9); opacity:0; pointer-events:none}
+.wn-stamp.yes{left:18px; color:#2f8a4c; transform:rotate(-14deg)}
+.wn-stamp.no{right:18px; color:#c0392b; transform:rotate(14deg)}
+.wn-bottom{padding:0 16px 14px}
+.wn-picked{display:flex; align-items:center; min-height:46px; padding-left:8px}
+.wn-picked span{width:30px; height:44px; margin-left:-8px; border-radius:4px; overflow:hidden; border:1.5px solid var(--bg-hi); background:var(--bg-lo); display:flex; align-items:center; justify-content:center; box-shadow:1px 2px 0 var(--shadow-soft); animation:wn-pop .3s}
+.wn-picked span.sq{height:30px}
+.wn-picked span svg{width:14px; height:14px}
+.wn-picked img{width:100%; height:100%; object-fit:cover}
+.wn-picked em{margin-left:10px; font-style:normal; font-family:'Space Mono',monospace; font-size:10px; color:var(--ink-3); line-height:1.4}
+@keyframes wn-pop{from{transform:scale(.4) translateY(10px); opacity:0}}
+.wn-btns{display:flex; align-items:center; justify-content:center; gap:22px; margin-top:6px}
+.wn-b{width:62px; height:62px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--bg-hi); border:2px solid; box-shadow:2px 4px 0 var(--shadow-soft); transition:transform .15s, background .15s, color .15s}
+.wn-b svg{width:28px; height:28px; stroke-width:2.4}
+.wn-b.no{color:#c0392b; border-color:#c0392b}
+.wn-b.yes{color:#2f8a4c; border-color:#2f8a4c}
+.wn-b.no.hot{background:#c0392b; color:#fff; transform:scale(1.12)}
+.wn-b.yes.hot{background:#2f8a4c; color:#fff; transform:scale(1.12)}
+.wn-b.undo{width:44px; height:44px; color:var(--ink-2); border-color:var(--ink-3)}
+.wn-b.undo svg{width:19px; height:19px}
+.wn-b:disabled{opacity:.35}
+.wn-b:active{transform:scale(.92)}
+.wn-msg, .wn-empty{display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; max-width:300px}
+.wn-msg{font-family:'Space Mono',monospace; font-size:11px; color:var(--ink-3)}
+.wn-empty b{font-family:'Libre Caslon Text', Georgia, serif; font-size:20px}
+.wn-empty span{font-size:13.5px; color:var(--ink-2)}
+.wn-empty .btn{width:100%; justify-content:center}
+.wn-end{align-self:start; width:min(480px, 100%); max-height:100%; overflow-y:auto; touch-action:pan-y; padding-bottom:20px}
+.wn-tot{width:100%; justify-content:center; margin-bottom:10px}
+.wn-row{display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line)}
+.wn-rc{width:54px; flex:none; aspect-ratio:2 / 3; border-radius:4px; overflow:hidden; border:1px solid var(--ink-2); background:var(--bg-lo); display:flex; align-items:center; justify-content:center}
+.wn-rc.sq{aspect-ratio:1}
+.wn-rc img{width:100%; height:100%; object-fit:cover}
+.wn-row .ri-t{flex:1; min-width:0}
+.wn-acts{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+.wn-acts .btn{padding:6px 10px; font-size:12px}
+.wn-acts .btn svg{width:13px; height:13px}
+.wn-ok{display:inline-flex; align-items:center; gap:5px; font-style:normal; font-family:'Space Mono',monospace; font-size:10.5px; color:#2f8a4c}
+.wn-ok svg{width:13px; height:13px}
+.wn-close2{width:100%; justify-content:center; margin-top:14px}
+.wn-duel{width:min(520px, 100%); display:flex; flex-direction:column; gap:14px; align-self:center}
+.wn-dh{text-align:center; font-family:'Libre Caslon Text', Georgia, serif; font-size:22px}
+.wn-dh em{display:block; font-style:normal; font-family:'Space Mono',monospace; font-size:10px; color:var(--ink-3)}
+.wn-dpair{display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center}
+.wn-or{font-family:'Space Mono',monospace; font-size:11px; color:var(--ink-3); text-transform:uppercase}
+.wn-duel-c{display:flex; flex-direction:column; gap:6px; padding:8px; border-radius:12px; border:1.5px solid var(--ink-2); background:var(--bg-hi); color:inherit; text-align:left; box-shadow:3px 4px 0 var(--shadow-soft); transition:transform .12s}
+.wn-duel-c:active{transform:scale(.96)}
+.wn-duel-c b{font-size:14px; line-height:1.2}
+.wn-duel-c em{font-style:normal; font-family:'Space Mono',monospace; font-size:9.5px; color:var(--ink-3)}
+.wn-dcov{display:block; width:100%; aspect-ratio:2 / 3; border-radius:6px; overflow:hidden; background:var(--bg-lo)}
+.wn-dcov.sq{aspect-ratio:1}
+.wn-dcov img{width:100%; height:100%; object-fit:cover; display:block}
+.wn-dcov .ph{width:100%; height:100%; display:flex; align-items:center; justify-content:center}
+.wn-wcard{display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center}
+.wn-wcard .wn-dcov{width:min(220px, 60%)}
+.wn-wcard b{font-family:'Libre Caslon Text', Georgia, serif; font-size:21px}
+.wn-wcard em{font-style:normal; font-family:'Space Mono',monospace; font-size:10.5px; color:var(--ink-3)}
+.wn-wcard .wn-acts{justify-content:center}
+.wn-rest{display:flex; padding-left:8px; margin:6px 0 10px}
+.wn-rest span{width:36px; height:52px; margin-left:-8px; border-radius:4px; overflow:hidden; border:1.5px solid var(--bg-hi); background:var(--bg-lo); display:flex; align-items:center; justify-content:center}
+.wn-rest span.sq{height:36px}
+.wn-rest img{width:100%; height:100%; object-fit:cover}
+.wn-restacts{display:flex; flex-direction:column; gap:6px}
+.wn-restacts .btn{justify-content:center}
+[data-theme="ink"] .wn-x, [data-theme="ink"] .wn-b, [data-theme="ink"] .wn-duel-c{background:var(--surface)}
 /* ================= kitchen ================= */
 /* redesigned kitchen: overview tiles, shelf cards, aligned rows, recipe cards, cook mode */
 .k-over{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:12px}
@@ -2813,6 +2932,97 @@ const I18N = {
     'choose another cover': 'başka bir kapak seç', 'Choose a cover': 'Kapak seç', 'every cover we can find for it — tap one': 'bulabildiğimiz tüm kapaklar — birine dokun',
     'or paste an image link': 'ya da bir görsel bağlantısı yapıştır', 'cover changed': 'kapak değişti', 'current': 'şu anki',
     'no covers found — try another spelling, or paste a link below.': 'kapak bulunamadı — başka bir yazımla dene ya da aşağıya bir bağlantı yapıştır.', "⚠ that isn't an image link": '⚠ bu bir görsel bağlantısı değil',
+    'NOPE': 'HAYIR',
+    'YES': 'EVET',
+    'Skipped {title} three times': '{title} üç kez geçildi',
+    'a weekend+': 'bir hafta sonu+',
+    'add them to my queue anyway': 'yine de sırama ekle',
+    'add to planned': 'planlananlara ekle',
+    'an evening': 'bir akşam',
+    'any genre': 'her tür',
+    'any length': 'her süre',
+    'any mood': 'her mod',
+    'anything': 'herhangi',
+    'getting the cards ready…': 'kartlar hazırlanıyor…',
+    'help me pick one — this or that': 'birini seçmeme yardım et — bu mu şu mu',
+    'in your queue': 'sıranda',
+    'intense': 'yoğun',
+    'just keep them planned': 'sadece planlı kalsınlar',
+    'kept as planned': 'planlı olarak kaldı',
+    'light & easy': 'hafif ve rahat',
+    'loosen the filters': 'filtreleri gevşet',
+    'more from gemini': 'gemini\'den daha fazla',
+    'nope': 'hayır',
+    'nothing clicked this time': 'bu sefer hiçbiri sarmadı',
+    'on your list': 'listende',
+    'on your list since {d}': '{d} tarihinden beri listende',
+    'or': 'ya da',
+    'queue #{n}': 'sıra #{n}',
+    'remove from planned': 'planlananlardan çıkar',
+    'something new': 'yeni bir şey',
+    'start over': 'baştan başla',
+    'start swiping': 'kaydırmaya başla',
+    'still want it on your list? removing it deletes the entry.': 'hâlâ listende olsun mu? çıkarmak kaydı siler.',
+    'swipe right on anything you could go for — keep going until you are done': 'olabilir dediğin her şeyi sağa kaydır — bitene kadar devam et',
+    'the others': 'diğerleri',
+    'the winner': 'kazanan',
+    'this or that?': 'bu mu şu mu?',
+    'top of queue': 'sıranın başına',
+    'top of your queue': 'sıranın başında',
+    'try other filters — the cards you skipped sink for a while': 'başka filtreler dene — geçtiğin kartlar bir süre geride kalır',
+    'under an hour': 'bir saatten az',
+    'what next?': 'sırada ne var?',
+    'wildcard': 'sürpriz',
+    'yes': 'evet',
+    'your yeses': 'evetlerin',
+    '{a} of {b}': '{a} / {b}',
+    '{n} added to your queue': '{n} tanesi sırana eklendi',
+    '{title} added to planned': '{title} planlananlara eklendi',
+    '{title} is next in your queue': '{title} sırada ilk',
+    '{title} removed': '{title} çıkarıldı',
+    '{title} — enjoy!': '{title} — iyi eğlenceler!',
+    '← back to the list': '← listeye dön',
+    '1 to swipe': 'kaydırılacak 1',
+    '{n} to swipe': 'kaydırılacak {n}',
+    '1 yes': '1 evet',
+    '{n} yeses': '{n} evet',
+    'asking gemini for more…': 'gemini\'den daha fazlası isteniyor…',
+    'that\'s everything that fits': 'uyan her şey bu kadar',
+    'tap done to choose from your yeses — or get more cards': 'evetlerinden seçmek için bitti\'ye dokun — ya da daha fazla kart al',
+    'try other filters, or get more cards': 'başka filtreler dene ya da daha fazla kart al',
+    'started': 'başladı',
+    'action': 'aksiyon',
+    'adventure': 'macera',
+    'animation': 'animasyon',
+    'comedy': 'komedi',
+    'crime': 'suç',
+    'documentary': 'belgesel',
+    'drama': 'dram',
+    'fantasy': 'fantastik',
+    'horror': 'korku',
+    'mystery': 'gizem',
+    'romance': 'romantik',
+    'sci-fi': 'bilim kurgu',
+    'thriller': 'gerilim',
+    'history & war': 'tarih ve savaş',
+    'family': 'aile',
+    'rpg': 'rpg',
+    'strategy': 'strateji',
+    'puzzle': 'bulmaca',
+    'platformer': 'platform',
+    'sim & cozy': 'simülasyon ve rahat',
+    'sports & racing': 'spor ve yarış',
+    'indie': 'bağımsız',
+    'hip hop & rap': 'hip hop ve rap',
+    'rock & alternative': 'rock ve alternatif',
+    'pop': 'pop',
+    'electronic': 'elektronik',
+    'jazz, soul & r&b': 'caz, soul ve r&b',
+    'metal': 'metal',
+    'classical & scores': 'klasik ve film müziği',
+    'folk & acoustic': 'folk ve akustik',
+    'non-fiction': 'kurgu dışı',
+    'what next?: on home, pick a type (and a genre, length or mood if you like) and swipe — right for yes, left for no. tap done when you are ready, then start one or play "this or that"': 'sırada ne var?: ana sayfada bir tür seç (istersen tür, süre ya da mod da) ve kaydır — evet için sağa, hayır için sola. hazır olunca bitti\'ye dokun, sonra birine başla ya da "bu mu şu mu" oyna',
     'more tabs': 'diğer sekmeler', '{n}m': '{n} dk', '{n}h': '{n} sa', 'gemini estimate': 'gemini tahmini', 'expiry date': 'son kullanma', 'expired': 'geçti', '{n}d': '{n} gün',
     // default spending categories (stored in english, shown translated)
     'Groceries': 'Market', 'Dining Out': 'Dışarıda yemek', 'Transport': 'Ulaşım', 'Subscriptions': 'Abonelikler', 'Shopping': 'Alışveriş',
@@ -3209,6 +3419,7 @@ function openBurger(){
 const viewHistory = [];
 window.moodBack = function(){
   if ($('#dlg.open') && dlgDone){ dlgDone(null); return true; }
+  if (wnOpen()){ closeWhatNext(); return true; }
   if ($('#modal-overlay').classList.contains('open')){ closeModal(); return true; }
   if (ui.libSel){ ui.libSel = null; renderLibGrid(); return true; }
   if (viewHistory.length){ switchView(viewHistory.pop(), true); return true; }
@@ -6885,6 +7096,7 @@ function openHabitEdit(id){
 
 /* ---- home: today at a glance ---- */
 function renderHome(){
+  wnLayoutMigrate();
   const v = $('#view-home');
   const ds = todayStr(), g = game();
   const xp = totalXP(), lvl = levelOf(xp), a = levelStart(lvl), b = levelStart(lvl + 1);
@@ -6910,6 +7122,10 @@ function renderHome(){
       </div>
       <button class="h-min ${g.minDay[ds] ? 'on' : ''}" id="h-minday">${g.minDay[ds] ? ICONS.check : ICONS.snow}<span><b>${tl('minimum day')}</b><em>${g.minDay[ds] ? tl('on — one small thing keeps every chain today') : tl('rough day? one small thing keeps every chain')}</em></span></button>
     </section>
+
+    ${whatNextHTML()}
+
+    ${forYouHTML()}
 
     <section class="panel h-quests ${cleared ? 'cleared' : ''}" data-sec="quests" data-sec-label="${tl('daily quests')}">
       <div class="dt-h"><span>${tl('daily quests')}</span><em>${cleared ? tl('day cleared') : tl('{a}/{b} done', { a: prog.filter(p => p.done).length, b: qs.length })}</em></div>
@@ -6958,8 +7174,6 @@ function renderHome(){
 
     ${friendsHomeHTML()}
 
-    ${forYouHTML()}
-
     <section class="panel h-badges" data-sec="badges" data-sec-label="${tl('badges')}">
       <div class="dt-h"><span>${tl('badges')}</span><button class="dt-link" id="h-allbadges">${tl('{a}/{b} · how it works', { a: Object.keys(g.badges).length, b: BADGES.length })}</button></div>
       ${recentBadges.length ? `<div class="h-blist">${recentBadges.map(([id, d]) => `<span class="h-badge">${ICONS.trophy}<b>${tl(BADGES.find(x => x.id === id)?.label || id)}</b><em>${fmtNice(d)}</em></span>`).join('')}</div>`
@@ -6978,6 +7192,7 @@ function renderHome(){
   $$('[data-upd]', v).forEach(b => b.addEventListener('click', () => { const e = db.media.find(m => m.id === b.dataset.upd); if (e) openProgress(e); }));
   $('#h-allbadges').addEventListener('click', openGameInfo);
   wireForYou(v);
+  wireWhatNext(v);
   wireFriendsHome(v);
   refreshForYou(false);
   $('#gd-start')?.addEventListener('click', () => openGuide('basics'));
@@ -10487,6 +10702,7 @@ const GUIDE = [
     'friends: share your ratings and add friends with their code — see what they rated and what they loved',
     'albums: log records like anything else — covers from itunes, deezer & musicbrainz, critic scores one tap away on albumoftheyear.org',
     "covers: tap the cover on an entry's page to pick another — other editions, pressings and posters",
+    'what next?: on home, pick a type (and a genre, length or mood if you like) and swipe — right for yes, left for no. tap done when you are ready, then start one or play "this or that"',
     'library: press and hold a cover (or tap "select") to delete or re-status many at once — undo is right there',
   ] },
   { id: 'home', view: 'home', icon: () => ICONS.home, title: 'Home', points: [
@@ -11446,6 +11662,627 @@ function friendsCardHTML(){
   return `<button class="cn-card ${S.on || n ? 'on' : ''}" id="s-friends"><span class="fr-av big">${ICONS.users}</span>
     <span class="cn-t"><b>${tl('Friends')}</b><em>${esc(tl('see what friends rated · they see yours'))}</em></span>
     <span class="cn-st">${n ? `<span>${tl('{n} friends', { n })}</span>` : S.on ? `${ICONS.check}<span>${tl('sharing')}</span>` : `<span>${tl('set up')}</span>${ICONS.right}`}</span></button>`;
+}
+
+/* ============ what next? — swipe through your queue + picks until something clicks ============
+   the pool: your queue, everything else you planned, gemini's picks and what friends loved —
+   filtered by type / genre, then ranked:
+     score = where it came from (queue position, planned, friend, ai)
+           + taste fit (genres + creators you rated high or low)
+           + time fit (fits the time you have) + mood fit (light / intense / something new)
+           + small lifts (a recent release, long forgotten in planned) − recent skips + a little noise
+   while you swipe it learns: nope on three horror films and horror sinks for the rest of the deck,
+   yes on something lifts what's like it. the next card is never the same genre / creator as
+   the last one, and about one in eight is a wildcard from further down. */
+ICONS.cards = I('<rect x="7" y="3.5" width="12" height="16" rx="2" transform="rotate(8 13 11.5)"/><rect x="4" y="5" width="12" height="16" rx="2"/>');
+ICONS.undo = I('<path d="M9 7 4.5 11.5 9 16"/><path d="M5 11.5h9.5a5 5 0 0 1 0 10H12"/>');
+
+// genres from every source and both languages → one small set of buckets
+const WN_BUCKETS = [
+  ['action', /action|aksiyon|shooter|\bfps\b|nişancı|fighting|dövüş|hack and slash|beat ?'?em/i, -.4],
+  ['adventure', /adventure|macera|open world|açık dünya/i, .5],
+  ['animation', /animat|anime|animasyon|cartoon|çizgi/i, .8],
+  ['comedy', /comed|komedi|sitcom|humou?r|mizah|parody|parodi/i, 1],
+  ['crime', /crime|\bsuç|polisiye|gangster|heist|detective|dedektif|noir/i, -.7],
+  ['documentary', /documentar|belgesel|docu/i, -.2],
+  ['drama', /drama|\bdram\b/i, -.4],
+  ['fantasy', /fantas/i, .3],
+  ['horror', /horror|korku|slasher|zombi/i, -1],
+  ['mystery', /myster|gizem/i, -.5],
+  ['romance', /romance|romantic|romantik|\başk\b/i, .6],
+  ['scifi', /sci-?fi|science.?fiction|bilim ?kurgu|cyberpunk|space opera|dystop|distop/i, -.2],
+  ['thriller', /thriller|gerilim|suspense|psychological|psikolojik/i, -.9],
+  ['history', /histor|tarih|\bwar\b|savaş|military|askeri|western/i, -.6],
+  ['family', /family|\baile|kids|children|çocuk/i, 1],
+  ['rpg', /\brpg|role-?playing|rol yapma|soulslike|souls-like/i, -.2],
+  ['strategy', /strateg|strateji|tactic|taktik|\b4x\b|tower defen/i, 0],
+  ['puzzle', /puzzle|bulmaca/i, .6],
+  ['platformer', /platform/i, .6],
+  ['sim', /simulat|simülasyon|sandbox|management|city.?build|farming|cozy/i, .6],
+  ['sports', /sport|\bspor|racing|yarış/i, .4],
+  ['indie', /\bindie|bağımsız/i, .2],
+  ['hiphop', /hip ?hop|\brap\b|\btrap\b|grime|drill/i, -.2],
+  ['rock', /rock|punk|grunge|alternative|alternatif|shoegaze/i, -.1],
+  ['pop', /\bpop\b|k-pop|dance/i, .7],
+  ['electronic', /electro|elektronik|techno|house|ambient|\bedm\b|synth/i, .2],
+  ['jazz', /jazz|\bcaz\b|blues|soul|r&b|funk/i, .3],
+  ['metal', /metal/i, -.8],
+  ['classical', /classical|orchestr|soundtrack|film müziği|klasik müzik/i, .2],
+  ['folk', /folk|country|\bhalk|singer.songwriter|acoustic|akustik/i, .3],
+  ['nonfiction', /non-?fiction|biograph|biyografi|memoir|\banı|self-help|kişisel gelişim|essay|philosoph|felsefe|popular science|politic/i, -.1],
+];
+const WN_BUCKET_LABEL = { action: 'action', adventure: 'adventure', animation: 'animation', comedy: 'comedy', crime: 'crime', documentary: 'documentary', drama: 'drama',
+  fantasy: 'fantasy', horror: 'horror', mystery: 'mystery', romance: 'romance', scifi: 'sci-fi', thriller: 'thriller', history: 'history & war', family: 'family',
+  rpg: 'rpg', strategy: 'strategy', puzzle: 'puzzle', platformer: 'platformer', sim: 'sim & cozy', sports: 'sports & racing', indie: 'indie',
+  hiphop: 'hip hop & rap', rock: 'rock & alternative', pop: 'pop', electronic: 'electronic', jazz: 'jazz, soul & r&b', metal: 'metal', classical: 'classical & scores',
+  folk: 'folk & acoustic', nonfiction: 'non-fiction' };
+const wnBuckets = genres => [...new Set((genres || []).flatMap(g => WN_BUCKETS.filter(b => b[1].test(String(g))).map(b => b[0])))];
+const WN_TONE = Object.fromEntries(WN_BUCKETS.map(b => [b[0], b[2]]));
+
+const wnState = () => { const A = aiState(); A.wn = A.wn && typeof A.wn === 'object' ? A.wn : {}; A.wn.f = A.wn.f || { type: 'any', genre: '', time: '', mood: '' };
+  A.wn.skips = A.wn.skips || {}; A.wn.extra = A.wn.extra || []; A.wn.dress = A.wn.dress || {}; return A.wn; };
+
+/* ---- length: one sitting (S) and the whole thing (L), in minutes ---- */
+function wnLength(c){
+  const t = c.type;
+  if (t === 'movie'){ const m = c.runtimeMin || 110; return { S: m, L: m }; }
+  if (t === 'album'){ const m = c.runtimeMin || 45; return { S: m, L: m }; }
+  if (t === 'tv'){ const ep = c.epMin || 45, left = c.e ? c.e.seasons.flatMap(s => s.episodes).filter(x => !x.watched).length : 0; return { S: ep, L: (left || 10) * ep }; }
+  if (t === 'book') return { S: 45, L: (c.pagesTotal || 320) * 1.5 };
+  if (t === 'game') return { S: 90, L: (c.playHours || 20) * 60 };
+  return { S: 60, L: 120 };
+}
+const WN_TIMES = { quick: { label: 'under an hour' }, evening: { label: 'an evening' }, weekend: { label: 'a weekend+' } };
+const WN_MOODS = { light: { label: 'light & easy' }, intense: { label: 'intense' }, fresh: { label: 'something new' } };
+function wnTimeFit(c, time){
+  if (!time) return 0;
+  const { S, L } = wnLength(c);
+  if (time === 'quick') return S > 75 ? null : L <= 75 ? 1.2 : .3;                       // null = doesn't fit at all
+  if (time === 'evening') return S > 200 ? null : L >= 60 && L <= 200 ? 1.2 : L < 60 ? .4 : 0;
+  if (time === 'weekend') return L >= 300 ? 1.2 : L >= 150 ? .5 : -.4;
+  return 0;
+}
+
+/* ---- your taste: genre buckets + creators, from ratings and how things ended ---- */
+function wnTaste(){
+  const g = {}, cr = {}, seen = {};
+  db.media.forEach(e => {
+    const w = e.rating ? (e.rating - 3) / 2 : e.status === 'done' ? .3 : e.status === 'dropped' ? -.6 : e.status === 'active' ? .2 : 0;
+    const bs = wnBuckets(e.genres);
+    bs.forEach(b => { seen[b] = (seen[b] || 0) + 1; if (w) g[b] = (g[b] || 0) + w; });
+    if (w && e.creator) { const k = normTitle(e.creator); cr[k] = (cr[k] || 0) + w; }
+  });
+  Object.keys(g).forEach(k => g[k] = Math.tanh(g[k] / 3));
+  Object.keys(cr).forEach(k => cr[k] = Math.tanh(cr[k] / 2));
+  const maxSeen = Math.max(1, ...Object.values(seen));
+  return { g, cr, fam: b => (seen[b] || 0) / maxSeen };
+}
+
+/* ---- the pool ---- */
+function wnPool(f){
+  const W = wnState(), A = aiState(), out = [], keys = new Set();
+  const owned = new Set(db.media.map(e => aiKey(e.type, e.title))), nope = new Set(A.nope || []);
+  const add = c => {
+    if (!TYPES[c.type] || keys.has(c.key)) return;
+    if (f.type !== 'any' && c.type !== f.type) return;
+    keys.add(c.key); out.push(c);
+  };
+  const qpos = new Map(db.queue.map((id, i) => [id, i]));
+  db.media.filter(e => e.status === 'planned').forEach(e => add({
+    key: aiKey(e.type, e.title), kind: qpos.has(e.id) ? 'queue' : 'planned', qpos: qpos.get(e.id), e, type: e.type, title: e.title, year: e.year, creator: e.creator,
+    cover: e.cover, genres: e.genres || [], synopsis: e.synopsis || '', runtimeMin: e.runtimeMin, epMin: e.epMin, pagesTotal: e.pagesTotal, playHours: e.playHours, addedAt: e.addedAt }));
+  const sug = (s, kind, why) => {
+    const k = aiKey(s.type, s.title);
+    if (owned.has(k) || nope.has(k)) return;
+    const d = W.dress[k] || {};
+    add({ key: k, kind, s, type: s.type, title: s.title, year: s.year || d.year, creator: s.creator || d.creator || '', cover: s.cover || d.cover || '',
+      genres: (s.genres || []).length ? s.genres : d.genres || [], synopsis: s.synopsis || d.synopsis || '', runtimeMin: s.runtimeMin || d.runtimeMin, epMin: s.epMin || d.epMin,
+      pagesTotal: s.pagesTotal || d.pagesTotal, playHours: s.playHours || d.playHours, why: why || s.why || '', fr: s.fr, frN: s.frN, askedGenre: s.askedGenre });
+  };
+  // friends: everything rated 4+ that you don't have
+  const fr = new Map();
+  friendsList().forEach(fd => (friendCache[fd.id]?.p?.items || []).forEach(it => {
+    if (!TYPES[it.t] || !(it.r >= 4)) return;
+    const k = aiKey(it.t, it.title), cur = fr.get(k);
+    if (!cur) fr.set(k, { type: it.t, title: it.title, year: yearOf(it.y), cover: it.c || '', fr: it.r, frN: 1, why: `${friendName(fd)} ★${it.r}${it.n ? ` — “${it.n}”` : ''}` });
+    else { cur.frN++; cur.fr = Math.max(cur.fr, it.r); cur.why += ` · ${friendName(fd)} ★${it.r}`; }
+  }));
+  fr.forEach(s => sug(s, 'friend'));
+  [...(A.suggest?.items || []), ...Object.values(A.like || {}).flatMap(l => l.items || []), ...W.extra].forEach(s => sug(s, 'ai'));
+  return out;
+}
+function wnFilter(pool, f){
+  return pool.filter(c => {
+    if (f.genre && !wnBuckets(c.genres).includes(f.genre) && c.askedGenre !== f.genre) return false;
+    if (f.time && wnTimeFit(c, f.time) === null) return false;
+    return true;
+  });
+}
+function wnScore(c, f, T, sess){
+  let s = c.kind === 'queue' ? 2 + 1.5 * (1 - c.qpos / Math.max(1, db.queue.length)) : c.kind === 'planned' ? 1.2
+    : c.kind === 'friend' ? .8 + .4 * ((c.fr || 4) - 4) + .3 * ((c.frN || 1) - 1) : .9;
+  const bs = wnBuckets(c.genres), ck = c.creator ? normTitle(c.creator) : '';
+  if (bs.length) s += 2 * bs.reduce((t, b) => t + (T.g[b] || 0), 0) / bs.length;
+  if (ck && T.cr[ck]) s += 1 * T.cr[ck];
+  const tf = wnTimeFit(c, f.time); if (tf) s += tf;
+  if (f.mood && bs.length){
+    const tone = bs.reduce((t, b) => t + (WN_TONE[b] || 0), 0) / bs.length;
+    if (f.mood === 'light') s += 1.8 * tone;
+    if (f.mood === 'intense') s -= 1.8 * tone;
+    if (f.mood === 'fresh') s += 1.5 * (1 - bs.reduce((t, b) => t + T.fam(b), 0) / bs.length) - (ck && T.cr[ck] ? .8 : 0);
+  }
+  if (f.mood === 'fresh' && !bs.length) s += .4;
+  if (c.year && +c.year >= new Date().getFullYear() - 1) s += .3;
+  if (c.addedAt){ const days = (Date.now() - new Date(c.addedAt)) / 864e5; s += days < 7 ? .4 : Math.min(.8, days / 180); }
+  // skipped lately: each skip in the last two weeks weighs less as it ages
+  (wnState().skips[c.key] || []).forEach(t => { const age = (Date.now() - t) / 864e5; if (age < 14) s -= .9 * (1 - age / 14); });
+  // learned this session
+  bs.forEach(b => s += (sess.g[b] || 0) / bs.length);
+  if (ck) s += sess.cr[ck] || 0;
+  return s + c.jit;
+}
+// the next card: best score, but not the same genre or creator as the last one; now and then a wildcard
+function wnPick(D){
+  if (!D.left.length) return null;
+  const ranked = D.left.map(c => ({ c, s: wnScore(c, D.f, D.T, D.sess) })).sort((a, b) => b.s - a.s);
+  if (ranked.length > 6 && D.n > 1 && Math.random() < 1 / 8){
+    const w = ranked[4 + Math.floor(Math.random() * (ranked.length - 4))].c; w.wild = 1; return w;
+  }
+  const prev = D.hist[D.hist.length - 1]?.c;
+  if (prev){
+    const pb = wnBuckets(prev.genres)[0], pc = prev.creator && normTitle(prev.creator);
+    const alt = ranked.slice(0, 6).find(x => (!pb || wnBuckets(x.c.genres)[0] !== pb) && (!pc || normTitle(x.c.creator || '') !== pc));
+    if (alt) return alt.c;
+  }
+  return ranked[0].c;
+}
+
+/* ---- home card ---- */
+function whatNextHTML(){
+  const W = wnState(), f = W.f;
+  const pool = wnPool(f), n = wnFilter(pool, f).length;
+  const gs = wnGenreOptions(pool);
+  return `
+    <section class="panel wn-home" data-sec="whatnext" data-sec-label="${tl('what next?')}">
+      <div class="dt-h"><span>${tl('what next?')}</span><em id="wn-count">${tl(n === 1 ? '1 to swipe' : '{n} to swipe', { n })}</em></div>
+      <div class="wn-types">
+        <button class="${f.type === 'any' ? 'on' : ''}" data-wnt="any">${tl('anything')}</button>
+        ${Object.entries(TYPES).map(([k, t]) => `<button class="${f.type === k ? 'on' : ''}" data-wnt="${k}">${t.icon}<span>${k === 'tv' ? 'TV' : t.plural}</span></button>`).join('')}
+      </div>
+      <div class="wn-sels">
+        <select class="input" id="wn-genre"><option value="">${tl('any genre')}</option>${gs.map(b => `<option value="${b}" ${f.genre === b ? 'selected' : ''}>${tl(WN_BUCKET_LABEL[b])}</option>`).join('')}</select>
+        <select class="input" id="wn-time"><option value="">${tl('any length')}</option>${Object.entries(WN_TIMES).map(([k, x]) => `<option value="${k}" ${f.time === k ? 'selected' : ''}>${tl(x.label)}</option>`).join('')}</select>
+        <select class="input" id="wn-mood"><option value="">${tl('any mood')}</option>${Object.entries(WN_MOODS).map(([k, x]) => `<option value="${k}" ${f.mood === k ? 'selected' : ''}>${tl(x.label)}</option>`).join('')}</select>
+      </div>
+      <button class="btn primary wn-go" id="wn-go">${ICONS.cards} ${tl('start swiping')}</button>
+    </section>`;
+}
+// the genres that make sense for a type; with gemini on all of them (it fills the deck), else only the ones you have
+const WN_TYPE_BUCKETS = {
+  movie: ['action', 'adventure', 'animation', 'comedy', 'crime', 'documentary', 'drama', 'family', 'fantasy', 'history', 'horror', 'mystery', 'romance', 'scifi', 'thriller'],
+  tv: ['action', 'adventure', 'animation', 'comedy', 'crime', 'documentary', 'drama', 'family', 'fantasy', 'history', 'horror', 'mystery', 'romance', 'scifi', 'thriller'],
+  book: ['fantasy', 'scifi', 'mystery', 'thriller', 'crime', 'romance', 'horror', 'history', 'drama', 'comedy', 'nonfiction'],
+  game: ['action', 'adventure', 'rpg', 'strategy', 'puzzle', 'platformer', 'sim', 'sports', 'horror', 'scifi', 'fantasy', 'indie'],
+  album: ['hiphop', 'rock', 'pop', 'electronic', 'jazz', 'metal', 'classical', 'folk', 'indie'],
+};
+function wnGenreOptions(pool){
+  const have = new Set(pool.flatMap(c => wnBuckets(c.genres)));
+  const t = wnState().f.type;
+  const fits = new Set(aiOn() ? (t === 'any' ? Object.values(WN_TYPE_BUCKETS).flat() : WN_TYPE_BUCKETS[t] || []) : []);
+  return WN_BUCKETS.map(b => b[0]).filter(b => have.has(b) || fits.has(b));
+}
+function wireWhatNext(root){
+  const W = wnState();
+  const refresh = () => {
+    const pool = wnPool(W.f), gs = wnGenreOptions(pool);
+    if (W.f.genre && !gs.includes(W.f.genre) && !aiOn()) W.f.genre = '';
+    const sel = $('#wn-genre', root);
+    if (sel) sel.innerHTML = `<option value="">${tl('any genre')}</option>` + [...new Set([...gs, ...(W.f.genre ? [W.f.genre] : [])])].map(b => `<option value="${b}" ${W.f.genre === b ? 'selected' : ''}>${tl(WN_BUCKET_LABEL[b])}</option>`).join('');
+    const n = wnFilter(pool, W.f).length, c = $('#wn-count', root);
+    if (c) c.textContent = tl(n === 1 ? '1 to swipe' : '{n} to swipe', { n });
+    save();
+  };
+  $$('[data-wnt]', root).forEach(b => b.addEventListener('click', () => {
+    W.f.type = b.dataset.wnt; $$('[data-wnt]', root).forEach(x => x.classList.toggle('on', x === b)); refresh();
+  }));
+  $('#wn-genre', root)?.addEventListener('change', ev => { W.f.genre = ev.target.value; refresh(); });
+  $('#wn-time', root)?.addEventListener('change', ev => { W.f.time = ev.target.value; refresh(); });
+  $('#wn-mood', root)?.addEventListener('change', ev => { W.f.mood = ev.target.value; refresh(); });
+  $('#wn-go', root)?.addEventListener('click', () => openWhatNext());
+}
+
+/* ---- the deck ---- */
+let WND = null;
+const wnOpen = () => !!WND;
+async function openWhatNext(){
+  const W = wnState(), f = { ...W.f };
+  WND = { f, T: wnTaste(), sess: { g: {}, cr: {} }, left: [], hist: [], yes: [], n: 0, cur: null, asking: false, done: false };
+  let o = $('#wn-deck');
+  if (!o){ o = document.createElement('div'); o.id = 'wn-deck'; document.body.appendChild(o); }
+  o.className = 'wn-deck open';
+  document.body.style.overflow = 'hidden';
+  const sum = [f.type === 'any' ? tl('anything') : TYPES[f.type].plural, f.genre && tl(WN_BUCKET_LABEL[f.genre]), f.time && tl(WN_TIMES[f.time].label), f.mood && tl(WN_MOODS[f.mood].label)].filter(Boolean).join(' · ');
+  o.innerHTML = `
+    <div class="wn-top">
+      <button class="wn-x" id="wn-close" aria-label="${tl('close')}">${ICONS.x}</button>
+      <div class="wn-tt"><b>${tl('what next?')}</b><em>${esc(sum)}</em></div>
+      <button class="btn primary wn-done" id="wn-done">${tl('done')} <span id="wn-yes-n">0</span></button>
+    </div>
+    <div class="wn-stage" id="wn-stage"></div>
+    <div class="wn-bottom">
+      <div class="wn-picked" id="wn-picked"></div>
+      <div class="wn-btns">
+        <button class="wn-b no" id="wn-no" aria-label="${tl('nope')}">${ICONS.x}</button>
+        <button class="wn-b undo" id="wn-undo" aria-label="${tl('undo')}" disabled>${ICONS.undo}</button>
+        <button class="wn-b yes" id="wn-yes" aria-label="${tl('yes')}">${ICONS.check}</button>
+      </div>
+    </div>`;
+  $('#wn-close').addEventListener('click', closeWhatNext);
+  $('#wn-done').addEventListener('click', wnFinish);
+  $('#wn-no').addEventListener('click', () => wnFling(-1));
+  $('#wn-yes').addEventListener('click', () => wnFling(1));
+  $('#wn-undo').addEventListener('click', wnUndo);
+  document.addEventListener('keydown', wnKeys);
+  wnBottom();
+  // fill in genres / covers for picks that don't have them yet (quickly, a handful at a time)
+  const pool = wnPool(f);
+  const bare = pool.filter(c => c.kind !== 'queue' && c.kind !== 'planned' && (!c.genres.length || !c.cover)).slice(0, 12);
+  if (bare.length){ $('#wn-stage').innerHTML = `<div class="wn-msg">${tl('getting the cards ready…')}</div>`; await wnDress(bare, 4500); }
+  if (!WND) return;
+  WND.left = wnFilter(wnPool(f), f).map(c => ({ ...c, jit: (Math.random() - .5) * .5 }));
+  wnNext();
+  if (WND.left.length < 6) wnMore();
+}
+async function wnDress(list, ms){
+  const W = wnState();
+  const one = async c => {
+    try {
+      const m = bestMatch(c, await searchMedia(c.type, c.title, c.year));
+      if (!m) return;
+      const d = { cover: m.cover || '', genres: m.genres || [], synopsis: m.synopsis || '', year: m.year || '', creator: m.creator || '', runtimeMin: m.runtimeMin || 0,
+        epMin: m.epMin || 0, pagesTotal: m.pagesTotal || 0, playHours: m.playHours || 0, ids: m.ids || {}, tvmazeId: m.tvmazeId || null };
+      if (c.s){ ['cover', 'synopsis', 'runtimeMin', 'epMin', 'pagesTotal', 'playHours', 'ids', 'tvmazeId'].forEach(k => { if (emptyVal(c.s[k]) && !emptyVal(d[k])) c.s[k] = d[k]; });
+        if (!(c.s.genres || []).length && d.genres.length) c.s.genres = d.genres; c.s.looked = 1; }
+      W.dress[c.key] = d;
+      Object.keys(W.dress).slice(0, -200).forEach(k => delete W.dress[k]);        // keep the newest 200
+    } catch(_){}
+  };
+  await Promise.race([Promise.all(list.map(one)), new Promise(r => setTimeout(r, ms))]);
+  save();
+}
+function closeWhatNext(){
+  document.removeEventListener('keydown', wnKeys);
+  const o = $('#wn-deck'); if (o){ o.classList.remove('open'); o.innerHTML = ''; }
+  document.body.style.overflow = '';
+  WND = null;
+  if (ui.view === 'home') render();
+}
+function wnKeys(ev){
+  if (!WND || $('#dlg.open')) return;
+  if (WND.done) { if (ev.key === 'Escape') closeWhatNext(); return; }
+  if (ev.key === 'ArrowLeft') wnFling(-1);
+  else if (ev.key === 'ArrowRight') wnFling(1);
+  else if (ev.key === 'Backspace' || (ev.key === 'z' && (ev.ctrlKey || ev.metaKey))) wnUndo();
+  else if (ev.key === 'Escape') closeWhatNext();
+}
+function wnLenLabel(c){
+  const { S, L } = wnLength(c), known = c.runtimeMin || c.epMin || c.pagesTotal || c.playHours;
+  if (!known) return '';
+  if (c.type === 'tv') return tl('{n} min an episode', { n: S });
+  if (c.type === 'book') return tl('{n} pages', { n: fmtNum(c.pagesTotal) });
+  if (c.type === 'game') return tl('≈{h}h to finish', { h: c.playHours });
+  return fmtDur(L);
+}
+function wnWhy(c){
+  if (c.kind === 'queue') return { tag: tl('queue #{n}', { n: c.qpos + 1 }), why: c.e?.notes ? c.e.notes.slice(0, 120) : tl('in your queue') };
+  if (c.kind === 'planned') return { tag: tl('planned'), why: c.addedAt ? tl('on your list since {d}', { d: fmtNice(c.addedAt) }) : tl('on your list') };
+  if (c.kind === 'friend') return { tag: tl('friends'), why: c.why };
+  return { tag: 'AI', why: c.why };
+}
+function wnCardHTML(c){
+  const t = TYPES[c.type], w = wnWhy(c), len = wnLenLabel(c);
+  return `
+    <div class="wn-card ${c.type === 'album' ? 'sq' : ''}" id="wn-card">
+      <div class="wn-stamp yes">${tl('YES')} ✓</div><div class="wn-stamp no">${tl('NOPE')} ✕</div>
+      <div class="wn-cov">${c.cover ? `<img src="${esc(c.cover)}" alt="" draggable="false" data-ph="${esc(t.icon)}" onerror="imgFb(this)">` : `<div class="ph"><span class="init">${esc((c.title[0] || '?').toUpperCase())}</span>${t.icon}</div>`}
+        <span class="wn-tag ${c.kind}">${esc(w.tag)}</span>${c.wild ? `<span class="wn-tag wild">${tl('wildcard')}</span>` : ''}</div>
+      <div class="wn-info">
+        <b>${esc(c.title)}</b>
+        <em>${t.icon}${[t.label, c.year, c.creator, len].filter(Boolean).map(esc).join(' · ')}</em>
+        ${(c.genres || []).length ? `<div class="wn-genres">${c.genres.slice(0, 3).map(g => `<span>${esc(g)}</span>`).join('')}</div>` : ''}
+        ${w.why ? `<p class="wn-why">${c.kind === 'ai' ? ICONS.spark : c.kind === 'friend' ? ICONS.users : ''}${esc(w.why)}</p>` : ''}
+        ${c.synopsis ? `<p class="wn-syn">${esc(c.synopsis)}</p>` : ''}
+      </div>
+    </div>`;
+}
+function wnNext(){
+  const D = WND; if (!D) return;
+  const stage = $('#wn-stage');
+  $('#wn-yes')?.classList.remove('hot'); $('#wn-no')?.classList.remove('hot');
+  D.cur = wnPick(D);
+  if (!D.cur){
+    stage.innerHTML = `<div class="wn-empty">
+      <b>${tl(D.asking ? 'asking gemini for more…' : "that's everything that fits")}</b>
+      ${D.asking ? '' : `<span>${tl(D.yes.length ? 'tap done to choose from your yeses — or get more cards' : 'try other filters, or get more cards')}</span>`}
+      ${aiOn() && !D.asking ? `<button class="btn primary" id="wn-more">${ICONS.spark} ${tl('more from gemini')}</button>` : ''}
+      ${D.f.genre || D.f.time || D.f.mood ? `<button class="btn" id="wn-loose">${tl('loosen the filters')}</button>` : ''}
+    </div>`;
+    $('#wn-more')?.addEventListener('click', () => wnMore(true));
+    $('#wn-loose')?.addEventListener('click', () => { D.f.genre = D.f.time = D.f.mood = '';
+      const seen = new Set([...D.hist.map(h => h.c.key)]);
+      D.left = wnFilter(wnPool(D.f), D.f).filter(c => !seen.has(c.key)).map(c => ({ ...c, jit: (Math.random() - .5) * .5 })); wnNext(); });
+    return;
+  }
+  const c = D.cur, W = wnState();
+  if (!c.cover && W.dress[c.key]?.cover) c.cover = W.dress[c.key].cover;
+  if (!(c.genres || []).length && (W.dress[c.key]?.genres || []).length) c.genres = W.dress[c.key].genres;
+  stage.innerHTML = `<div class="wn-under"></div><div class="wn-under two"></div>` + wnCardHTML(c);
+  wnDrag($('#wn-card'));
+  // no cover yet: look it up and swap it in if this card is still showing
+  if (!c.cover && !c.e) wnDress([c], 8000).then(() => {
+    const d = W.dress[c.key]; if (!d?.cover || !WND || WND.cur !== c) return;
+    c.cover = d.cover; if (!(c.genres || []).length) c.genres = d.genres || [];
+    const box = $('#wn-card .wn-cov'); if (!box) return;
+    box.querySelector('.ph')?.remove();
+    const img = document.createElement('img'); img.src = c.cover; img.alt = ''; img.draggable = false; box.prepend(img);
+  });
+  if (D.left.length < 4) wnMore();
+}
+function wnDrag(card){
+  let x0 = 0, y0 = 0, dx = 0, dy = 0, t0 = 0, on = false;
+  const set = (x, y, anim) => {
+    card.style.transition = anim ? 'transform .3s ease, opacity .3s' : 'none';
+    card.style.transform = `translate(${x}px, ${y * .35}px) rotate(${x / 18}deg)`;
+    const k = Math.min(1, Math.abs(x) / 110);
+    card.querySelector('.wn-stamp.yes').style.opacity = x > 0 ? k : 0;
+    card.querySelector('.wn-stamp.no').style.opacity = x < 0 ? k : 0;
+    card.style.setProperty('--glow', x > 0 ? `rgba(70,150,90,${k * .55})` : x < 0 ? `rgba(190,60,50,${k * .55})` : 'transparent');
+    $('#wn-yes')?.classList.toggle('hot', x > 60); $('#wn-no')?.classList.toggle('hot', x < -60);
+  };
+  card.addEventListener('pointerdown', ev => { if (ev.button > 0) return; on = true; x0 = ev.clientX; y0 = ev.clientY; dx = dy = 0; t0 = Date.now(); card.setPointerCapture(ev.pointerId); });
+  card.addEventListener('pointermove', ev => { if (!on) return; dx = ev.clientX - x0; dy = ev.clientY - y0; set(dx, dy); });
+  const up = () => {
+    if (!on) return; on = false;
+    const v = Math.abs(dx) / Math.max(1, Date.now() - t0);
+    if (Math.abs(dx) > 110 || (Math.abs(dx) > 40 && v > .6)) wnFling(dx > 0 ? 1 : -1, dy);
+    else set(0, 0, true);
+  };
+  card.addEventListener('pointerup', up); card.addEventListener('pointercancel', up);
+  card._set = set;
+}
+function wnFling(dir, dy = 0){
+  const D = WND; if (!D || !D.cur || D.flying) return;
+  const card = $('#wn-card'); if (!card) return;
+  D.flying = true;
+  card._set?.(dir * 120, dy);
+  requestAnimationFrame(() => {
+    card.style.transition = 'transform .32s ease-in, opacity .32s';
+    card.style.transform = `translate(${dir * innerWidth * 1.1}px, ${dy * .35 + 40}px) rotate(${dir * 28}deg)`;
+    card.style.opacity = '0';
+  });
+  haptic(dir > 0 ? 'confirm' : 'tap');
+  setTimeout(() => { D.flying = false; wnCommit(dir); }, 260);
+}
+function wnCommit(dir){
+  const D = WND, c = D.cur; if (!c) return;
+  D.n++;
+  const bs = wnBuckets(c.genres), ck = c.creator ? normTitle(c.creator) : '';
+  const dG = dir > 0 ? .4 : -.6, dC = dir > 0 ? .3 : -.8;
+  bs.forEach(b => D.sess.g[b] = (D.sess.g[b] || 0) + dG);
+  if (ck) D.sess.cr[ck] = (D.sess.cr[ck] || 0) + dC;
+  D.left = D.left.filter(x => x !== c);
+  const h = { c, dir, bs, ck, dG, dC };
+  if (dir < 0){
+    const W = wnState();
+    W.skips[c.key] = [...(W.skips[c.key] || []).filter(t => Date.now() - t < 14 * 864e5), Date.now()];
+    h.skipped = true;
+    // the 3rd skip in two weeks of something you planned: keep it?
+    if (c.e && W.skips[c.key].length >= 3) h.ask = true;
+    save();
+  } else D.yes.push(c);
+  D.hist.push(h);
+  wnBottom();
+  if (h.ask) wnAskKeep(c);
+  wnNext();
+}
+async function wnAskKeep(c){
+  const W = wnState();
+  const remove = await askConfirm(tl('Skipped {title} three times', { title: c.title }), { detail: tl('still want it on your list? removing it deletes the entry.'), ok: tl('remove from planned'), danger: true });
+  if (!remove){ W.skips[c.key] = []; save(); return; }      // keeping it: the count starts over
+  db.media = db.media.filter(x => x.id !== c.e.id); db.queue = db.queue.filter(x => x !== c.e.id); db.lists.forEach(l => l.items = l.items.filter(x => x !== c.e.id));
+  delete W.skips[c.key]; save();
+  toast(tl('{title} removed', { title: c.title }), { undo: () => { db.media.push(c.e); if (c.kind === 'queue') db.queue.splice(c.qpos, 0, c.e.id); save(); } });
+}
+function wnUndo(){
+  const D = WND; if (!D || !D.hist.length || D.flying) return;
+  const h = D.hist.pop();
+  h.bs.forEach(b => D.sess.g[b] -= h.dG);
+  if (h.ck) D.sess.cr[h.ck] -= h.dC;
+  if (h.skipped){ const W = wnState(); (W.skips[h.c.key] || []).pop(); save(); }
+  else D.yes = D.yes.filter(x => x !== h.c);
+  if (D.cur) D.left.push(D.cur);
+  D.left.push(h.c); D.n--;
+  const stage = $('#wn-stage');
+  D.cur = h.c;
+  stage.innerHTML = `<div class="wn-under"></div><div class="wn-under two"></div>` + wnCardHTML(D.cur);
+  const card = $('#wn-card'); wnDrag(card);
+  card.style.transform = `translate(${h.dir * 260}px, 20px) rotate(${h.dir * 14}deg)`; card.style.opacity = '0';
+  requestAnimationFrame(() => requestAnimationFrame(() => { card.style.transition = 'transform .3s ease-out, opacity .3s'; card.style.transform = ''; card.style.opacity = ''; }));
+  wnBottom();
+}
+function wnBottom(){
+  const D = WND; if (!D) return;
+  $('#wn-yes-n').textContent = D.yes.length;
+  $('#wn-undo').disabled = !D.hist.length;
+  $('#wn-picked').innerHTML = D.yes.slice(-6).map(c => `<span class="${c.type === 'album' ? 'sq' : ''}">${c.cover ? `<img src="${esc(c.cover)}" alt="">` : TYPES[c.type].icon}</span>`).join('')
+    + (D.yes.length ? `<em>${tl(D.yes.length === 1 ? '1 yes' : '{n} yeses', { n: D.yes.length })}</em>` : `<em>${tl('swipe right on anything you could go for — keep going until you are done')}</em>`);
+}
+// running low → gemini adds cards that fit the filters (in the background; the deck keeps going)
+async function wnMore(force){
+  const D = WND; if (!D || D.asking || !aiOn()) return;
+  if (!force && D.askedAt && Date.now() - D.askedAt < 60e3) return;
+  D.asking = true; D.askedAt = Date.now();
+  if (!D.cur) wnNext();
+  try {
+    const f = D.f, P = tasteProfile();
+    const exclude = [...ownedAndNope(), ...D.hist.map(h => h.c.title), ...D.left.map(c => c.title)].slice(0, 260);
+    const kind = f.type === 'any' ? 'films, TV series, books, video games or music albums' : TYPES[f.type].plural.toLowerCase();
+    const j = await geminiJSON([{ text: `Suggest 10 ${kind} for one person to start next.
+${P.loved.length ? `They loved:\n${P.loved.join('\n')}` : 'They have not rated much yet — suggest widely loved modern classics.'}
+${P.meh.length ? `Not for them:\n${P.meh.join('\n')}` : ''}
+${f.genre ? `Genre: ${WN_BUCKET_LABEL[f.genre]}.` : ''} ${f.time ? `Time they have: ${WN_TIMES[f.time].label}.` : ''} ${f.mood ? `Mood: ${WN_MOODS[f.mood].label}.` : ''}
+${D.yes.length ? `This session they said yes to: ${D.yes.map(c => c.title).join('; ')}.` : ''}
+${D.hist.filter(h => h.dir < 0).length ? `This session they skipped: ${D.hist.filter(h => h.dir < 0).map(h => h.c.title).slice(-15).join('; ')}.` : ''}
+Never suggest: ${exclude.join('; ')}
+Reply with ONLY this JSON: {"items":[{"type":"movie|tv|book|game|album","title":"original title","year":"YYYY","creator":"director / author / studio / artist","genres":["1-3 genres in English"],"minutes":0,"why":"one short sentence in ${AI_LANG()}"}]}
+"minutes" = runtime for a film or album, minutes per episode for a series, total hours×60 to finish a game, 0 for a book.` }], { fast: true });
+    const W = wnState(), have = new Set([...db.media.map(e => aiKey(e.type, e.title)), ...(aiState().nope || []), ...W.extra.map(s => aiKey(s.type, s.title))]);
+    const items = (j?.items || []).filter(x => TYPES[x.type] && x.title && (f.type === 'any' || x.type === f.type) && !have.has(aiKey(x.type, x.title))).map(x => {
+      const m = +x.minutes || 0;
+      return { type: x.type, title: String(x.title).slice(0, 90), year: yearOf(x.year), creator: String(x.creator || '').slice(0, 60), why: String(x.why || '').slice(0, 200),
+        genres: (Array.isArray(x.genres) ? x.genres : []).slice(0, 3).map(String), ...(x.type === 'game' ? { playHours: Math.round(m / 60) } : x.type === 'tv' ? { epMin: m } : x.type === 'book' ? {} : { runtimeMin: m }),
+        ...(f.genre ? { askedGenre: f.genre } : {}) };
+    });
+    if (!WND) return;
+    W.extra = [...W.extra, ...items].slice(-60);
+    save();
+    const cards = wnPool(D.f).filter(c => items.some(s => s === c.s)).map(c => ({ ...c, askedGenre: c.s.askedGenre, jit: (Math.random() - .5) * .5 }));
+    await wnDress(cards, 5000);
+    if (!WND) return;
+    const fresh = wnFilter(cards, D.f).filter(c => !D.left.some(x => x.key === c.key) && !D.hist.some(h => h.c.key === c.key) && D.cur?.key !== c.key)
+      .map(c => ({ ...c, cover: c.s.cover || wnState().dress[c.key]?.cover || c.cover, genres: (c.s.genres || []).length ? c.s.genres : c.genres }));
+    D.left.push(...fresh);
+    if (!items.length && force) toast('⚠ ' + (geminiLastErr || tl('no suggestions came back — try again later')));
+  } catch(_){} finally {
+    if (WND){ D.asking = false; if (!D.cur) wnNext(); }
+  }
+}
+
+/* ---- the end: your yeses → start one, queue the rest; or "this or that" to pick one ---- */
+function wnFinish(){
+  const D = WND; if (!D) return;
+  D.done = true;
+  const stage = $('#wn-stage');
+  $('.wn-bottom').style.display = 'none'; $('#wn-done').style.display = 'none';
+  const yes = D.yes;
+  if (!yes.length){
+    stage.innerHTML = `<div class="wn-empty"><b>${tl('nothing clicked this time')}</b><span>${tl('try other filters — the cards you skipped sink for a while')}</span>
+      <button class="btn primary" id="wn-again">${tl('start over')}</button><button class="btn" id="wn-x2">${tl('close')}</button></div>`;
+    $('#wn-again').addEventListener('click', () => { closeWhatNext(); openWhatNext(); });
+    $('#wn-x2').addEventListener('click', closeWhatNext);
+    return;
+  }
+  const row = (c, i) => `
+    <div class="wn-row" data-wr="${i}">
+      <span class="wn-rc ${c.type === 'album' ? 'sq' : ''}">${c.cover ? `<img src="${esc(c.cover)}" alt="" data-ph="${esc(TYPES[c.type].icon)}" onerror="imgFb(this)">` : TYPES[c.type].icon}</span>
+      <span class="ri-t"><b>${esc(c.title)}</b><em>${TYPES[c.type].label}${c.year ? ' · ' + esc(c.year) : ''}${wnLenLabel(c) ? ' · ' + esc(wnLenLabel(c)) : ''}</em>
+        <span class="wn-acts" data-wa="${i}">${wnActsHTML(c)}</span></span>
+    </div>`;
+  stage.innerHTML = `<div class="wn-end">
+    <div class="dt-h"><span>${tl('your yeses')}</span><em>${yes.length}</em></div>
+    ${yes.length >= 2 ? `<button class="btn primary wn-tot" id="wn-tot">${ICONS.cards} ${tl('help me pick one — this or that')}</button>` : ''}
+    ${yes.map(row).join('')}
+    <button class="btn wn-close2" id="wn-x2">${tl('close')}</button></div>`;
+  wnWireActs(yes);
+  $('#wn-tot')?.addEventListener('click', () => wnDuel(yes.slice()));
+  $('#wn-x2').addEventListener('click', closeWhatNext);
+}
+function wnActsHTML(c){
+  if (c.done) return `<i class="wn-ok">${ICONS.check} ${esc(c.done)}</i>`;
+  return `<button class="btn primary" data-act="start">${ICONS.stActive} ${tl('start now')}</button>
+    <button class="btn" data-act="top">${ICONS.queue} ${tl('top of queue')}</button>
+    ${c.e ? '' : `<button class="btn ghost" data-act="plan">${ICONS.plus} ${tl('add to planned')}</button>`}`;
+}
+function wnWireActs(list){
+  $$('[data-wa]').forEach(box => box.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
+    const c = list[+box.dataset.wa]; wnDo(c, b.dataset.act); box.innerHTML = wnActsHTML(c);
+  })));
+}
+// start now / top of queue / add to planned — for your own planned entries and for picks you don't have yet
+function wnDo(c, act){
+  let e = c.e || db.media.find(x => aiKey(x.type, x.title) === c.key);
+  if (!e){
+    const s = c.s || { type: c.type, title: c.title, year: c.year, creator: c.creator, cover: c.cover };
+    if (!s.cover && c.cover) s.cover = c.cover;
+    if (!(s.genres || []).length && c.genres.length) s.genres = c.genres;
+    e = addSuggestion(s, 'planned');
+    W_dropExtra(c.key);
+  }
+  c.e = e;
+  if (act === 'start'){
+    e.status = 'active'; e.startDate = e.startDate || todayStr(); logActivity(e, 'start'); syncQueueWithStatus(e);
+    c.done = tl('started'); toast(tl('{title} — enjoy!', { title: e.title }) + ' ✓');
+  } else if (act === 'top'){
+    if (e.status !== 'planned') e.status = 'planned';
+    db.queue = [e.id, ...db.queue.filter(x => x !== e.id)];
+    c.done = tl('top of your queue'); toast(tl('{title} is next in your queue', { title: e.title }) + ' ✓');
+  } else {
+    db.queue = db.queue.filter(x => x !== e.id);
+    c.done = tl('planned'); toast(tl('{title} added to planned', { title: e.title }) + ' ✓');
+  }
+  save();
+}
+function W_dropExtra(key){ const W = wnState(); W.extra = W.extra.filter(s => aiKey(s.type, s.title) !== key); }
+
+// this or that: the winner so far meets the next one until one is left
+function wnDuel(list){
+  const stage = $('#wn-stage');
+  let champ = list[0], i = 1;
+  const lost = [];
+  const show = () => {
+    if (i >= list.length) return win();
+    const a = champ, b = list[i];
+    const side = (c, k) => `<button class="wn-duel-c" data-duel="${k}">
+      <span class="wn-dcov ${c.type === 'album' ? 'sq' : ''}">${c.cover ? `<img src="${esc(c.cover)}" alt="" data-ph="${esc(TYPES[c.type].icon)}" onerror="imgFb(this)">` : `<span class="ph">${TYPES[c.type].icon}</span>`}</span>
+      <b>${esc(c.title)}</b><em>${TYPES[c.type].label}${c.year ? ' · ' + esc(c.year) : ''}${wnLenLabel(c) ? ' · ' + esc(wnLenLabel(c)) : ''}</em></button>`;
+    stage.innerHTML = `<div class="wn-duel">
+      <div class="wn-dh">${tl('this or that?')}<em>${tl('{a} of {b}', { a: i, b: list.length - 1 })}</em></div>
+      <div class="wn-dpair">${side(a, 'a')}<span class="wn-or">${tl('or')}</span>${side(b, 'b')}</div>
+      <button class="btn ghost" id="wn-dback">${tl('← back to the list')}</button></div>`;
+    $$('[data-duel]').forEach(x => x.addEventListener('click', () => {
+      haptic('tap');
+      if (x.dataset.duel === 'b'){ lost.push(champ); champ = b; } else lost.push(b);
+      i++; show();
+    }));
+    $('#wn-dback').addEventListener('click', wnFinish);
+  };
+  const win = () => {
+    const rest = lost.filter(c => !c.done);
+    stage.innerHTML = `<div class="wn-end wn-win">
+      <div class="dt-h"><span>${tl('the winner')}</span></div>
+      <div class="wn-wcard">
+        <span class="wn-dcov ${champ.type === 'album' ? 'sq' : ''}">${champ.cover ? `<img src="${esc(champ.cover)}" alt="" data-ph="${esc(TYPES[champ.type].icon)}" onerror="imgFb(this)">` : `<span class="ph">${TYPES[champ.type].icon}</span>`}</span>
+        <b>${esc(champ.title)}</b><em>${TYPES[champ.type].label}${champ.year ? ' · ' + esc(champ.year) : ''}</em>
+        <span class="wn-acts" data-wa="0">${wnActsHTML(champ)}</span>
+      </div>
+      ${rest.length ? `<div class="dt-h" style="margin-top:14px"><span>${tl('the others')}</span><em>${rest.length}</em></div>
+        <div class="wn-rest">${rest.map(c => `<span class="${c.type === 'album' ? 'sq' : ''}" title="${esc(c.title)}">${c.cover ? `<img src="${esc(c.cover)}" alt="">` : TYPES[c.type].icon}</span>`).join('')}</div>
+        <div class="wn-restacts" id="wn-restacts">
+          <button class="btn" id="wn-rq">${ICONS.queue} ${tl('add them to my queue anyway')}</button>
+          ${rest.some(c => !c.e) ? `<button class="btn ghost" id="wn-rp">${ICONS.plus} ${tl('just keep them planned')}</button>` : ''}
+        </div>` : ''}
+      <button class="btn wn-close2" id="wn-x2">${tl('close')}</button></div>`;
+    wnWireActs([champ]);
+    $('#wn-rq')?.addEventListener('click', () => {
+      // after the winner, in the order you liked them
+      rest.slice().reverse().forEach(c => wnDo(c, 'top'));
+      if (champ.done === tl('top of your queue')) db.queue = [champ.e.id, ...db.queue.filter(x => x !== champ.e.id)];
+      save(); $('#wn-restacts').innerHTML = `<i class="wn-ok">${ICONS.check} ${tl('{n} added to your queue', { n: rest.length })}</i>`;
+    });
+    $('#wn-rp')?.addEventListener('click', () => { rest.forEach(c => { if (!c.e) wnDo(c, 'plan'); }); $('#wn-restacts').innerHTML = `<i class="wn-ok">${ICONS.check} ${tl('kept as planned')}</i>`; });
+    $('#wn-x2').addEventListener('click', closeWhatNext);
+  };
+  show();
+}
+
+// v2.9 put "what next?" and "for you" right under the top card — also for a home layout you arranged before
+function wnLayoutMigrate(){
+  if (db.settings.wnLayout) return;
+  db.settings.wnLayout = 1;
+  const conf = db.settings.layout?.home; if (!conf?.order?.length) return;
+  const o = conf.order.filter(x => x !== 'whatnext' && x !== 'foryou');
+  o.splice(o.indexOf('hero') + 1, 0, 'whatnext', 'foryou');
+  conf.order = o;
 }
 
 /* ============ settings ============ */
