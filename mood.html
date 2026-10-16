@@ -1234,6 +1234,40 @@ a.btn{text-decoration:none; justify-content:center}
 .fr-box .tn em{font-style:normal; font-family:'Space Mono',monospace; font-size:9.5px; color:var(--ink-3)}
 .fr-code{display:flex; flex-direction:column; gap:8px; padding:10px; border-radius:10px; background:var(--bg-lo); margin:6px 0}
 .fr-code .mono{font-size:11px; word-break:break-all}
+
+/* library select mode */
+.row.f-acts{display:grid; grid-template-columns:1fr 1fr}
+.row.f-acts #f-save{grid-column:1 / -1; order:-1; justify-content:center}
+.row.f-acts .btn{justify-content:center}
+body:has(#sel-actions) #lib-grid{padding-bottom:90px}
+.lib-bar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 2px 10px; font-family:'Space Mono',monospace; font-size:10.5px; color:var(--ink-3)}
+.lib-bar.sel{position:sticky; top:0; z-index:5; padding:10px 12px; border-radius:10px; background:var(--accent-soft); color:var(--ink)}
+.lib-bar.sel b{font-size:12.5px}
+.lib-bar .dt-link svg{width:13px; height:13px}
+.media-card.picked, .ll-row.picked{outline:3px solid var(--accent); outline-offset:2px; border-radius:8px}
+.media-card.picked::after, .ll-row.picked::after{content:'✓'; position:absolute; top:6px; left:6px; width:24px; height:24px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; z-index:3}
+.ll-row{position:relative}
+.media-card, .ll-row{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+.sel-actions{position:fixed; left:12px; right:12px; bottom:calc(84px + env(safe-area-inset-bottom)); z-index:60; display:grid; grid-template-columns:1.4fr 1fr; gap:8px; padding:10px; border-radius:14px; background:var(--bg-hi); border:1.5px solid var(--ink); box-shadow:4px 5px 0 var(--shadow-soft)}
+[data-theme="ink"] .sel-actions{background:var(--surface-2); border-color:var(--edge)}
+.sel-actions .btn{justify-content:center}
+
+/* albums are square: shown whole on a dark sleeve wherever a portrait cover box shows them */
+img[data-ph*='r="9.01"']{object-fit:contain !important; background:#1d1915}
+.dt-cover img[data-ph*='r="9.01"']{background:transparent}
+
+/* a friend's whole library */
+.fr-tabs{display:grid; grid-template-columns:1fr 1fr; margin:12px 0 10px}
+.fr-tabs button{justify-content:center}
+.fr-q{margin-bottom:8px}
+.fr-types{display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:8px; scrollbar-width:none}
+.fr-types button{flex:none; display:inline-flex; align-items:center; gap:5px; padding:6px 11px; border-radius:16px; border:1px solid var(--line); background:var(--bg-hi); color:var(--ink-2); font-family:'Space Mono',monospace; font-size:10.5px; text-transform:uppercase}
+.fr-types button svg{width:14px; height:14px}
+.fr-types button.on{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+[data-theme="ink"] .fr-types button{background:var(--surface)}
+[data-theme="ink"] .fr-types button.on{background:var(--accent); border-color:var(--accent); color:#fff}
+.fr-sels{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.fr-sels select{min-width:0}
 /* ================= kitchen ================= */
 /* redesigned kitchen: overview tiles, shelf cards, aligned rows, recipe cards, cook mode */
 .k-over{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:12px}
@@ -2606,7 +2640,7 @@ const I18N = {
     'The basics': 'Temeller', 'Library': 'Kitaplık', 'Queue': 'Sıra', 'Calendar': 'Takvim', 'Body': 'Vücut', 'Habits': 'Alışkanlıklar', 'Money': 'Para', 'Kitchen': 'Mutfak', 'Projects': 'Projeler',
     'Bringing your stuff in': 'Verilerini getirmek', 'Free keys that unlock more': 'Daha fazlasını açan ücretsiz anahtarlar',
     'the bar at the bottom switches tabs — reorder or hide them in settings → tabs': 'alttaki çubuk sekmeleri değiştirir — sırasını ayarlar → sekmeler\'den değiştir ya da gizle',
-    'the orange + button logs a new film, show, book or game from any tab': 'turuncu + düğmesi her sekmeden yeni film, dizi, kitap ya da oyun ekler',
+    'the orange + button logs a new film, show, book, game or album from any tab': 'turuncu + düğmesi her sekmeden yeni film, dizi, kitap, oyun ya da albüm ekler',
     'the layout button (top right) rearranges or hides the sections of the tab you are on': 'düzen düğmesi (sağ üst) bulunduğun sekmenin bölümlerini yeniden sıralar ya da gizler',
     'the round switch flips light / dark; settings can follow your phone instead': 'yuvarlak anahtar açık / koyu temayı değiştirir; ayarlardan telefonu takip ettirebilirsin',
     'everything is saved on this phone — export a backup from settings now and then': 'her şey bu telefonda saklanır — ara sıra ayarlardan yedek al', 'English / Türkçe: settings → language': 'English / Türkçe: ayarlar → dil',
@@ -2753,6 +2787,18 @@ const I18N = {
     'github asks to slow down — sync tries again in {m} min': 'github yavaşlamamızı istiyor — senkron {m} dk sonra kendiliğinden tekrar dener',
     'this token can\'t save gists — make a new one with the button (a classic token with "gist" ticked)': 'bu token gist kaydedemiyor — düğmeyle yeni bir tane oluştur ("gist" işaretli klasik token)',
     'the journal is too big for one gist — tell can': 'günlük tek bir gist için çok büyük — can\'e haber ver',
+    'save + another': 'kaydet + yenisi', '{n} selected': '{n} seçili', 'none': 'hiçbiri', 'all {n} shown': 'görünen {n} tanesi', 'select': 'seç',
+    '{n} entry': '{n} kayıt', '{n} entries': '{n} kayıt', 'delete {n}': '{n} tanesini sil', 'status': 'durum', 'Delete 1 entry?': '1 kayıt silinsin mi?', 'Delete {n} entries?': '{n} kayıt silinsin mi?',
+    'their progress, ratings and notes go too. you can undo right after.': 'ilerlemeleri, puanları ve notları da gider. hemen ardından geri alabilirsin.', '{n} deleted': '{n} silindi',
+    'Set status for {n}': '{n} kaydın durumu', '{n} updated': '{n} güncellendi',
+    'Album': 'Albüm', 'Albums': 'Albümler', 'artist': 'sanatçı', 'author': 'yazar', 'studio': 'stüdyo', 'director': 'yönetmen', 'creator': 'yaratıcı',
+    '{n} tracks': '{n} parça', 'scores on albumoftheyear.org': "albumoftheyear.org'da puanlar", 'music': 'müzik', 'listening': 'dinliyor', 'already listened': 'zaten dinledim', 'listened': 'dinlendi',
+    'wants to read': 'okumak istiyor', 'wants to play': 'oynamak istiyor', 'wants to listen': 'dinlemek istiyor', 'wants to watch': 'izlemek istiyor',
+    'highlights': 'öne çıkanlar', 'whole library': 'tüm kütüphane', '{n} titles': '{n} başlık', 'search their library…': 'kütüphanesinde ara…', 'any status': 'her durum',
+    'rated': 'puanlı', 'you both have': 'ikinizde de olanlar', "you don't have": 'sende olmayanlar', 'their rating': 'onun puanı', 'a → z': 'a → z', 'release year': 'çıkış yılı',
+    'nothing here': 'burada bir şey yok', 'show {n} more': '{n} tane daha göster',
+    'albums: log records like anything else — covers from itunes & musicbrainz, critic scores one tap away on albumoftheyear.org': "albümler: plakları her şey gibi kaydet — kapaklar itunes ve musicbrainz'den, eleştirmen puanları albumoftheyear.org'da tek dokunuşla",
+    'library: press and hold a cover (or tap "select") to delete or re-status many at once — undo is right there': 'kütüphane: bir kapağa basılı tut (ya da "seç"e dokun), birçoğunu birden sil ya da durumunu değiştir — geri al hemen orada',
     'more tabs': 'diğer sekmeler', '{n}m': '{n} dk', '{n}h': '{n} sa', 'gemini estimate': 'gemini tahmini', 'expiry date': 'son kullanma', 'expired': 'geçti', '{n}d': '{n} gün',
     // default spending categories (stored in english, shown translated)
     'Groceries': 'Market', 'Dining Out': 'Dışarıda yemek', 'Transport': 'Ulaşım', 'Subscriptions': 'Abonelikler', 'Shopping': 'Alışveriş',
@@ -2824,11 +2870,14 @@ function wireStars(el, cb){
   }));
 }
 
+// a record: the r="9.01" circle is unique, so css can spot album covers anywhere (they're square)
+ICONS.album = I('<circle cx="12" cy="12" r="9.01"/><circle cx="12" cy="12" r="2.4"/><path d="M12 6.2a5.8 5.8 0 0 1 5.8 5.8"/>');
 const TYPES = {
   movie: { get label(){ return tl('Movie'); }, get plural(){ return tl('Movies'); }, icon:ICONS.movie },
   tv:    { get label(){ return tl('TV Show'); }, get plural(){ return tl('TV Shows'); }, icon:ICONS.tv },
   book:  { get label(){ return tl('Book'); }, get plural(){ return tl('Books'); }, icon:ICONS.book },
   game:  { get label(){ return tl('Game'); }, get plural(){ return tl('Games'); }, icon:ICONS.game },
+  album: { get label(){ return tl('Album'); }, get plural(){ return tl('Albums'); }, icon:ICONS.album },
 };
 const STATUS = {
   planned: { get label(){ return tl('planned'); }, icon:ICONS.stPlanned },
@@ -3001,7 +3050,9 @@ function toast(msg, opts = {}){
   el.classList.add('show');
   clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), opts.undo || opts.action ? 5000 : 2600);
 }
+let modalReturn = null;
 function openModal(html){
+  if (!$('#modal-overlay').classList.contains('open')) modalReturn = { y: scrollY, view: ui.view };
   $('#modal').classList.remove('sheet'); $('#modal-overlay').classList.remove('sheet-open');
   $('#modal-body').innerHTML = html;
   $('#modal-overlay').classList.add('open');
@@ -3067,6 +3118,9 @@ function closeModal(){
   $('#modal-overlay').classList.remove('open');
   $('#modal-body').innerHTML = '';
   document.body.style.overflow = '';
+  // back where you were (some phones jump to the top when the page re-draws under a popup)
+  const back = modalReturn; modalReturn = null;
+  if (back) requestAnimationFrame(() => requestAnimationFrame(() => { if (ui.view === back.view && Math.abs(scrollY - back.y) > 40) scrollTo(0, back.y); }));
 }
 $('#modal-close').addEventListener('click', closeModal);
 $('#modal-overlay').addEventListener('mousedown', e => { if (e.target === e.currentTarget) closeModal(); });
@@ -3142,12 +3196,14 @@ const viewHistory = [];
 window.moodBack = function(){
   if ($('#dlg.open') && dlgDone){ dlgDone(null); return true; }
   if ($('#modal-overlay').classList.contains('open')){ closeModal(); return true; }
+  if (ui.libSel){ ui.libSel = null; renderLibGrid(); return true; }
   if (viewHistory.length){ switchView(viewHistory.pop(), true); return true; }
   const home = enabledTabs()[0] || 'home';
   if (ui.view !== home){ switchView(home, true); return true; }
   return false;
 };
 function switchView(v, fromBack){
+  if (v !== 'library' && ui.libSel){ ui.libSel = null; updateSelBar(); }
   if (!fromBack && ui.view !== v){ viewHistory.push(ui.view); if (viewHistory.length > 20) viewHistory.shift(); }
   ui.view = v;
   $$('.deck .key[data-view]').forEach(k => k.classList.toggle('on', k.dataset.view === v));
@@ -3317,7 +3373,7 @@ const yearOf = s => (s && String(s).match(/\d{4}/)) ? String(s).match(/\d{4}/)[0
    title from different places into one result (more covers to pick from, more fields),
    and ranks by how well the title matches. after saving, enrich() fills synopsis, genres,
    platforms, runtime from wikipedia + wikidata — only fields that are still empty. */
-const SRC = { gbooks: 'Google Books', tmdb: 'TMDB', itunes: 'iTunes', tvmaze: 'TVmaze', ol: 'Open Library', wp: 'Wikipedia', wd: 'Wikidata', cs: 'CheapShark', rawg: 'RAWG', steam: 'Steam', ai: 'Gemini' };
+const SRC = { mb: 'MusicBrainz', gbooks: 'Google Books', tmdb: 'TMDB', itunes: 'iTunes', tvmaze: 'TVmaze', ol: 'Open Library', wp: 'Wikipedia', wd: 'Wikidata', cs: 'CheapShark', rawg: 'RAWG', steam: 'Steam', ai: 'Gemini' };
 const stripHTML = s => String(s || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, ' ').trim();
 
 /* the apk can fetch what a web page may not read (steam search, fund prices) */
@@ -3359,6 +3415,7 @@ const WP_KIND = {
   movie: { hint: 'film', ok: /\bfilm\b/i, no: /actor|actress|director|character|soundtrack|series|franchise|novel|company|festival/i },
   tv:    { hint: 'TV series', ok: /series|sitcom|anime|miniseries|television show|tv show|drama/i, no: /actor|actress|character|episode|\bfilm\b|novel|company|franchise|channel|network/i },
   book:  { hint: 'novel', ok: /novel|book|memoir|novella|non-?fiction|manga|comic|essay|poem|collection/i, no: /\bfilm\b|series of films|character|author|writer|award|company|tv |television/i },
+  album: { hint: 'album', ok: /\balbum\b|\bEP\b|mixtape/i, no: /\bsong\b|\bsingle\b|discography|\btour\b|\bband\b|singer|rapper|musician|\bfilm\b|video game/i },
   game:  { hint: 'video game', ok: /\bgame\b/i, no: /award|ceremony|character|company|developer|publisher|series|franchise|designer|artist|composer|writer|director|producer|programmer|player|streamer|engine|console|convention/i },
 };
 async function srcWiki(type, q){
@@ -3368,7 +3425,8 @@ async function srcWiki(type, q){
     const desc = p.terms?.description?.[0] || '';
     if (!K.ok.test(desc) || K.no.test(desc)) return [];
     const title = (p.title || '').replace(/\s*\([^)]*\)\s*$/, '').trim();
-    return title ? [{ title, year: yearOf(desc), sub: desc, covers: p.thumbnail?.source ? [p.thumbnail.source] : [], src: 'wp', ids: { wp: p.title } }] : [];
+    const by = type === 'album' ? (desc.match(/\bby (.+)$/i) || [])[1] || '' : '';
+    return title ? [{ title, year: yearOf(desc), sub: desc, covers: p.thumbnail?.source ? [p.thumbnail.source] : [], src: 'wp', ids: { wp: p.title }, ...(by ? { creator: by, mk: artistKey(by) } : {}) }] : [];
   });
 }
 async function srcTmdb(kind, q){
@@ -3388,6 +3446,24 @@ async function srcItunes(q){
     covers: r.artworkUrl100 ? [r.artworkUrl100.replace('100x100bb', '600x600bb')] : [], genres: r.primaryGenreName ? [r.primaryGenreName] : [],
     synopsis: r.longDescription || '', runtimeMin: r.trackTimeMillis ? Math.round(r.trackTimeMillis / 60000) : 0, src: 'itunes', ids: {},
   }));
+}
+const artistKey = a => normTitle(String(a || '').replace(/^the\s+/i, '')).split(' ').slice(0, 2).join(' ');
+async function srcItunesAlbum(q){
+  const d = await fetchJSON(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&entity=album&limit=12`);
+  return (d.results || []).filter(r => r.collectionName).map(r => ({
+    title: r.collectionName.replace(/\s+-\s+(single|ep)$/i, ''), year: yearOf(r.releaseDate), sub: r.artistName || 'album', creator: r.artistName || '', mk: artistKey(r.artistName),
+    covers: r.artworkUrl100 ? [r.artworkUrl100.replace('100x100bb', '600x600bb')] : [], genres: r.primaryGenreName ? [r.primaryGenreName] : [],
+    tracks: r.trackCount || 0, src: 'itunes', ids: { itunes: r.collectionId },
+  }));
+}
+async function srcMusicBrainz(q){
+  const d = await fetchJSON(`https://musicbrainz.org/ws/2/release-group/?query=${encodeURIComponent(q)}&limit=10&fmt=json`);
+  return (d['release-groups'] || []).filter(r => (r.score || 0) >= 70 && /album|ep/i.test(r['primary-type'] || '')).map(r => {
+    const artist = (r['artist-credit'] || []).map(a => a.name + (a.joinphrase || '')).join('').trim();
+    return { title: r.title, year: yearOf(r['first-release-date']), sub: artist || 'album', creator: artist, mk: artistKey(artist),
+      covers: [`https://coverartarchive.org/release-group/${r.id}/front-500`], genres: (r.tags || []).sort((a, b) => b.count - a.count).slice(0, 3).map(t => t.name),
+      src: 'mb', ids: { mb: r.id } };
+  });
 }
 async function srcTvmaze(q){
   const d = await fetchJSON(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(q)}`);
@@ -3437,7 +3513,10 @@ const SOURCES = {
   tv:    [srcTvmaze, q => srcTmdb('tv', q), q => srcWiki('tv', q)],
   book:  [srcOpenLib, q => srcWiki('book', q), q => srcGBooks(q)],
   game:  [srcRawg, q => srcWiki('game', q), srcCheapShark, srcSteam],
+  album: [srcItunesAlbum, srcMusicBrainz, q => srcWiki('album', q)],
 };
+// albumoftheyear.org has no api (and blocks apps), so it's a link: their search for this album
+const aotyUrl = e => `https://www.albumoftheyear.org/search/?q=${encodeURIComponent([e.creator, e.title].filter(Boolean).join(' '))}`;
 
 /* ---- merging + ranking ---- */
 const mergeKey = t => normTitle(String(t).replace(/\b(digital |ultimate |gold |game of the year |goty |complete |definitive |standard |deluxe )*edition\b/ig, '').replace(/\s*[:(]\s*a novel\)?\s*$/i, ''));
@@ -3455,17 +3534,18 @@ function mergeResults(lists, q, yearHint){
   lists.flat().forEach(r => {
     if (!r?.title) return;
     const k = mergeKey(r.title);
-    const hit = out.find(x => x._k === k && (!x.year || !r.year || Math.abs(+x.year - +r.year) <= 1));
+    const hit = out.find(x => x._k === k && (!x.year || !r.year || Math.abs(+x.year - +r.year) <= 1) && (!x.mk || !r.mk || x.mk === r.mk));
     if (!hit){ out.push({ ...r, _k: k, covers: [...(r.covers || [])], sources: [r.src], ids: { ...(r.ids || {}) } }); return; }
     hit.covers.push(...(r.covers || []));
     if (!hit.sources.includes(r.src)) hit.sources.push(r.src);
-    ['year', 'creator', 'synopsis', 'runtimeMin', 'epMin', 'pagesTotal', 'playHours', 'tvmazeId'].forEach(f => { if (!hit[f] && r[f]) hit[f] = r[f]; });
+    ['year', 'creator', 'mk', 'synopsis', 'runtimeMin', 'epMin', 'pagesTotal', 'playHours', 'tvmazeId', 'tracks'].forEach(f => { if (!hit[f] && r[f]) hit[f] = r[f]; });
     ['genres', 'platforms'].forEach(f => { if (!(hit[f] || []).length && (r[f] || []).length) hit[f] = r[f]; });
     if ((!hit.sub || hit.sub === 'pc' || hit.sub === 'Steam') && r.sub) hit.sub = r.sub;
     Object.entries(r.ids || {}).forEach(([key, v]) => { if (!hit.ids[key]) hit.ids[key] = v; });
   });
   const qy = yearHint ? String(yearHint) : '', qt = q;
-  const score = r => titleScore(r.title, qt) + (qy && r.year === qy ? 3 : 0) + Math.min(3, r.sources.length - 1) * 1.5 + (r.covers.length ? 1 : 0);
+  const tScore = r => r.mk && r.creator ? Math.max(titleScore(r.title, qt), titleScore(r.creator + ' ' + r.title, qt), titleScore(r.title + ' ' + r.creator, qt)) : titleScore(r.title, qt);
+  const score = r => tScore(r) + (qy && r.year === qy ? 3 : 0) + Math.min(3, r.sources.length - 1) * 1.5 + (r.covers.length ? 1 : 0);
   out.forEach(r => r._s = score(r));
   return out.sort((a, b) => b._s - a._s);
 }
@@ -3475,7 +3555,7 @@ async function searchMedia(type, q, yearHint){
   if (got.every(g => g.status === 'rejected')) throw got[0]?.reason || new Error('offline');
   const merged = mergeResults(got.filter(g => g.status === 'fulfilled').map(g => g.value), q, yearHint).slice(0, 12);
   await Promise.all(merged.map(async r => { r.cover = await pickCover(r.covers); }));
-  return merged;
+  return merged.sort((a, b) => (b._s - (b.cover ? 0 : 2)) - (a._s - (a.cover ? 0 : 2)));      // no cover that loads → lower
 }
 const srcBadges = list => (list || []).length ? `<span class="src-badges">${list.map(s => `<i>${SRC[s] || esc(s)}</i>`).join('')}</span>` : '';
 
@@ -3487,7 +3567,7 @@ async function wikidataInfo(qid, type){
   const ids = p => (c[p] || []).map(x => x.mainsnak?.datavalue?.value?.id).filter(Boolean);
   const amount = p => { const v = c[p]?.[0]?.mainsnak?.datavalue?.value; return v ? { n: Math.round(Math.abs(parseFloat(v.amount))), unit: String(v.unit || '') } : null; };
   const genreIds = ids('P136').slice(0, 4), platIds = ids('P400').slice(0, 6);
-  const creatorIds = ids({ game: 'P178', movie: 'P57', book: 'P50', tv: 'P170' }[type] || 'P170').slice(0, 1);
+  const creatorIds = ids({ game: 'P178', movie: 'P57', book: 'P50', tv: 'P170', album: 'P175' }[type] || 'P170').slice(0, 1);
   const all = [...genreIds, ...platIds, ...creatorIds];
   let label = {};
   if (all.length){
@@ -3526,6 +3606,12 @@ async function enrich(e, { gemini = true } = {}){
       fill('genres', s.genres, 'tvmaze'); fill('synopsis', stripHTML(s.summary), 'tvmaze'); fill('epMin', s.averageRuntime); fill('year', yearOf(s.premiered));
     } catch(_){}
   }
+  if (e.type === 'album' && e.ids?.itunes && (!e.runtimeMin || !e.tracks)){
+    try { const d = await fetchJSON(`https://itunes.apple.com/lookup?id=${e.ids.itunes}&entity=song&limit=200`);
+      const songs = (d.results || []).filter(x => x.wrapperType === 'track');
+      if (songs.length){ fill('tracks', songs.length, 'itunes'); fill('runtimeMin', Math.round(songs.reduce((t, x) => t + (x.trackTimeMillis || 0), 0) / 60000), 'itunes'); }
+    } catch(_){}
+  }
   try {
     const page = e.ids?.wp || await findWikiPage(e);
     if (page){
@@ -3542,7 +3628,7 @@ async function enrich(e, { gemini = true } = {}){
       fill('synopsis', syn, 'wp');
       if (wd){
         fill('genres', wd.genres, 'wd'); fill('platforms', e.type === 'game' ? wd.platforms : [], 'wd'); fill('creator', wd.creator, 'wd'); fill('year', wd.year, 'wd');
-        if (e.type === 'movie') fill('runtimeMin', wd.duration, 'wd');
+        if (e.type === 'movie' || e.type === 'album') fill('runtimeMin', wd.duration, 'wd');
         if (e.type === 'book') fill('pagesTotal', wd.pages, 'wd');
       }
       if (!e.cover && sum?.thumbnail?.source){ const c = await pickCover([sum.originalimage?.source, sum.thumbnail.source]); fill('cover', c, 'wp'); }
@@ -3550,7 +3636,7 @@ async function enrich(e, { gemini = true } = {}){
   } catch(_){}
   // gemini only for what is still empty — and says so
   if (gemini && aiOn() && (emptyVal(e.synopsis) || emptyVal(e.genres))){
-    const role = { book: 'author', game: 'developer', movie: 'director', tv: 'creator' }[e.type];
+    const role = { book: 'author', game: 'developer', movie: 'director', tv: 'creator', album: 'artist' }[e.type];
     const lang = LANG === 'tr' ? 'Turkish' : 'English';
     const j = await geminiJSON([{ text: `Facts about the ${TYPES[e.type].label.toLowerCase()} "${e.title}"${e.year ? ` (${e.year})` : ''}${e.creator ? ` by ${e.creator}` : ''}.
 Reply with ONLY this JSON: {"synopsis":"two sentences, no spoilers, in ${lang}","genres":["up to 3 genres in ${lang}"],"year":"YYYY","${role}":"name"}.
@@ -3790,7 +3876,7 @@ function addFlowStep2(type){
           title:r.title, year:r.year, creator:r.creator||'',
           cover:(imgEl && imgEl.style.display !== 'none') ? imgEl.getAttribute('src') : '',
           tvmazeId:r.tvmazeId, pagesTotal:r.pagesTotal||0,
-          runtimeMin:r.runtimeMin||0, epMin:r.epMin||0, playHours:r.playHours||0,
+          runtimeMin:r.runtimeMin||0, epMin:r.epMin||0, playHours:r.playHours||0, tracks:r.tracks||0,
           synopsis:r.synopsis||'', genres:r.genres||[], platforms:r.platforms||[], ids:r.ids||{}, src:r.sources||[],
           dupChecked: !!dup,
         });
@@ -3814,7 +3900,7 @@ function addFlowStep3(type, pre){
     status: 'planned', startDate: '', endDate: '', rating: 0, notes: '',
     pagesTotal: pre.pagesTotal || 0, pagesRead: 0,
     seasons: [], tvmazeId: pre.tvmazeId || null,
-    runtimeMin: pre.runtimeMin || 0, epMin: pre.epMin || 0, playHours: pre.playHours || 0,
+    runtimeMin: pre.runtimeMin || 0, epMin: pre.epMin || 0, playHours: pre.playHours || 0, ...(pre.tracks ? { tracks: pre.tracks } : {}),
     synopsis: pre.synopsis || '', genres: pre.genres || [], platforms: pre.platforms || [], ids: pre.ids || {}, src: pre.src || [],
     addedAt: todayStr(),
     _dupChecked: pre.dupChecked ? pre.title : '',   // already asked about this exact title in search
@@ -3838,7 +3924,7 @@ function entryFormHTML(e, isNew){
       </div>
       <div class="grid2">
         <div class="field"><label>${tl('title *')}</label><input class="input" id="f-title" value="${esc(e.title)}"></div>
-        <div class="field"><label>${e.type==='book'?'author':e.type==='game'?'studio':e.type==='movie'?'director':'creator'}</label><input class="input" id="f-creator" value="${esc(e.creator)}"></div>
+        <div class="field"><label>${tl(e.type==='book'?'author':e.type==='game'?'studio':e.type==='movie'?'director':e.type==='album'?'artist':'creator')}</label><input class="input" id="f-creator" value="${esc(e.creator)}"></div>
       </div>
       <div class="grid2">
         <div class="field"><label>${tl('year')}</label><input class="input" id="f-year" value="${esc(e.year)}" placeholder="2026"></div>
@@ -3855,7 +3941,7 @@ function entryFormHTML(e, isNew){
         <div class="field"><label>${tl('total pages')}</label><input type="number" min="0" class="input" id="f-pt" value="${e.pagesTotal||''}"></div>
         <div class="field"><label>${tl('current page')}</label><input type="number" min="0" class="input" id="f-pr" value="${e.pagesRead||''}"></div>
       </div>` : ''}
-      ${e.type==='movie' ? `
+      ${e.type==='movie' || e.type==='album' ? `
       <div class="field"><label>${tl('runtime (minutes) — for queue time estimates')}</label><input type="number" min="0" class="input" id="f-rt" value="${e.runtimeMin||''}" placeholder="120"></div>` : ''}
       ${e.type==='game' ? `
       <div class="field"><label>${tl('est. hours to finish — for queue time estimates')}</label>
@@ -3863,15 +3949,18 @@ function entryFormHTML(e, isNew){
         ${aiOn() ? `<button class="btn" id="f-ph-ai" type="button">${ICONS.spark} ${tl('ask gemini')}</button>` : ''}</div>
       </div>` : ''}
       <div class="field"><label>${tl('notes / review')}</label><textarea class="input" id="f-notes" placeholder="${tl('thoughts, quotes, complaints…')}">${esc(e.notes)}</textarea></div>
-      <div class="row" style="justify-content:flex-end; gap:8px">
+      <div class="row ${isNew ? 'f-acts' : ''}" style="justify-content:flex-end; gap:8px">
         ${isNew ? '' : `<button class="btn danger" id="f-delete">${ICONS.trash} ${tl('delete')}</button><div class="spacer"></div>`}
         <button class="btn" id="f-cancel">${tl('cancel')}</button>
+        ${isNew ? `<button class="btn" id="f-again">${ICONS.plus} ${tl('save + another')}</button>` : ''}
         <button class="btn primary" id="f-save">${ICONS.check} ${tl('save entry')}</button>
       </div>
     </div>`;
 }
 
 function wireEntryForm(e, isNew){
+  let again = false;
+  $('#f-again')?.addEventListener('click', () => { again = true; $('#f-save').click(); });
   const coverPrev = url => {
     const el = $('#f-cover-prev');
     const img = document.createElement('img'); img.className = 'cover-prev'; img.id = 'f-cover-prev'; img.src = url;
@@ -3909,7 +3998,7 @@ function wireEntryForm(e, isNew){
     e.endDate = $('#f-end').value;
     e.notes = $('#f-notes').value;
     if (e.type === 'book'){ e.pagesTotal = +($('#f-pt').value||0); e.pagesRead = clamp(+($('#f-pr').value||0), 0, e.pagesTotal || 99999); }
-    if (e.type === 'movie') e.runtimeMin = +($('#f-rt')?.value || 0);
+    if (e.type === 'movie' || e.type === 'album') e.runtimeMin = +($('#f-rt')?.value || 0);
     if (e.type === 'game') e.playHours = +($('#f-ph')?.value || 0);
     if (e.startDate && e.endDate && e.endDate < e.startDate){ toast(tl('⚠ end date is before start date')); return; }
     // sensible status nudges
@@ -3931,7 +4020,9 @@ function wireEntryForm(e, isNew){
         try { e.seasons = await fetchSeasons(e.tvmazeId); } catch(_) { toast(tl('⚠ episode fetch failed — retry from the entry')); }
       }
     } else syncQueueWithStatus(e);
-    save(); closeModal(); render();
+    save();
+    if (isNew && again){ render(); addFlowStep2(e.type); }      // straight back to search for the next one
+    else { closeModal(); render(); }
     toast(isNew ? tl('{type} logged', { type: TYPES[e.type].label.toLowerCase() }) + ' ✕' : tl('saved') + ' ✕');
     // rawg-free game lengths: quietly ask gemini when a new game has no estimate
     if (isNew && e.type === 'game' && !e.playHours && aiOn()){
@@ -4064,7 +4155,12 @@ function renderLibGrid(){
     </div>`;
     return;
   }
-  box.innerHTML = (noCover ? `<button class="cover-hunt" id="lib-covers">${ICONS.search}<span>${tl(noCover === 1 ? '{n} entry has no cover —' : '{n} entries have no cover —', { n: noCover })} <b>${tl('find covers')}</b></span></button>` : '')
+  const sel = ui.libSel;
+  const bar = sel ? `<div class="lib-bar sel"><b>${tl('{n} selected', { n: sel.size })}</b>
+      <button class="dt-link" id="ls-all">${tl(list.every(e => sel.has(e.id)) ? 'none' : 'all {n} shown', { n: list.length })}</button>
+      <button class="dt-link" id="ls-done">${tl('done')}</button></div>`
+    : `<div class="lib-bar"><span>${tl(list.length === 1 ? '{n} entry' : '{n} entries', { n: list.length })}</span><button class="dt-link" id="ls-start">${ICONS.check} ${tl('select')}</button></div>`;
+  box.innerHTML = bar + (noCover && !sel ? `<button class="cover-hunt" id="lib-covers">${ICONS.search}<span>${tl(noCover === 1 ? '{n} entry has no cover —' : '{n} entries have no cover —', { n: noCover })} <b>${tl('find covers')}</b></span></button>` : '')
     + (db.settings.libView === 'list'
       ? `<div class="lib-list">${list.map(e => {
           const t = TYPES[e.type], p = progressOf(e);
@@ -4104,8 +4200,54 @@ function renderLibGrid(){
       </div>
     </div>`;
   }).join('')}</div>`);
-  $$('#lib-grid .media-card, #lib-grid .ll-row').forEach(c => c.addEventListener('click', () => openDetail(c.dataset.id)));
+  // in select mode a tap ticks; a long press anywhere starts select mode
+  $$('#lib-grid .media-card, #lib-grid .ll-row').forEach(c => {
+    if (sel && sel.has(c.dataset.id)) c.classList.add('picked');
+    let hold = 0, held = false;
+    c.addEventListener('pointerdown', () => { held = false; hold = setTimeout(() => { held = true; haptic('tap'); ui.libSel = ui.libSel || new Set(); ui.libSel.add(c.dataset.id); renderLibGrid(); }, 480); });
+    ['pointerup', 'pointerleave', 'pointercancel', 'pointermove'].forEach(ev => c.addEventListener(ev, e => { if (ev === 'pointermove' && Math.abs(e.movementY) + Math.abs(e.movementX) < 4) return; clearTimeout(hold); }));
+    c.addEventListener('contextmenu', ev => ev.preventDefault());
+    c.addEventListener('click', () => {
+      if (held){ held = false; return; }
+      if (!ui.libSel){ openDetail(c.dataset.id); return; }
+      const id = c.dataset.id; ui.libSel.has(id) ? ui.libSel.delete(id) : ui.libSel.add(id);
+      c.classList.toggle('picked', ui.libSel.has(id)); updateSelBar();
+      const b = $('#lib-grid .lib-bar b'); if (b) b.textContent = tl('{n} selected', { n: ui.libSel.size });
+    });
+  });
   $('#lib-covers')?.addEventListener('click', repairLibrary);
+  $('#ls-start')?.addEventListener('click', () => { ui.libSel = new Set(); renderLibGrid(); });
+  $('#ls-done')?.addEventListener('click', () => { ui.libSel = null; renderLibGrid(); });
+  $('#ls-all')?.addEventListener('click', () => { const all = list.every(e => sel.has(e.id)); list.forEach(e => all ? sel.delete(e.id) : sel.add(e.id)); renderLibGrid(); });
+  updateSelBar();
+}
+
+// the action bar under a selection: delete, or set a status, for all of them at once
+function updateSelBar(){
+  let b = $('#sel-actions');
+  const sel = ui.view === 'library' ? ui.libSel : null;
+  if (!sel){ b?.remove(); return; }
+  if (!b){ b = document.createElement('div'); b.id = 'sel-actions'; b.className = 'sel-actions'; document.body.appendChild(b); }
+  const n = sel.size;
+  b.innerHTML = `<button class="btn danger" id="sa-del" ${n ? '' : 'disabled'}>${ICONS.trash} ${tl('delete {n}', { n })}</button>
+    <button class="btn" id="sa-st" ${n ? '' : 'disabled'}>${ICONS.edit} ${tl('status')}</button>`;
+  $('#sa-del').onclick = async () => {
+    if (!await askConfirm(tl(n === 1 ? 'Delete 1 entry?' : 'Delete {n} entries?', { n }), { detail: tl('their progress, ratings and notes go too. you can undo right after.'), ok: tl('delete'), danger: true })) return;
+    const before = { media: db.media.slice(), queue: db.queue.slice(), lists: db.lists.map(l => ({ ...l, items: l.items.slice() })) };
+    db.media = db.media.filter(e => !sel.has(e.id));
+    db.queue = db.queue.filter(id => !sel.has(id));
+    db.lists.forEach(l => l.items = l.items.filter(id => !sel.has(id)));
+    ui.libSel = null; save(); render();
+    toast(tl('{n} deleted', { n }), { undo: () => { db.media = before.media; db.queue = before.queue; db.lists = before.lists; save(); render(); } });
+  };
+  $('#sa-st').onclick = () => openSheet(tl('Set status for {n}', { n }), Object.entries(STATUS).map(([k, st]) => ({ label: st.label, icon: st.icon, fn: () => {
+    db.media.forEach(e => { if (!sel.has(e.id)) return;
+      e.status = k;
+      if (k === 'done' && !e.endDate) e.endDate = todayStr();
+      if (k === 'active' && !e.startDate) e.startDate = todayStr();
+      syncQueueWithStatus(e); });
+    ui.libSel = null; save(); render(); toast(tl('{n} updated', { n }) + ' ✓');
+  } })));
 }
 
 /* ============ entry detail ============ */
@@ -4262,10 +4404,13 @@ function aboutHTML(e){
     e.type === 'tv' && e.epMin ? tl('{n} min an episode', { n: e.epMin }) : '',
     e.type === 'book' && e.pagesTotal ? tl('{n} pages', { n: fmtNum(e.pagesTotal) }) : '',
     e.type === 'game' && e.playHours ? tl('≈{h}h to finish', { h: e.playHours }) : '',
+    e.type === 'album' && e.tracks ? tl('{n} tracks', { n: e.tracks }) : '',
+    e.type === 'album' && e.runtimeMin ? fmtDur(e.runtimeMin) : '',
   ].filter(Boolean);
+  const aoty = e.type === 'album' ? `<a class="dt-link" href="${aotyUrl(e)}" target="_blank" rel="noopener" style="margin-top:8px">${ICONS.open || ICONS.search} ${tl('scores on albumoftheyear.org')}</a>` : '';
   if (!e.synopsis && !g.length && !pl.length) return `
     <section class="dt-sec"><div class="dt-h"><span>${tl('about')}</span></div>
-      <button class="dt-link" id="d-fix">${ICONS.search} ${tl('find the description, genres and cover')}</button></section>`;
+      <button class="dt-link" id="d-fix">${ICONS.search} ${tl('find the description, genres and cover')}</button>${aoty}</section>`;
   return `
     <section class="dt-sec dt-about">
       <div class="dt-h"><span>${tl('about')}</span><button class="dt-link" id="d-fix">${ICONS.refresh} ${tl('fix')}</button></div>
@@ -4273,7 +4418,7 @@ function aboutHTML(e){
       ${e.synopsis ? `<p class="dt-syn" id="d-syn">${esc(e.synopsis)}</p>${e.ai?.synopsis ? AI_TAG() : ''}` : ''}
       ${pl.length || facts.length ? `<div class="dt-plat">${[...facts, ...pl].map(esc).join(' · ')}</div>` : ''}
       ${(e.src || []).length ? `<div class="dt-src">${tl('from {x}', { x: [...new Set(e.src)].map(x => SRC[x] || x).join(', ') })}</div>` : ''}
-      <button class="dt-link" id="d-like" style="margin-top:8px">${ICONS.spark} ${tl('more like this')}</button>
+      <button class="dt-link" id="d-like" style="margin-top:8px">${ICONS.spark} ${tl('more like this')}</button>${aoty}
     </section>`;
 }
 
@@ -7438,6 +7583,7 @@ function syncQueueWithStatus(e){ if (e.status !== 'planned') db.queue = db.queue
 function estimateMin(e){
   const left = 1 - (typeof e.progressPct === 'number' ? clamp(e.progressPct / 100, 0, 1) : 0);
   if (e.type === 'movie') return e.status === 'done' ? 0 : (e.runtimeMin || 120) * left;
+  if (e.type === 'album') return e.status === 'done' ? 0 : (e.runtimeMin || 45) * left;
   if (e.type === 'tv'){
     const all = e.seasons.flatMap(s => s.episodes);
     if (!all.length) return null;
@@ -7678,7 +7824,7 @@ function openProgress(e, back){
   } else {
     const pct = Math.round((progressOf(e) || 0) * 100);
     body = `
-      <div class="pg-big"><b id="pg-pct-v">${pct}</b><span>% ${e.type === 'game' ? 'through the game' : e.type === 'movie' ? 'watched' : 'done'}</span></div>
+      <div class="pg-big"><b id="pg-pct-v">${pct}</b><span>% ${e.type === 'game' ? 'through the game' : e.type === 'movie' ? 'watched' : e.type === 'album' ? 'listened' : 'done'}</span></div>
       <input type="range" class="pg-range" id="pg-range" min="0" max="100" step="5" value="${pct}">
       <div class="pg-steps">${[10, 25, 50, 75, 90].map(n => `<button class="btn" data-pct="${n}">${n}%</button>`).join('')}</div>
       <button class="btn primary pg-wide" id="pg-save">${ICONS.stDone} ${tl('save progress')}</button>`;
@@ -9179,7 +9325,7 @@ function openRecipeManual(){   // (arg ignored — always a new recipe)
 async function geminiAudScore(e){
   const key = aiOn();
   if (!key) return null;
-  const kind = { movie:'movie', tv:'tv series', book:tl('book'), game:'video game' }[e.type] || 'work';
+  const kind = { movie:'movie', tv:'tv series', book:tl('book'), game:'video game', album:'music album' }[e.type] || 'work';
   const q = `What is the general public rating for the ${kind} "${e.title}"${e.year ? ` (${e.year})` : ''}? Average the well-known sources that apply (IMDb, Letterboxd, Rotten Tomatoes audience, Goodreads, Metacritic, Steam reviews), convert to a 0-5 scale, and reply with ONLY the number rounded to one decimal.`;
   try {
     const text = await geminiCall([{ text: q }], { json: false, temperature: 0 });
@@ -9296,7 +9442,7 @@ ${P.meh.length ? `Not for them:\n${P.meh.join('\n')}` : ''}
 ${focus}
 Never suggest these (they already have them or said no): ${ownedAndNope().join('; ')}
 Give ${n} recommendations${type ? ` — only ${TYPES[type].label.toLowerCase()}s` : ', mixing media types'}. Prefer well-known titles that are easy to find.
-Reply with ONLY this JSON: {"items":[{"type":"movie|tv|book|game","title":"original title","year":"YYYY","creator":"director / author / studio","why":"one short sentence in ${AI_LANG()} that names something they loved"}]}` }], { fast: false });
+Reply with ONLY this JSON: {"items":[{"type":"movie|tv|book|game|album","title":"original title","year":"YYYY","creator":"director / author / studio / artist","why":"one short sentence in ${AI_LANG()} that names something they loved"}]}` }], { fast: false });
   const owned = new Set(db.media.map(e => aiKey(e.type, e.title))), nope = new Set(aiState().nope);
   return (j?.items || []).filter(x => TYPES[x.type] && x.title && !owned.has(aiKey(x.type, x.title)) && !nope.has(aiKey(x.type, x.title)))
     .map(x => ({ type: x.type, title: String(x.title).slice(0, 90), year: yearOf(x.year), creator: String(x.creator || '').slice(0, 60), why: String(x.why || '').slice(0, 200) }));
@@ -9379,7 +9525,7 @@ function openSuggestion(s){
       </div>
     </div>
     <button class="sheet-btn" id="sg-q">${ICONS.queue}<span>${tl('add to my queue')}</span></button>
-    <button class="sheet-btn" id="sg-done">${ICONS.check}<span>${tl(s.type === 'book' ? 'already read it' : s.type === 'game' ? 'already played it' : 'already watched it')}</span></button>
+    <button class="sheet-btn" id="sg-done">${ICONS.check}<span>${tl(s.type === 'book' ? 'already read it' : s.type === 'game' ? 'already played it' : s.type === 'album' ? 'already listened' : 'already watched it')}</span></button>
     <button class="sheet-btn" id="sg-nope">${ICONS.x}<span>${tl('not interested')}</span></button>
     <button class="sheet-btn sheet-cancel" id="sg-close">${tl('close')}</button>`);
   $('#sg-q').addEventListener('click', () => { closeModal(); addSuggestion(s, 'planned'); });
@@ -9501,9 +9647,9 @@ function openMediaImport(text = '', images = []){
   draw();
 }
 async function readMediaList(text, shots){
-  const j = await geminiJSON([{ text: `Extract every film, TV series, book and video game in the text and/or screenshots (lists, shelves, notes, exports from Letterboxd, Goodreads, Steam, Trakt…).
+  const j = await geminiJSON([{ text: `Extract every film, TV series, book, video game and music album in the text and/or screenshots (lists, shelves, notes, exports from Letterboxd, Goodreads, Steam, Trakt…).
 For each item:
-- "type": movie | tv | book | game
+- "type": movie | tv | book | game | album
 - "title": the real title as it is commonly known (fix typos, keep the original language)
 - "year": if shown or certain, else ""
 - "creator": author / director / studio if shown, else ""
@@ -10087,7 +10233,7 @@ async function fillImported(list){
 }
 
 /* ============ stats + year in review ============ */
-const TYPE_COL = { movie: '#B3542E', tv: '#4F6E72', book: '#67754A', game: '#7D5875' };
+const TYPE_COL = { movie: '#B3542E', tv: '#4F6E72', book: '#67754A', game: '#7D5875', album: '#96852F' };
 function statYears(){
   const ys = new Set();
   db.media.forEach(e => { [e.endDate, e.startDate, ...Object.keys(activityOf(e))].forEach(d => { if (d) ys.add(+d.slice(0, 4)); }); });
@@ -10112,8 +10258,9 @@ function statsData(year){
   }));
   const filmMin = fin.filter(e => e.type === 'movie').reduce((t, e) => t + (e.runtimeMin || 115), 0);
   const gameMin = fin.filter(e => e.type === 'game').reduce((t, e) => t + (e.playedMin || (e.playHours || 0) * 60), 0);
-  const time = { film: filmMin, tv: epMin, book: pages * 1.5, game: gameMin };
-  const months = Array.from({ length: 12 }, () => ({ movie: 0, tv: 0, book: 0, game: 0 }));
+  const albumMin = fin.filter(e => e.type === 'album').reduce((t, e) => t + (e.runtimeMin || 45), 0);
+  const time = { film: filmMin, tv: epMin, book: pages * 1.5, game: gameMin, album: albumMin };
+  const months = Array.from({ length: 12 }, () => ({ movie: 0, tv: 0, book: 0, game: 0, album: 0 }));
   if (!all) fin.forEach(e => { if (e.endDate) months[+e.endDate.slice(5, 7) - 1][e.type]++; });
   const rated = fin.filter(e => e.rating);
   const genres = {};
@@ -10163,7 +10310,7 @@ function openStats(year){
 
       ${S.total ? `<section class="dt-sec"><div class="dt-h"><span>${tl('time spent')}</span><em>≈ ${hrs(S.total)}</em></div>
         <div class="mn-split big">${Object.entries(S.time).filter(([, v]) => v).map(([k, v]) => `<i style="flex:${v};background:${TYPE_COL[k === 'film' ? 'movie' : k]}"></i>`).join('')}</div>
-        <div class="st-legend">${[['film', 'films', 'movie'], ['tv', 'episodes', 'tv'], ['book', 'reading', 'book'], ['game', 'games', 'game']].filter(([k]) => S.time[k]).map(([k, l, c]) => `<span><i style="background:${TYPE_COL[c]}"></i>${tl(l)} ${hrs(S.time[k])}</span>`).join('')}</div>
+        <div class="st-legend">${[['film', 'films', 'movie'], ['tv', 'episodes', 'tv'], ['book', 'reading', 'book'], ['game', 'games', 'game'], ['album', 'music', 'album']].filter(([k]) => S.time[k]).map(([k, l, c]) => `<span><i style="background:${TYPE_COL[c]}"></i>${tl(l)} ${hrs(S.time[k])}</span>`).join('')}</div>
         <div class="mn-fine">${tl('films and games count when finished, episodes and pages from your progress updates')}</div></section>` : ''}
 
       ${year !== 'all' && S.fin.length ? `<section class="dt-sec"><div class="dt-h"><span>${tl('month by month')}</span></div>${monthsChartSVG(S.months)}</section>` : ''}
@@ -10196,13 +10343,15 @@ function openStats(year){
 const GUIDE = [
   { id: 'basics', icon: () => ICONS.info, title: 'The basics', points: [
     'the bar at the bottom switches tabs — reorder or hide them in settings → tabs',
-    'the orange + button logs a new film, show, book or game from any tab',
+    'the orange + button logs a new film, show, book, game or album from any tab',
     'the layout button (top right) rearranges or hides the sections of the tab you are on',
     'the round switch flips light / dark; settings can follow your phone instead',
     'everything is saved on this phone — export a backup from settings now and then',
     'English / Türkçe: settings → language',
     'sync: settings → connections → sync between devices keeps your phone and pc on the same journal, encrypted in your own github',
     'friends: share your ratings and add friends with their code — see what they rated and what they loved',
+    'albums: log records like anything else — covers from itunes & musicbrainz, critic scores one tap away on albumoftheyear.org',
+    'library: press and hold a cover (or tap "select") to delete or re-status many at once — undo is right there',
   ] },
   { id: 'home', view: 'home', icon: () => ICONS.home, title: 'Home', points: [
     'three small daily quests picked from your own goals — finish all three to clear the day',
@@ -10838,7 +10987,7 @@ const friendsList = () => dbArr('friends');
 /* ---- my profile ---- */
 function buildProfile(){
   const S = shareCfg();
-  const items = db.media.filter(e => e.rating > 0 || ['done', 'active', 'dropped'].includes(e.status))
+  const items = db.media
     .map(e => ({ t: e.type, title: e.title, y: e.year || '', r: e.rating || 0, s: e.status, d: e.endDate || e.startDate || e.addedAt || '',
       ...(S.notes && e.notes?.trim() ? { n: e.notes.trim().slice(0, 160) } : {}), ...(e.cover && /^https:/.test(e.cover) ? { c: e.cover } : {}) }))
     .sort((a, b) => (b.d || '').localeCompare(a.d || ''));
@@ -10935,7 +11084,9 @@ function friendsFor(type, title){
   }
   return friendIndex.get(type + ':' + normTitle(title)) || [];
 }
-const statusWord = (it) => it.s === 'active' ? tl(it.t === 'book' ? 'reading' : it.t === 'game' ? 'playing' : 'watching') : it.s === 'dropped' ? tl('dropped it') : tl('finished');
+const statusWord = (it) => it.s === 'active' ? tl(it.t === 'book' ? 'reading' : it.t === 'game' ? 'playing' : it.t === 'album' ? 'listening' : 'watching')
+  : it.s === 'planned' ? tl(it.t === 'book' ? 'wants to read' : it.t === 'game' ? 'wants to play' : it.t === 'album' ? 'wants to listen' : 'wants to watch')
+  : it.s === 'dropped' ? tl('dropped it') : tl('finished');
 function friendChipsHTML(e){
   const list = friendsFor(e.type, e.title);
   if (!list.length) return '';
@@ -10961,7 +11112,7 @@ function friendPicks(){
 }
 function friendFeed(){
   const out = [];
-  friendsList().forEach(f => (friendCache[f.id]?.p?.items || []).slice(0, 15).forEach(it => out.push({ f, it })));
+  friendsList().forEach(f => (friendCache[f.id]?.p?.items || []).filter(it => it.s !== 'planned').slice(0, 15).forEach(it => out.push({ f, it })));
   return out.filter(x => x.it.d).sort((a, b) => b.it.d.localeCompare(a.it.d)).slice(0, 6);
 }
 function friendsHomeHTML(){
@@ -10988,8 +11139,9 @@ function wireFriendsHome(root){
 }
 
 /* ---- a friend's page ---- */
-function openFriendProfile(id){
+function openFriendProfile(id, tab = 'top'){
   const f = friendsList().find(x => x.id === id); if (!f) return;
+  if (tab === 'lib') return openFriendLibrary(id);
   const C = friendCache[id], items = C?.p?.items || [];
   const mine = it => db.media.find(e => e.type === it.t && normTitle(e.title) === normTitle(it.title));
   const row = (it, i) => { const m = mine(it); return `
@@ -11004,17 +11156,15 @@ function openFriendProfile(id){
   openModal(`
     <div class="ig-head"><span class="fr-av big">${esc(friendName(f).slice(0, 1).toUpperCase())}</span><div><div class="sheet-title" style="margin:0">${esc(friendName(f))}</div>
       <div class="mono small muted">${C?.err ? esc(C.err) : C?.p ? tl('{n} titles · updated {t}', { n: items.length, t: C.p.updated ? fmtNice(C.p.updated.slice(0, 10)) : '—' }) : tl('loading…')}</div></div></div>
+    ${frTabsHTML('top', items.length)}
     ${groups.filter(g => g[1].length).map(([label, list]) => `<div class="dt-h" style="margin-top:12px"><span>${label}</span><em>${list.length}</em></div>
       ${list.map(it => { flat.push(it); return row(it, flat.length - 1); }).join('')}`).join('') || `<div class="dt-empty">${tl('nothing shared yet')}</div>`}
     <div class="row" style="justify-content:space-between; margin-top:14px">
       <button class="btn ghost" id="fp-remove">${ICONS.trash} ${tl('remove friend')}</button>
       <button class="btn" id="fp-rename">${ICONS.edit} ${tl('nickname')}</button>
     </div>`);
-  $$('[data-fi]').forEach(b => b.addEventListener('click', () => {
-    const it = flat[+b.dataset.fi], m = mine(it);
-    if (m){ openDetail(m.id); return; }
-    openSuggestion({ type: it.t, title: it.title, year: yearOf(it.y), cover: it.c || '', why: `${friendName(f)}${it.r ? ' ★' + it.r : ' · ' + statusWord(it)}${it.n ? ` — “${it.n}”` : ''}` });
-  }));
+  $$('[data-fi]').forEach(b => b.addEventListener('click', () => openFriendItem(f, flat[+b.dataset.fi])));
+  wireFrTabs(id);
   $('#fp-remove').addEventListener('click', async () => {
     if (!await askConfirm(tl('Remove {name}?', { name: friendName(f) }), { detail: tl('you stop seeing their ratings. they can still see yours until you stop sharing.'), ok: tl('remove'), danger: true })) return;
     db.friends = friendsList().filter(x => x.id !== id); delete friendCache[id]; friendIndex = null; friendCacheSave(); save(); closeModal(); render();
@@ -11023,6 +11173,71 @@ function openFriendProfile(id){
     const n = await askText(tl('Nickname'), { value: f.nick || friendName(f), ok: tl('save') });
     if (n == null) return; f.nick = n.trim() || undefined; friendIndex = null; save(); openFriendProfile(id);
   });
+}
+
+const frMine = it => db.media.find(e => e.type === it.t && normTitle(e.title) === normTitle(it.title));
+function openFriendItem(f, it){
+  const m = frMine(it);
+  if (m){ openDetail(m.id); return; }
+  openSuggestion({ type: it.t, title: it.title, year: yearOf(it.y), cover: it.c || '', why: `${friendName(f)}${it.r ? ' ★' + it.r : ' · ' + statusWord(it)}${it.n ? ` — “${it.n}”` : ''}` });
+}
+const frTabsHTML = (on, n) => `<div class="lf-seg fr-tabs"><button class="${on === 'top' ? 'on' : ''}" data-frtab="top"><span>${tl('highlights')}</span></button>
+  <button class="${on === 'lib' ? 'on' : ''}" data-frtab="lib"><span>${tl('whole library')} · ${n}</span></button></div>`;
+function wireFrTabs(id){ $$('[data-frtab]').forEach(b => b.addEventListener('click', () => openFriendProfile(id, b.dataset.frtab))); }
+
+/* everything a friend shared: search, type, status, "you both have", sort — like your own library */
+const frLibState = {};
+function openFriendLibrary(id){
+  const f = friendsList().find(x => x.id === id); if (!f) return;
+  const items = friendCache[id]?.p?.items || [];
+  const st = frLibState[id] = frLibState[id] || { q: '', type: 'all', st: 'any', sort: 'recent', n: 60 };
+  const types = Object.keys(TYPES).filter(t => items.some(it => it.t === t));
+  openModal(`
+    <div class="ig-head"><span class="fr-av big">${esc(friendName(f).slice(0, 1).toUpperCase())}</span><div><div class="sheet-title" style="margin:0">${esc(friendName(f))}</div>
+      <div class="mono small muted">${tl('{n} titles', { n: items.length })}</div></div></div>
+    ${frTabsHTML('lib', items.length)}
+    <label class="lf-search fr-q">${ICONS.search}<input id="frl-q" placeholder="${tl('search their library…')}" value="${esc(st.q)}" autocomplete="off"></label>
+    <div class="fr-types">
+      <button class="${st.type === 'all' ? 'on' : ''}" data-frt="all">${tl('All')}</button>
+      ${types.map(t => `<button class="${st.type === t ? 'on' : ''}" data-frt="${t}">${TYPES[t].icon}<span>${TYPES[t].plural}</span></button>`).join('')}
+    </div>
+    <div class="fr-sels">
+      <select class="input" id="frl-st">${[['any', 'any status'], ['done', 'finished'], ['active', 'in progress'], ['planned', 'planned'], ['dropped', 'dropped'], ['rated', 'rated'], ['both', 'you both have'], ['new', "you don't have"]]
+        .map(([k, l]) => `<option value="${k}" ${st.st === k ? 'selected' : ''}>${tl(l)}</option>`).join('')}</select>
+      <select class="input" id="frl-sort">${[['recent', 'newest'], ['rating', 'their rating'], ['title', 'a → z'], ['year', 'release year']]
+        .map(([k, l]) => `<option value="${k}" ${st.sort === k ? 'selected' : ''}>${tl(l)}</option>`).join('')}</select>
+    </div>
+    <div id="frl-list"></div>`);
+  const draw = () => {
+    const q = normTitle(st.q);
+    let list = items.filter(it => TYPES[it.t] && (st.type === 'all' || it.t === st.type) && (!q || normTitle(it.title).includes(q)));
+    if (['done', 'active', 'planned', 'dropped'].includes(st.st)) list = list.filter(it => it.s === st.st);
+    if (st.st === 'rated') list = list.filter(it => it.r > 0);
+    if (st.st === 'both') list = list.filter(it => frMine(it));
+    if (st.st === 'new') list = list.filter(it => !frMine(it));
+    list = list.slice().sort(st.sort === 'rating' ? (a, b) => (b.r || 0) - (a.r || 0) || (b.d || '').localeCompare(a.d || '')
+      : st.sort === 'title' ? (a, b) => a.title.localeCompare(b.title, LANG)
+      : st.sort === 'year' ? (a, b) => (+yearOf(b.y) || 0) - (+yearOf(a.y) || 0)
+      : (a, b) => (b.d || '').localeCompare(a.d || ''));
+    const shown = list.slice(0, st.n);
+    $('#frl-list').innerHTML = `<div class="dt-h" style="margin-top:8px"><span>${tl('{n} titles', { n: list.length })}</span></div>`
+      + (shown.map((it, i) => { const m = frMine(it); return `
+        <button class="fr-row" data-fl="${i}">
+          <span class="ri-cov">${it.c ? `<img src="${esc(it.c)}" alt="" loading="lazy" data-ph="${esc(TYPES[it.t].icon)}" onerror="imgFb(this)">` : TYPES[it.t].icon}</span>
+          <span class="ri-t"><b>${esc(it.title)}</b><em>${TYPES[it.t].label}${it.y ? ' · ' + esc(it.y) : ''} · ${statusWord(it)}${it.r ? ' · ★ ' + it.r : ''}${m ? ` · <i class="mn-tag">${tl('you: {s}', { s: m.rating ? '★ ' + m.rating : STATUS[m.status].label })}</i>` : ''}</em>
+          ${it.n ? `<em class="fr-n">“${esc(it.n)}”</em>` : ''}</span>
+        </button>`; }).join('') || `<div class="dt-empty">${tl('nothing here')}</div>`)
+      + (list.length > shown.length ? `<button class="btn" id="frl-more" style="width:100%; margin-top:10px">${tl('show {n} more', { n: Math.min(100, list.length - shown.length) })}</button>` : '');
+    $$('[data-fl]').forEach(b => b.addEventListener('click', () => openFriendItem(f, shown[+b.dataset.fl])));
+    $('#frl-more')?.addEventListener('click', () => { st.n += 100; draw(); });
+  };
+  let qt = 0;
+  $('#frl-q').addEventListener('input', ev => { clearTimeout(qt); qt = setTimeout(() => { st.q = ev.target.value; st.n = 60; draw(); }, 150); });
+  $$('[data-frt]').forEach(b => b.addEventListener('click', () => { st.type = b.dataset.frt; st.n = 60; $$('[data-frt]').forEach(x => x.classList.toggle('on', x === b)); draw(); }));
+  $('#frl-st').addEventListener('change', ev => { st.st = ev.target.value; st.n = 60; draw(); });
+  $('#frl-sort').addEventListener('change', ev => { st.sort = ev.target.value; draw(); });
+  wireFrTabs(id);
+  draw();
 }
 
 /* ---- the friends screen: sharing, my code, adding, the list ---- */

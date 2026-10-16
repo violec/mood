@@ -11,8 +11,8 @@ android {
         applicationId = "app.mood.journal"
         minSdk = 26
         targetSdk = 34
-        versionCode = 10
-        versionName = "2.6"
+        versionCode = 11
+        versionName = "2.7"
     }
 
     // one fixed key for every build (this pc and github actions alike), so a new apk
