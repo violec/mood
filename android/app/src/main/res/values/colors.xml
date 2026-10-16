@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="paper">#EDE4CF</color>
+    <color name="ink">#1B1712</color>
+    <!-- window / splash background: paper by day, charcoal at night (values-night) -->
+    <color name="window_bg">#EDE4CF</color>
+</resources>

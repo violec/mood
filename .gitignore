@@ -12,3 +12,14 @@ android/captures/
 # local artifacts
 mood-app.zip
 mood-backup-*.json
+
+# copied in from the repo root by the gradle build — never edit or commit these copies
+android/app/src/main/assets/mood.html
+android/app/src/main/assets/fonts/
+android/app/src/main/assets/vendor/
+
+# the signing key stays on this pc (the repo is public)
+android/app/mood-signing.keystore
+
+# local tools / preview config
+.claude/

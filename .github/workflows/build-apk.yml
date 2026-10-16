@@ -3,7 +3,7 @@ name: build apk
 on:
   workflow_dispatch:
   push:
-    branches: [main, master]
+    branches: ['**']        # every branch gets an apk — test work branches on the phone before merging
 
 jobs:
   build:

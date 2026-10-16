@@ -161,7 +161,7 @@ class ReminderReceiver : BroadcastReceiver() {
         val nm = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         try {
             nm.notify(code, NotificationCompat.Builder(ctx, Reminders.CHANNEL)
-                .setSmallIcon(R.drawable.ic_mood)
+                .setSmallIcon(R.drawable.ic_mood_fg)   // status-bar icons use alpha only — the transparent mark, not the paper card
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)

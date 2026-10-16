@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- dark parent at night: the webview then reports prefers-color-scheme: dark,
+         which mood's "match phone" theme follows -->
+    <style name="Theme.Mood" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/window_bg</item>
+        <item name="android:statusBarColor">@color/window_bg</item>
+        <item name="android:navigationBarColor">@color/window_bg</item>
+    </style>
+</resources>

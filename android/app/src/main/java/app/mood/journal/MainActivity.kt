@@ -12,13 +12,15 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowCompat
-import androidx.documentfile.provider.DocumentFile
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
+import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.DistanceRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.HydrationRecord
@@ -45,15 +47,15 @@ import java.time.ZoneId
 /**
  * mood — webview shell + the native powers the web can't have:
  *   1. health connect: steps, walking sessions, sleep, hydration (read) + hydration write
- *   2. SAF sync folder (drive/syncthing → desktop)
+ *   2. system "save as" dialog for backups (webview can't download blobs)
  *   3. pill & water reminder notifications (AlarmManager, see Reminders.kt)
  *   4. android share target: text/screenshots shared into mood → recipe import
  *
  * js contract (see "android native bridge" in mood.html):
- *   MoodNative.autoSync() / requestSteps(days) / pickSyncFolder() / writeSyncFile(n, t)
+ *   MoodNative.autoSync() / requestSteps(days) / saveFile(name, text) / haptic(kind) / shareText(text) / keepAwake(on)
  *   MoodNative.setTheme(dark, color) / writeWater(ml) / setReminders(json) / consumeShare()
- *   callbacks: onNativeSteps(json) / onNativeHealthExtra(json) / onNativeFolder(name)
- *              onNativeShare(json) / onNativeError(msg)
+ *   callbacks: onNativeSteps(json) / onNativeHealthExtra(json) / onNativeShare(json) / onNativeError(msg)
+ *   back button → window.moodBack() (true = handled in the page, false = leave the app)
  */
 class MainActivity : ComponentActivity() {
 
@@ -65,12 +67,12 @@ class MainActivity : ComponentActivity() {
         HealthPermission.getReadPermission(StepsRecord::class),
         HealthPermission.getReadPermission(ExerciseSessionRecord::class),
         HealthPermission.getReadPermission(DistanceRecord::class),
+        HealthPermission.getReadPermission(ActiveCaloriesBurnedRecord::class),
         HealthPermission.getReadPermission(SleepSessionRecord::class),
         HealthPermission.getReadPermission(HydrationRecord::class),
         HealthPermission.getWritePermission(HydrationRecord::class),
     )
 
-    private val prefs by lazy { getSharedPreferences("mood", MODE_PRIVATE) }
 
     private val permLauncher = registerForActivityResult(
         PermissionController.createRequestPermissionResultContract()
@@ -84,16 +86,20 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission()
     ) { /* granted or not — alarms are armed either way; notifications just won't show if denied */ }
 
-    private val folderLauncher = registerForActivityResult(
-        ActivityResultContracts.OpenDocumentTree()
+    // backup export: the page hands over the json, the user picks where it goes
+    private var pendingSave: String? = null
+    private val saveLauncher = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
-        if (uri == null) return@registerForActivityResult
-        contentResolver.takePersistableUriPermission(
-            uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        )
-        prefs.edit().putString("syncTree", uri.toString()).apply()
-        val name = DocumentFile.fromTreeUri(this, uri)?.name ?: "folder"
-        js("window.onNativeFolder(${JSONObject.quote(name)})")
+        val content = pendingSave
+        pendingSave = null
+        if (uri == null || content == null) return@registerForActivityResult
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                contentResolver.openOutputStream(uri, "wt")?.use { it.write(content.toByteArray()) }
+                js("window.toast && toast('backup saved ✓')")
+            } catch (e: Exception) { jsError("backup save failed: ${e.message}") }
+        }
     }
 
     // webview file inputs need a native chooser — without this they are silently dead
@@ -115,12 +121,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         web = WebView(this)
+        // paper by day, charcoal at night (res/values-night) — no white frame while the page loads;
+        // the page then retints the bars to its own theme via setTheme()
+        val night = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+            android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val bg = getColor(R.color.window_bg)
+        web.setBackgroundColor(bg)
         setContentView(web)
-        window.statusBarColor = android.graphics.Color.parseColor("#EDE4CF")
-        window.navigationBarColor = android.graphics.Color.parseColor("#EDE4CF")
+        window.statusBarColor = bg
+        window.navigationBarColor = bg
         WindowCompat.getInsetsController(window, web).apply {
-            isAppearanceLightStatusBars = true
-            isAppearanceLightNavigationBars = true
+            isAppearanceLightStatusBars = !night
+            isAppearanceLightNavigationBars = !night
         }
         web.settings.apply {
             javaScriptEnabled = true
@@ -144,6 +156,18 @@ class MainActivity : ComponentActivity() {
             }
         }
         web.addJavascriptInterface(Bridge(), "MoodNative")
+        // back: let the page close popups / step back through tabs; leave the app only when it says so
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                web.evaluateJavascript("(window.moodBack ? window.moodBack() : false)") { handled ->
+                    if (handled != "true") {
+                        isEnabled = false
+                        onBackPressedDispatcher.onBackPressed()
+                        isEnabled = true
+                    }
+                }
+            }
+        })
         web.loadUrl("file:///android_asset/mood.html")
         Reminders.ensureChannel(this)
         captureShare(intent)
@@ -213,16 +237,35 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        @JavascriptInterface fun pickSyncFolder() { runOnUiThread { folderLauncher.launch(null) } }
+        @JavascriptInterface fun saveFile(name: String, content: String) {
+            runOnUiThread { pendingSave = content; saveLauncher.launch(name) }
+        }
 
-        @JavascriptInterface fun writeSyncFile(name: String, content: String) {
-            val tree = prefs.getString("syncTree", null) ?: return
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    val dir = DocumentFile.fromTreeUri(this@MainActivity, Uri.parse(tree)) ?: return@launch
-                    val file = dir.findFile(name) ?: dir.createFile("application/json", name) ?: return@launch
-                    contentResolver.openOutputStream(file.uri, "wt")?.use { it.write(content.toByteArray()) }
-                } catch (e: Exception) { jsError("sync write failed: ${e.message}") }
+        /** android share sheet (whatsapp, notes…) — used for the market list */
+        @JavascriptInterface fun shareText(text: String) {
+            runOnUiThread {
+                val send = Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, text) }
+                startActivity(Intent.createChooser(send, null))
+            }
+        }
+
+        /** cook mode: keep the screen on while a recipe is open */
+        @JavascriptInterface fun keepAwake(on: Boolean) {
+            runOnUiThread {
+                if (on) window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                else window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
+        }
+
+        /** light vibration on key actions — 'tap' for presses, 'confirm' for done/save, 'reject' for errors */
+        @JavascriptInterface fun haptic(kind: String) {
+            runOnUiThread {
+                val c = when (kind) {
+                    "confirm" -> if (Build.VERSION.SDK_INT >= 30) HapticFeedbackConstants.CONFIRM else HapticFeedbackConstants.VIRTUAL_KEY
+                    "reject" -> if (Build.VERSION.SDK_INT >= 30) HapticFeedbackConstants.REJECT else HapticFeedbackConstants.LONG_PRESS
+                    else -> HapticFeedbackConstants.KEYBOARD_TAP
+                }
+                web.performHapticFeedback(c)
             }
         }
 
@@ -268,6 +311,75 @@ class MainActivity : ComponentActivity() {
         }
 
         @JavascriptInterface fun consumeShare() { runOnUiThread { deliverShare() } }
+
+        // the journal's safety copy, in the app's own folder (survives anything the webview's storage does).
+        // each day also keeps its last state in snapshots/ — the newest 10 are kept.
+        @JavascriptInterface fun saveJournal(json: String) {
+            try {
+                val tmp = java.io.File(filesDir, "journal.tmp")
+                tmp.writeText(json)
+                tmp.renameTo(java.io.File(filesDir, "journal.json"))
+                val snaps = java.io.File(filesDir, "snapshots").apply { mkdirs() }
+                java.io.File(snaps, "${LocalDate.now()}.json").writeText(json)
+                pruneSnapshots(snaps)
+            } catch (_: Exception) {}
+        }
+        @JavascriptInterface fun saveJournalCopy(json: String, name: String) {
+            try {
+                val snaps = java.io.File(filesDir, "snapshots").apply { mkdirs() }
+                java.io.File(snaps, name.replace(Regex("[^A-Za-z0-9._-]"), "_") + ".json").writeText(json)
+                pruneSnapshots(snaps)
+            } catch (_: Exception) {}
+        }
+        @JavascriptInterface fun loadJournal(): String =
+            try { java.io.File(filesDir, "journal.json").takeIf { it.exists() }?.readText() ?: "" } catch (_: Exception) { "" }
+        @JavascriptInterface fun listJournalBackups(): String {
+            val arr = JSONArray()
+            try {
+                java.io.File(filesDir, "snapshots").listFiles()?.filter { it.name.endsWith(".json") }?.sortedByDescending { it.name }?.forEach {
+                    arr.put(JSONObject().put("name", it.name.removeSuffix(".json")).put("size", it.length()))
+                }
+            } catch (_: Exception) {}
+            return arr.toString()
+        }
+        @JavascriptInterface fun loadJournalBackup(name: String): String =
+            try { java.io.File(java.io.File(filesDir, "snapshots"), name.replace(Regex("[^A-Za-z0-9._-]"), "_") + ".json").readText() } catch (_: Exception) { "" }
+
+        // a png made in the page (review card) → the system share sheet
+        @JavascriptInterface fun shareImage(b64: String, name: String) {
+            runOnUiThread {
+                try {
+                    val dir = java.io.File(cacheDir, "shared").apply { mkdirs() }
+                    val f = java.io.File(dir, name.replace(Regex("[^A-Za-z0-9._-]"), "_"))
+                    f.writeBytes(Base64.decode(b64, Base64.DEFAULT))
+                    val uri = androidx.core.content.FileProvider.getUriForFile(this@MainActivity, "$packageName.files", f)
+                    val send = Intent(Intent.ACTION_SEND).apply {
+                        type = "image/png"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    startActivity(Intent.createChooser(send, null))
+                } catch (e: Exception) { jsError("could not share the image: ${e.message}") }
+            }
+        }
+
+        // plain https GET for sources a web page may not read directly (steam store search, fund prices).
+        // answers through window.onNativeHttp(id, text | null)
+        @JavascriptInterface fun httpGet(id: String, url: String) {
+            if (!url.startsWith("https://")) { js("window.onNativeHttp && window.onNativeHttp(${JSONObject.quote(id)}, null)"); return }
+            lifecycleScope.launch {
+                val text = withContext(Dispatchers.IO) {
+                    try {
+                        val c = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                        c.connectTimeout = 9000; c.readTimeout = 9000
+                        c.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android) mood")
+                        c.setRequestProperty("Accept", "application/json,text/plain,*/*")
+                        if (c.responseCode in 200..299) c.inputStream.bufferedReader().use { it.readText() } else null
+                    } catch (_: Exception) { null }
+                }
+                js("window.onNativeHttp && window.onNativeHttp(${JSONObject.quote(id)}, ${if (text == null) "null" else JSONObject.quote(text)})")
+            }
+        }
     }
 
     /* ---------------- health connect ---------------- */
@@ -399,11 +511,56 @@ class MainActivity : ComponentActivity() {
             out.put("water", arr)
         } catch (_: Exception) {}
 
+        // every workout session (walks, runs, gym…) with its active calories → the Body tab's training list
+        try {
+            val arr = JSONArray()
+            c.readRecords(ReadRecordsRequest(
+                recordType = ExerciseSessionRecord::class,
+                timeRangeFilter = TimeRangeFilter.between(
+                    startDay.atStartOfDay(zone).toInstant(),
+                    endDay.plusDays(1).atStartOfDay(zone).toInstant()
+                )
+            )).records.forEach { s ->
+                val min = ((s.endTime.toEpochMilli() - s.startTime.toEpochMilli()) / 60_000).toInt()
+                if (min < 3) return@forEach
+                val kcal = try {
+                    c.aggregate(AggregateRequest(
+                        metrics = setOf(ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL),
+                        timeRangeFilter = TimeRangeFilter.between(s.startTime, s.endTime)
+                    ))[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]?.inKilocalories ?: 0.0
+                } catch (_: Exception) { 0.0 }
+                arr.put(JSONObject()
+                    .put("id", s.metadata.id)
+                    .put("date", s.startTime.atZone(zone).toLocalDate().toString())
+                    .put("type", workoutType(s.exerciseType))
+                    .put("title", s.title ?: "")
+                    .put("min", min)
+                    .put("kcal", Math.round(kcal)))
+            }
+            out.put("workouts", arr)
+        } catch (_: Exception) {}
+
         return out.toString()
+    }
+
+    private fun workoutType(t: Int): String = when (t) {
+        ExerciseSessionRecord.EXERCISE_TYPE_WALKING -> "walk"
+        ExerciseSessionRecord.EXERCISE_TYPE_RUNNING, ExerciseSessionRecord.EXERCISE_TYPE_RUNNING_TREADMILL -> "run"
+        ExerciseSessionRecord.EXERCISE_TYPE_BIKING, ExerciseSessionRecord.EXERCISE_TYPE_BIKING_STATIONARY -> "cycle"
+        ExerciseSessionRecord.EXERCISE_TYPE_SWIMMING_POOL, ExerciseSessionRecord.EXERCISE_TYPE_SWIMMING_OPEN_WATER -> "swim"
+        ExerciseSessionRecord.EXERCISE_TYPE_STRENGTH_TRAINING, ExerciseSessionRecord.EXERCISE_TYPE_WEIGHTLIFTING -> "strength"
+        ExerciseSessionRecord.EXERCISE_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING -> "hiit"
+        ExerciseSessionRecord.EXERCISE_TYPE_YOGA, ExerciseSessionRecord.EXERCISE_TYPE_PILATES -> "yoga"
+        ExerciseSessionRecord.EXERCISE_TYPE_DANCING -> "dance"
+        else -> "other"
     }
 
     /* ---------------- helpers ---------------- */
 
     private fun js(code: String) = runOnUiThread { web.evaluateJavascript(code, null) }
+    private fun pruneSnapshots(dir: java.io.File) {
+        dir.listFiles()?.filter { it.name.endsWith(".json") }?.sortedByDescending { it.name }?.drop(10)?.forEach { it.delete() }
+    }
+
     private fun jsError(msg: String) = js("window.onNativeError && window.onNativeError(${JSONObject.quote(msg)})")
 }

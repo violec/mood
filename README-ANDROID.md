@@ -1,13 +1,13 @@
 # mood — android build & sync guide
 
-The `android/` folder is a complete Android Studio project. It wraps `mood.html` in a WebView and adds two native powers: **Health Connect** (auto step/walk sync from Samsung Health) and a **sync folder** (phone → desktop). The build always copies the latest `mood.html` into the app, so the web file stays the single source of truth.
+The `android/` folder is a complete Android Studio project. It wraps `mood.html` in a WebView and adds native powers: **Health Connect** (steps, walks, sleep, water from Samsung Health), pill & water **reminders**, a **share target** (share text/screenshots into mood), a system **save dialog** for backups, the **back button**, and haptic feedback. The build always copies the latest `mood.html` into the app, so the web file stays the single source of truth.
 
 ## Get the APK (pick one)
 
 **A. GitHub Actions — no Android Studio needed**
 1. Create a free GitHub account + a new private repository.
 2. Upload this whole folder (`mood.html`, `android/`, `.github/`) to the repo.
-3. Repo → Actions tab → "build apk" → Run workflow.
+3. Repo → Actions tab → "build apk" → Run workflow (it also runs on every push, on any branch).
 4. When it finishes (~3 min), download the `mood-debug-apk` artifact, unzip → `app-debug.apk`.
 
 **B. Android Studio**
@@ -22,15 +22,12 @@ The `android/` folder is a complete Android Studio project. It wraps `mood.html`
 1. Samsung Health → Settings → **Health Connect** → turn on sharing (steps, exercise).
 2. Open **mood** → Steps tab → "⌁ sync health connect" → grant the permissions.
    After this it syncs silently every time the app opens (and at most every 5 min on resume).
-3. For desktop sync: Settings (gear) → **choose sync folder** → pick a folder that reaches your PC:
-   - easiest: a folder inside Google Drive (with "Drive for desktop" on the PC), or
-   - Syncthing, OneDrive, Dropbox — anything that mirrors a folder.
-   mood writes `mood-steps.json` + `mood-backup.json` there after every change.
 
-## Desktop side
+## Backups
 
-- Open `mood.html` in Chrome/Edge → Steps tab → **⛓ link sync file** → pick `mood-steps.json` in the synced folder. Steps then refresh silently every time you open it.
-- To pull the full journal (media entries, notes, episodes): Settings → import json → `mood-backup.json`.
+Everything lives inside the app on the phone — uninstalling erases it.
+Settings → **export json** opens the system save dialog; save it to Google Drive or Downloads.
+To restore (or move to a new phone): Settings → **import json**.
 
 ## Notes
 
