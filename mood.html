@@ -1253,8 +1253,9 @@ body:has(#sel-actions) #lib-grid{padding-bottom:90px}
 .sel-actions .btn{justify-content:center}
 
 /* albums are square: shown whole on a dark sleeve wherever a portrait cover box shows them */
-img[data-ph*='r="9.01"']{object-fit:contain !important; background:#1d1915}
-.dt-cover img[data-ph*='r="9.01"']{background:transparent}
+:is(.media-card .cover, .ll-cover, .ag-cover, .sg-cover, .q-cover, .dt-cover, .detail-head .cover):has(img[data-ph*='r="9.01"'], circle[r="9.01"]){aspect-ratio:1}
+.ri-cov:has(img[data-ph*='r="9.01"']){height:30px}
+.result-item img[data-ph*='r="9.01"']{height:44px; margin-bottom:18px}
 
 /* a friend's whole library */
 .fr-tabs{display:grid; grid-template-columns:1fr 1fr; margin:12px 0 10px}
@@ -1268,6 +1269,15 @@ img[data-ph*='r="9.01"']{object-fit:contain !important; background:#1d1915}
 [data-theme="ink"] .fr-types button.on{background:var(--accent); border-color:var(--accent); color:#fff}
 .fr-sels{display:grid; grid-template-columns:1fr 1fr; gap:8px}
 .fr-sels select{min-width:0}
+
+/* cover picker */
+.cp-grid{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; margin-bottom:6px}
+.cp-item{display:flex; flex-direction:column; gap:4px; padding:0; border:none; background:none; color:inherit; text-align:left}
+.cp-item img{width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:4px; border:1px solid var(--ink-2); background:var(--bg-lo)}
+.cp-grid.sq .cp-item img{aspect-ratio:1}
+.cp-item span{font-family:'Space Mono',monospace; font-size:9px; color:var(--ink-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cp-item.on img{outline:3px solid var(--accent); outline-offset:2px}
+#d-cover{cursor:pointer}
 /* ================= kitchen ================= */
 /* redesigned kitchen: overview tiles, shelf cards, aligned rows, recipe cards, cook mode */
 .k-over{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:12px}
@@ -2797,8 +2807,12 @@ const I18N = {
     'highlights': 'öne çıkanlar', 'whole library': 'tüm kütüphane', '{n} titles': '{n} başlık', 'search their library…': 'kütüphanesinde ara…', 'any status': 'her durum',
     'rated': 'puanlı', 'you both have': 'ikinizde de olanlar', "you don't have": 'sende olmayanlar', 'their rating': 'onun puanı', 'a → z': 'a → z', 'release year': 'çıkış yılı',
     'nothing here': 'burada bir şey yok', 'show {n} more': '{n} tane daha göster',
-    'albums: log records like anything else — covers from itunes & musicbrainz, critic scores one tap away on albumoftheyear.org': "albümler: plakları her şey gibi kaydet — kapaklar itunes ve musicbrainz'den, eleştirmen puanları albumoftheyear.org'da tek dokunuşla",
+    "covers: tap the cover on an entry's page to pick another — other editions, pressings and posters": 'kapaklar: başka bir kapak seçmek için kaydın sayfasındaki kapağa dokun — diğer baskılar ve afişler',
+    'albums: log records like anything else — covers from itunes, deezer & musicbrainz, critic scores one tap away on albumoftheyear.org': "albümler: plakları her şey gibi kaydet — kapaklar itunes, deezer ve musicbrainz'den, eleştirmen puanları albumoftheyear.org'da tek dokunuşla",
     'library: press and hold a cover (or tap "select") to delete or re-status many at once — undo is right there': 'kütüphane: bir kapağa basılı tut (ya da "seç"e dokun), birçoğunu birden sil ya da durumunu değiştir — geri al hemen orada',
+    'choose another cover': 'başka bir kapak seç', 'Choose a cover': 'Kapak seç', 'every cover we can find for it — tap one': 'bulabildiğimiz tüm kapaklar — birine dokun',
+    'or paste an image link': 'ya da bir görsel bağlantısı yapıştır', 'cover changed': 'kapak değişti', 'current': 'şu anki',
+    'no covers found — try another spelling, or paste a link below.': 'kapak bulunamadı — başka bir yazımla dene ya da aşağıya bir bağlantı yapıştır.', "⚠ that isn't an image link": '⚠ bu bir görsel bağlantısı değil',
     'more tabs': 'diğer sekmeler', '{n}m': '{n} dk', '{n}h': '{n} sa', 'gemini estimate': 'gemini tahmini', 'expiry date': 'son kullanma', 'expired': 'geçti', '{n}d': '{n} gün',
     // default spending categories (stored in english, shown translated)
     'Groceries': 'Market', 'Dining Out': 'Dışarıda yemek', 'Transport': 'Ulaşım', 'Subscriptions': 'Abonelikler', 'Shopping': 'Alışveriş',
@@ -3373,7 +3387,7 @@ const yearOf = s => (s && String(s).match(/\d{4}/)) ? String(s).match(/\d{4}/)[0
    title from different places into one result (more covers to pick from, more fields),
    and ranks by how well the title matches. after saving, enrich() fills synopsis, genres,
    platforms, runtime from wikipedia + wikidata — only fields that are still empty. */
-const SRC = { mb: 'MusicBrainz', gbooks: 'Google Books', tmdb: 'TMDB', itunes: 'iTunes', tvmaze: 'TVmaze', ol: 'Open Library', wp: 'Wikipedia', wd: 'Wikidata', cs: 'CheapShark', rawg: 'RAWG', steam: 'Steam', ai: 'Gemini' };
+const SRC = { dz: 'Deezer', mb: 'MusicBrainz', gbooks: 'Google Books', tmdb: 'TMDB', itunes: 'iTunes', tvmaze: 'TVmaze', ol: 'Open Library', wp: 'Wikipedia', wd: 'Wikidata', cs: 'CheapShark', rawg: 'RAWG', steam: 'Steam', ai: 'Gemini' };
 const stripHTML = s => String(s || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, ' ').trim();
 
 /* the apk can fetch what a web page may not read (steam search, fund prices) */
@@ -3402,7 +3416,7 @@ function probeImg(url, ms = 5000){
 // the largest candidate that loads as a portrait cover; a big landscape image only as a last resort — never a tiny strip
 async function pickCover(urls){
   const list = [...new Set((urls || []).filter(Boolean))];
-  const sizes = await Promise.all(list.map(u => probeImg(u)));
+  const sizes = await Promise.all(list.map(u => probeImg(u, /coverartarchive/.test(u) ? 9000 : 5000)));
   const ok = list.map((u, i) => ({ u, s: sizes[i] })).filter(x => x.s);
   const portrait = ok.filter(x => x.s.h >= x.s.w * 1.15 && x.s.w >= 150).sort((a, b) => b.s.w * b.s.h - a.s.w * a.s.h);
   if (portrait.length) return portrait[0].u;
@@ -3454,6 +3468,33 @@ async function srcItunesAlbum(q){
     title: r.collectionName.replace(/\s+-\s+(single|ep)$/i, ''), year: yearOf(r.releaseDate), sub: r.artistName || 'album', creator: r.artistName || '', mk: artistKey(r.artistName),
     covers: r.artworkUrl100 ? [r.artworkUrl100.replace('100x100bb', '600x600bb')] : [], genres: r.primaryGenreName ? [r.primaryGenreName] : [],
     tracks: r.trackCount || 0, src: 'itunes', ids: { itunes: r.collectionId },
+  }));
+}
+// deezer allows no cross-site reads, so the apk asks natively and a browser uses deezer's jsonp
+function jsonp(url, ms = 8000){
+  return new Promise((res, rej) => {
+    const cb = '_jp' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    const sc = document.createElement('script');
+    let t = 0;
+    const done = v => { clearTimeout(t); delete window[cb]; sc.remove(); v instanceof Error ? rej(v) : res(v); };
+    t = setTimeout(() => done(new Error('timeout')), ms);
+    window[cb] = d => done(d || {});
+    sc.onerror = () => done(new Error('offline'));
+    sc.src = url + (url.includes('?') ? '&' : '?') + 'output=jsonp&callback=' + cb;
+    document.head.appendChild(sc);
+  });
+}
+async function deezer(path){
+  const url = 'https://api.deezer.com' + path;
+  const t = await nativeGet(url);
+  if (t){ try { return JSON.parse(t); } catch(_){} }
+  return jsonp(url);
+}
+async function srcDeezer(q){
+  const d = await deezer(`/search/album?q=${encodeURIComponent(q)}&limit=12`);
+  return (d.data || []).filter(r => r.title && r.record_type !== 'single').map(r => ({
+    title: r.title, year: '', sub: r.artist?.name || 'album', creator: r.artist?.name || '', mk: artistKey(r.artist?.name),
+    covers: [r.cover_xl || r.cover_big].filter(Boolean), tracks: r.nb_tracks || 0, src: 'dz', ids: { deezer: r.id },
   }));
 }
 async function srcMusicBrainz(q){
@@ -3513,7 +3554,7 @@ const SOURCES = {
   tv:    [srcTvmaze, q => srcTmdb('tv', q), q => srcWiki('tv', q)],
   book:  [srcOpenLib, q => srcWiki('book', q), q => srcGBooks(q)],
   game:  [srcRawg, q => srcWiki('game', q), srcCheapShark, srcSteam],
-  album: [srcItunesAlbum, srcMusicBrainz, q => srcWiki('album', q)],
+  album: [srcItunesAlbum, srcDeezer, srcMusicBrainz, q => srcWiki('album', q)],
 };
 // albumoftheyear.org has no api (and blocks apps), so it's a link: their search for this album
 const aotyUrl = e => `https://www.albumoftheyear.org/search/?q=${encodeURIComponent([e.creator, e.title].filter(Boolean).join(' '))}`;
@@ -3606,6 +3647,12 @@ async function enrich(e, { gemini = true } = {}){
       fill('genres', s.genres, 'tvmaze'); fill('synopsis', stripHTML(s.summary), 'tvmaze'); fill('epMin', s.averageRuntime); fill('year', yearOf(s.premiered));
     } catch(_){}
   }
+  if (e.type === 'album' && e.ids?.deezer && (!e.runtimeMin || !e.year || emptyVal(e.genres))){
+    try { const a = await deezer(`/album/${e.ids.deezer}`);
+      fill('year', yearOf(a.release_date), 'dz'); fill('tracks', a.nb_tracks, 'dz'); fill('runtimeMin', a.duration ? Math.round(a.duration / 60) : 0, 'dz');
+      fill('genres', (a.genres?.data || []).map(g => g.name).slice(0, 3), 'dz');
+    } catch(_){}
+  }
   if (e.type === 'album' && e.ids?.itunes && (!e.runtimeMin || !e.tracks)){
     try { const d = await fetchJSON(`https://itunes.apple.com/lookup?id=${e.ids.itunes}&entity=song&limit=200`);
       const songs = (d.results || []).filter(x => x.wrapperType === 'track');
@@ -3696,6 +3743,92 @@ function openFixDetails(e){
   };
   $('#fx-go').addEventListener('click', go);
   $('#fx-q').addEventListener('keydown', ev => { if (ev.key === 'Enter') go(); });
+  go();
+}
+
+/* ---- every cover the sources have for this title (other editions, pressings, posters) → pick one ---- */
+// beyond the search results, each kind has a place with many covers for one title:
+// albums → every pressing in the cover art archive · books → every edition on open library ·
+// shows → tvmaze posters · films/shows → tmdb posters (with a key) · games → steam's art
+async function moreCovers(e, same){
+  const id = k => e.ids?.[k] || (same.find(r => r.ids?.[k] && e.year && r.year === String(e.year)) || same.find(r => r.ids?.[k]))?.ids[k];   // the right "dune": same year first
+  const out = [];
+  const tries = [];
+  if (e.type === 'album') tries.push((async () => {
+    const wait = () => new Promise(r => setTimeout(r, 1100));      // musicbrainz allows one request a second
+    // the exact album by this artist — a loose search can put a tribute album first
+    const lucene = v => '"' + String(v).replace(/["\\]/g, ' ') + '"';
+    await wait();
+    const g = await fetchJSON(`https://musicbrainz.org/ws/2/release-group/?query=${encodeURIComponent('releasegroup:' + lucene(e.title) + (e.creator ? ' AND artist:' + lucene(e.creator) : ''))}&limit=3&fmt=json`).catch(() => null);
+    const rg = (g?.['release-groups'] || []).find(r => r.score >= 90)?.id || id('mb');
+    if (!rg) return;
+    await wait();
+    const d = await fetchJSON(`https://musicbrainz.org/ws/2/release?release-group=${rg}&fmt=json&limit=25`);
+    (d.releases || []).filter(r => r['cover-art-archive']?.front).slice(0, 10)
+      .forEach(r => out.push({ u: `https://coverartarchive.org/release/${r.id}/front-500`, l: [r.country, yearOf(r.date), r.disambiguation].filter(Boolean).join(' · ') || r.title }));
+  })());
+  if (e.type === 'book' && /^\/works\//.test(id('ol') || '')) tries.push((async () => {
+    const d = await fetchJSON(`https://openlibrary.org${id('ol')}/editions.json?limit=60`);
+    const seen = new Set();
+    (d.entries || []).forEach(x => (x.covers || []).slice(0, 1).forEach(c => { if (c > 0 && !seen.has(c) && seen.size < 16){ seen.add(c);
+      out.push({ u: `https://covers.openlibrary.org/b/id/${c}-L.jpg?default=false`, l: [x.publishers?.[0], yearOf(x.publish_date), (x.languages?.[0]?.key || '').split('/').pop()].filter(Boolean).join(' · ') }); } }));
+  })());
+  const tvm = e.type === 'tv' && (e.tvmazeId || id('tvmaze'));
+  if (tvm) tries.push((async () => {
+    const d = await fetchJSON(`https://api.tvmaze.com/shows/${tvm}/images`);
+    (d || []).filter(x => x.type === 'poster').slice(0, 16).forEach(x => out.push({ u: x.resolutions?.original?.url || x.resolutions?.medium?.url, l: 'TVmaze' }));
+  })());
+  if ((e.type === 'movie' || e.type === 'tv') && db.settings.tmdbKey && id('tmdb')) tries.push((async () => {
+    const d = await fetchJSON(`https://api.themoviedb.org/3/${e.type}/${id('tmdb')}/images?api_key=${encodeURIComponent(db.settings.tmdbKey)}&include_image_language=${LANG === 'tr' ? 'tr,' : ''}en,null`);
+    (d.posters || []).slice(0, 20).forEach(x => out.push({ u: `https://image.tmdb.org/t/p/w500${x.file_path}`, l: ['TMDB', x.iso_639_1].filter(Boolean).join(' · ') }));
+  })());
+  if (e.type === 'game' && id('steam')) {
+    const a = id('steam'), c = 'https://cdn.cloudflare.steamstatic.com/steam/apps/' + a;
+    [['library_600x900_2x.jpg', 'Steam'], ['library_600x900.jpg', 'Steam'], ['header.jpg', 'Steam · wide'], ['capsule_616x353.jpg', 'Steam · wide']].forEach(([f, l]) => out.push({ u: `${c}/${f}`, l }));
+  }
+  await Promise.allSettled(tries);
+  return out.filter(x => x.u);
+}
+async function openCoverPicker(e){
+  const t = TYPES[e.type];
+  const q0 = e.type === 'album' && e.creator ? `${e.creator} ${e.title}` : e.title;
+  openModal(`
+    <h2>${tl('Choose a cover')}</h2>
+    <div class="modal-sub">${tl('every cover we can find for it — tap one')}</div>
+    <div class="row" style="margin-bottom:10px">
+      <input class="input" id="cp-q" style="flex:1" value="${esc(q0)}" autocomplete="off">
+      <button class="btn primary" id="cp-go">${ICONS.search}</button>
+    </div>
+    <div id="cp-grid" class="cp-grid ${e.type === 'album' ? 'sq' : ''}"></div>
+    <hr class="tear">
+    <div class="field"><label>${tl('or paste an image link')}</label>
+      <div class="row" style="gap:6px; flex-wrap:nowrap"><input class="input" id="cp-url" placeholder="https://…" style="flex:1"><button class="btn" id="cp-url-go">${ICONS.check}</button></div></div>
+    <button class="btn ghost" id="cp-back" style="width:100%">${tl('← back')}</button>`);
+  const use = url => {
+    if (!url) return;
+    e.cover = url; delete e.coverBlob; save(); cacheCover(url);
+    closeModal(); render(); openDetail(e.id); toast(tl('cover changed') + ' ✓');
+  };
+  const go = async () => {
+    const q = $('#cp-q').value.trim(); if (!q) return;
+    const box = $('#cp-grid');
+    box.innerHTML = `<div class="mono muted small" style="padding:14px 4px; grid-column:1/-1">${tl('searching…')}</div>`;
+    let results = [];
+    try { results = await searchMedia(e.type, q, e.year); } catch(_){}
+    // the same title first (all its editions), then whatever else came back
+    const same = results.filter(r => titleScore(r.title, e.title) >= 6), rest = results.filter(r => !same.includes(r));
+    const pressings = await moreCovers(e, same);
+    const urls = [...new Set([e.cover, ...pressings.map(x => x.u), ...[...same, ...rest].flatMap(r => [r.cover, ...(r.covers || [])])].filter(u => u && /^https?:/.test(u)))].slice(0, 40);
+    const label = new Map(pressings.map(x => [x.u, x.l])); [...same, ...rest].forEach(r => [r.cover, ...(r.covers || [])].forEach(u => { if (u && !label.has(u)) label.set(u, [r.title, r.creator || r.year].filter(Boolean).join(' · ')); }));
+    if (!urls.length){ box.innerHTML = `<div class="mono muted small" style="padding:14px 4px; grid-column:1/-1">${tl('no covers found — try another spelling, or paste a link below.')}</div>`; return; }
+    box.innerHTML = urls.map((u, i) => `<button class="cp-item ${u === e.cover ? 'on' : ''}" data-cp="${i}" title="${esc(label.get(u) || '')}">
+      <img src="${esc(u)}" loading="lazy" alt="" onerror="this.parentNode.remove()"><span>${esc(label.get(u) || tl('current'))}</span></button>`).join('');
+    $$('[data-cp]').forEach(b => b.addEventListener('click', () => use(urls[+b.dataset.cp])));
+  };
+  $('#cp-go').addEventListener('click', go);
+  $('#cp-q').addEventListener('keydown', ev => { if (ev.key === 'Enter') go(); });
+  $('#cp-url-go').addEventListener('click', () => { const u = $('#cp-url').value.trim(); if (/^https?:\/\/\S+$/.test(u)) use(u); else toast(tl('⚠ that isn\'t an image link')); });
+  $('#cp-back').addEventListener('click', () => openDetail(e.id));
   go();
 }
 
@@ -4277,7 +4410,7 @@ function openDetail(id){
   openModal(`
   <div class="dt">
     <div class="dt-hero">
-      <div class="dt-cover">${e.cover ? `<img src="${esc(e.cover)}" data-ph="${esc(t.icon)}" onerror="imgFb(this)">` : `<div class="ph">${t.icon}</div>`}</div>
+      <div class="dt-cover" id="d-cover" role="button" title="${tl('choose another cover')}">${e.cover ? `<img src="${esc(e.cover)}" data-ph="${esc(t.icon)}" onerror="imgFb(this)">` : `<div class="ph">${t.icon}</div>`}</div>
       <div class="dt-id">
         <div class="dt-kicker">${t.icon}<span>${t.label}${e.year ? ' · ' + esc(e.year) : ''}</span></div>
         <div class="dt-name"><h2 class="${e.title.length > 24 ? 'long' : ''}">${esc(e.title)}</h2>
@@ -4364,10 +4497,12 @@ function openDetail(id){
   const prog = () => openProgress(e, reopen);
   $('#d-progress')?.addEventListener('click', prog);
   $('#d-prog-bar')?.addEventListener('click', () => { if (st === 'done') return; if (st === 'planned'){ e.status = 'active'; e.startDate = e.startDate || todayStr(); logActivity(e, 'start'); syncQueueWithStatus(e); } prog(); });
+  $('#d-cover')?.addEventListener('click', () => openCoverPicker(e));
   $('#d-more').addEventListener('click', () => openSheet(e.title, [
     ...(st === 'active' ? [{ label:tl('pause — back to up next'), icon:ICONS.stPlanned, fn:() => { e.status = 'planned'; db.queue = [e.id, ...db.queue.filter(x => x !== e.id)]; save(); render(); reopen(); } }] : []),
     ...(st !== 'dropped' ? [{ label:tl('drop it'), icon:ICONS.stDropped, fn:() => { e.status = 'dropped'; e.endDate = e.endDate || todayStr(); logActivity(e, 'drop'); syncQueueWithStatus(e); save(); render(); reopen(); } }] : []),
     { label:tl('edit details'), icon:ICONS.edit, fn: edit },
+    { label:tl('choose another cover'), icon:ICONS.image || ICONS.search, fn: () => openCoverPicker(e) },
     { label:tl('fix details & cover'), icon:ICONS.refresh, fn: () => openFixDetails(e) },
     { label:tl('more like this'), icon:ICONS.spark, fn: () => openMoreLike(e) },
     { label:tl('share a review card'), icon:ICONS.share, fn: () => openReviewCard(e) },
@@ -10350,7 +10485,8 @@ const GUIDE = [
     'English / Türkçe: settings → language',
     'sync: settings → connections → sync between devices keeps your phone and pc on the same journal, encrypted in your own github',
     'friends: share your ratings and add friends with their code — see what they rated and what they loved',
-    'albums: log records like anything else — covers from itunes & musicbrainz, critic scores one tap away on albumoftheyear.org',
+    'albums: log records like anything else — covers from itunes, deezer & musicbrainz, critic scores one tap away on albumoftheyear.org',
+    "covers: tap the cover on an entry's page to pick another — other editions, pressings and posters",
     'library: press and hold a cover (or tap "select") to delete or re-status many at once — undo is right there',
   ] },
   { id: 'home', view: 'home', icon: () => ICONS.home, title: 'Home', points: [
