@@ -1210,6 +1210,30 @@ a.btn{text-decoration:none; justify-content:center}
 .cn-st svg{width:13px; height:13px}
 .cn-card.on .cn-st{color:var(--ok)}
 .cn-card.on{border-color:color-mix(in srgb, var(--ok) 45%, var(--line))}
+
+/* friends */
+.fr-av{width:34px; height:34px; flex:none; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:inline-flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-weight:700; font-size:14px}
+.fr-av.big{width:42px; height:42px; font-size:17px}
+.fr-av svg{width:20px; height:20px}
+.cn-card > .fr-av{width:38px; height:38px; border-radius:10px}
+.fr-feed, .fr-row{display:flex; align-items:center; gap:10px; width:100%; padding:8px 0; border:none; border-top:1px solid var(--line); background:none; color:inherit; text-align:left}
+.panel .dt-h + .fr-feed, .fr-box .dt-h + .fr-feed{border-top:none}
+.fr-feed > svg{width:14px; height:14px; color:var(--ink-3); flex:none}
+.fr-row .ri-t{flex:1}
+.fr-n{font-style:italic !important; font-family:'Libre Caslon Text', Georgia, serif !important; font-size:12px !important; color:var(--ink-2) !important}
+.fr-rate{align-items:flex-start}
+.fr-chips{display:flex; flex-wrap:wrap; gap:6px}
+.fr-chip{display:inline-flex; align-items:baseline; gap:5px; padding:4px 10px; border-radius:14px; border:1px solid var(--line); background:var(--bg-hi); color:inherit; font-size:12.5px}
+[data-theme="ink"] .fr-chip{background:var(--surface)}
+.fr-chip em{font-style:normal; font-family:'Space Mono',monospace; font-size:10.5px; color:var(--accent)}
+.fr-note{font-family:'Libre Caslon Text', Georgia, serif; font-style:italic; font-size:13px; color:var(--ink-2); margin:4px 0 0}
+.fr-note b{font-style:normal; font-family:'Space Mono',monospace; font-size:10px; color:var(--ink-3)}
+.fr-box{border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px}
+.fr-box .tabrow{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
+.fr-box .tn{display:flex; flex-direction:column; font-size:14px}
+.fr-box .tn em{font-style:normal; font-family:'Space Mono',monospace; font-size:9.5px; color:var(--ink-3)}
+.fr-code{display:flex; flex-direction:column; gap:8px; padding:10px; border-radius:10px; background:var(--bg-lo); margin:6px 0}
+.fr-code .mono{font-size:11px; word-break:break-all}
 /* ================= kitchen ================= */
 /* redesigned kitchen: overview tiles, shelf cards, aligned rows, recipe cards, cook mode */
 .k-over{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:12px}
@@ -2711,6 +2735,21 @@ const I18N = {
     'sync': 'senkron', 'the same journal on your phone and your pc': 'telefonunda ve pc\'nde aynı günlük', 'I already use mood on another device': 'mood\'u zaten başka bir cihazda kullanıyorum',
     'connect sync and your journal comes over': 'senkronu bağla, günlüğün gelsin',
     'sync: settings → connections → sync between devices keeps your phone and pc on the same journal, encrypted in your own github': 'senkron: ayarlar → bağlantılar → cihazlar arası senkron, telefonunu ve pc\'ni aynı günlükte tutar, kendi github\'ında şifreli',
+    "that friend code doesn't work anymore — they may have stopped sharing": 'bu arkadaş kodu artık çalışmıyor — paylaşımı durdurmuş olabilir', "that isn't a mood friend code": 'bu bir mood arkadaş kodu değil',
+    'friend': 'arkadaş', 'playing': 'oynuyor', 'watching': 'izliyor', 'dropped it': 'bıraktı', 'friends': 'arkadaşlar', 'your friends loved': 'arkadaşlarının bayıldıkları', 'all': 'hepsi',
+    'you: {s}': 'sen: {s}', 'into right now': 'şu an uğraştıkları', 'loved': 'bayıldıkları', 'recently finished': 'son bitirdikleri', '{n} titles · updated {t}': '{n} başlık · güncellendi {t}',
+    'loading…': 'yükleniyor…', 'nothing shared yet': 'henüz bir şey paylaşmamış', 'remove friend': 'arkadaşı çıkar', 'nickname': 'takma ad', 'Remove {name}?': '{name} çıkarılsın mı?',
+    'you stop seeing their ratings. they can still see yours until you stop sharing.': 'onun puanlarını görmezsin. sen paylaşımı durdurana kadar o seninkileri görmeye devam eder.', 'Nickname': 'Takma ad',
+    'Friends': 'Arkadaşlar', "see what your friends rated, and what they loved that you haven't seen. it uses the same github connection as sync — connect that first (2 minutes).": 'arkadaşlarının neye kaç puan verdiğini ve senin görmediğin neleri sevdiklerini gör. senkronla aynı github bağlantısını kullanır — önce onu kur (2 dakika).',
+    'set up sync first': 'önce senkronu kur', 'share your ratings, add friends with their code': 'puanlarını paylaş, arkadaşlarını kodlarıyla ekle', 'share my ratings with friends': 'puanlarımı arkadaşlarımla paylaş',
+    'titles, ratings and status only — never body, money or habits': 'sadece başlık, puan ve durum — vücut, para ya da alışkanlıklar asla', 'name your friends see': 'arkadaşlarının göreceği ad',
+    'include my short notes': 'kısa notlarımı da ekle', 'making your friend code…': 'arkadaş kodun hazırlanıyor…', 'anyone with your code can see what you share. stopping sharing deletes it from github.': 'kodun olan herkes paylaştıklarını görebilir. paylaşımı durdurmak onu github\'dan siler.',
+    'add a friend': 'arkadaş ekle', 'your friends': 'arkadaşların', 'refresh': 'yenile', "no friends yet — paste a friend's code above": 'henüz arkadaş yok — yukarıya bir arkadaşının kodunu yapıştır',
+    'Stop sharing?': 'Paylaşım durdurulsun mu?', 'your shared profile is deleted from github. friends stop seeing your ratings.': 'paylaşılan profilin github\'dan silinir. arkadaşların puanlarını göremez.', 'stop sharing': 'paylaşımı durdur',
+    'Add me on mood: settings → connections → friends → add a friend, and paste this:': 'mood\'da beni ekle: ayarlar → bağlantılar → arkadaşlar → arkadaş ekle, sonra bunu yapıştır:',
+    "that's your own code": 'bu senin kendi kodun', 'already your friend': 'zaten arkadaşın', 'looking them up…': 'aranıyor…', '{name} added — {n} titles': '{name} eklendi — {n} başlık', 'refreshing…': 'yenileniyor…',
+    'see what friends rated · they see yours': 'arkadaşların ne puan verdi · onlar da seninkini görür', '{n} friends': '{n} arkadaş', 'sharing': 'paylaşılıyor',
+    'friends: share your ratings and add friends with their code — see what they rated and what they loved': 'arkadaşlar: puanlarını paylaş, arkadaşlarını kodlarıyla ekle — neye kaç puan verdiklerini ve neleri sevdiklerini gör',
     'more tabs': 'diğer sekmeler', '{n}m': '{n} dk', '{n}h': '{n} sa', 'gemini estimate': 'gemini tahmini', 'expiry date': 'son kullanma', 'expired': 'geçti', '{n}d': '{n} gün',
     // default spending categories (stored in english, shown translated)
     'Groceries': 'Market', 'Dining Out': 'Dışarıda yemek', 'Transport': 'Ulaşım', 'Subscriptions': 'Abonelikler', 'Shopping': 'Alışveriş',
@@ -4140,6 +4179,7 @@ function openDetail(id){
           ? `${starsHTML(e.audScore, 16)}<b>${e.audScore.toFixed(1)}</b>`
           : `<button class="dt-link" id="d-aud">${ICONS.search} ${tl('look up with gemini')}</button>`}
       </div>
+      ${friendChipsHTML(e)}
     </section>
 
     <section class="dt-sec">
@@ -4167,6 +4207,7 @@ function openDetail(id){
   const edit = () => { openModal(entryFormHTML(e, false)); wireEntryForm(e, false); };
   $('#d-fix')?.addEventListener('click', () => openFixDetails(e));
   $('#d-like')?.addEventListener('click', () => openMoreLike(e));
+  $$('[data-friend]').forEach(b => b.addEventListener('click', () => openFriendProfile(b.dataset.friend)));
   $('#d-syn')?.addEventListener('click', ev => ev.currentTarget.classList.toggle('open'));
   $('#d-edit').addEventListener('click', edit);
   $('#d-notes')?.addEventListener('click', edit);
@@ -6632,6 +6673,8 @@ function renderHome(){
       ${soon.map(x => `<div class="h-k"><span>${esc(x.f.name)}</span>${expiryChip(x.f)}</div>`).join('')}
     </section>` : ''}
 
+    ${friendsHomeHTML()}
+
     ${forYouHTML()}
 
     <section class="panel h-badges" data-sec="badges" data-sec-label="${tl('badges')}">
@@ -6652,6 +6695,7 @@ function renderHome(){
   $$('[data-upd]', v).forEach(b => b.addEventListener('click', () => { const e = db.media.find(m => m.id === b.dataset.upd); if (e) openProgress(e); }));
   $('#h-allbadges').addEventListener('click', openGameInfo);
   wireForYou(v);
+  wireFriendsHome(v);
   refreshForYou(false);
   $('#gd-start')?.addEventListener('click', () => openGuide('basics'));
   $('#gd-skip')?.addEventListener('click', () => { db.settings.guideSeen = 1; save(); render(); toast(tl('the tour is always in settings')); });
@@ -10155,6 +10199,7 @@ const GUIDE = [
     'everything is saved on this phone — export a backup from settings now and then',
     'English / Türkçe: settings → language',
     'sync: settings → connections → sync between devices keeps your phone and pc on the same journal, encrypted in your own github',
+    'friends: share your ratings and add friends with their code — see what they rated and what they loved',
   ] },
   { id: 'home', view: 'home', icon: () => ICONS.home, title: 'Home', points: [
     'three small daily quests picked from your own goals — finish all three to clear the day',
@@ -10672,6 +10717,7 @@ async function syncNow(reason){
     await syncBaseSet(JSON.stringify(db));
     cfg.lastSync = Date.now(); cfg.err = ''; setSyncCfg(cfg);
     if (changedHere && reason !== 'start') toast(tl('synced — changes from your other device are in') + ' ✓');
+    publishProfile(); loadFriends();
     return true;
   } catch(e){
     syncWriting = false;
@@ -10752,6 +10798,277 @@ function openSyncSetup(back){
   });
 }
 
+/* ============ friends — a small shared profile, read by the people you add ============
+   sync keeps your whole journal private and encrypted. friends need something else: a
+   separate, unencrypted "profile" gist that holds ONLY titles, your ratings, status and
+   (if you allow it) short notes — never body, money, habits or anything else. you give
+   friends a code; their app reads your profile, yours reads theirs. no server. */
+ICONS.users = I('<circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9.5" r="2.6"/><path d="M15.5 14.3c2.6-.4 4.5 1.2 5 4.2"/>');
+const PROFILE_FILE = 'mood-profile.json';
+const shareCfg = () => { const s = db.settings.share = db.settings.share && typeof db.settings.share === 'object' ? db.settings.share : { on: false, notes: false }; return s; };
+const friendsList = () => dbArr('friends');
+
+/* ---- my profile ---- */
+function buildProfile(){
+  const S = shareCfg();
+  const items = db.media.filter(e => e.rating > 0 || ['done', 'active', 'dropped'].includes(e.status))
+    .map(e => ({ t: e.type, title: e.title, y: e.year || '', r: e.rating || 0, s: e.status, d: e.endDate || e.startDate || e.addedAt || '',
+      ...(S.notes && e.notes?.trim() ? { n: e.notes.trim().slice(0, 160) } : {}), ...(e.cover && /^https:/.test(e.cover) ? { c: e.cover } : {}) }))
+    .sort((a, b) => (b.d || '').localeCompare(a.d || ''));
+  return { app: 'mood-profile', v: 1, name: S.name || db.settings.name || syncCfg()?.user || 'friend', updated: new Date().toISOString(), items };
+}
+let publishing = false;
+async function publishProfile(force){
+  const S = shareCfg(), cfg = syncCfg();
+  if (!S.on || !cfg?.token || publishing) return;
+  const prof = buildProfile(), json = JSON.stringify({ ...prof, updated: '' });
+  const h = hashStr(json);
+  if (!force && S.lastHash === h && S.gistId) return;
+  publishing = true;
+  try {
+    const body = { description: 'mood profile — titles and ratings shared with friends', files: { [PROFILE_FILE]: { content: JSON.stringify(prof) } } };
+    if (!S.gistId){
+      const found = await findGistFile(cfg, PROFILE_FILE);
+      if (found) S.gistId = found;
+    }
+    const r = S.gistId ? await gh(cfg, `/gists/${S.gistId}`, { method: 'PATCH', body: JSON.stringify(body) })
+      : await gh(cfg, '/gists', { method: 'POST', body: JSON.stringify({ ...body, public: false }) });
+    if (r.status === 404 && S.gistId){ delete S.gistId; publishing = false; return publishProfile(true); }
+    if (!r.ok) throw new Error('github ' + r.status);
+    if (!S.gistId) S.gistId = (await r.json()).id;
+    S.lastHash = h; S.pubAt = Date.now(); save();
+  } catch(e){ S.err = e.message; } finally { publishing = false; }
+}
+async function findGistFile(cfg, file){
+  for (let page = 1; page <= 5; page++){
+    const r = await gh(cfg, `/gists?per_page=100&page=${page}`);
+    if (!r.ok) return null;
+    const list = await r.json();
+    const hit = list.find(g => g.files && g.files[file]);
+    if (hit) return hit.id;
+    if (list.length < 100) break;
+  }
+  return null;
+}
+async function stopSharing(){
+  const S = shareCfg(), cfg = syncCfg();
+  if (S.gistId && cfg?.token){ try { await gh(cfg, `/gists/${S.gistId}`, { method: 'DELETE' }); } catch(_){} }
+  S.on = false; delete S.gistId; delete S.lastHash; save();
+}
+const myFriendCode = () => shareCfg().gistId ? 'MOOD-FRIEND:' + shareCfg().gistId : '';
+
+/* ---- friends' profiles (cached on this device, refreshed every half hour) ---- */
+const friendCache = {};
+let friendIndex = null;
+async function friendCacheLoad(){
+  const d = await journalStore(); if (!d) return;
+  await new Promise(res => { try { const q = d.transaction('kv').objectStore('kv').get('friendCache'); q.onsuccess = () => { try { Object.assign(friendCache, JSON.parse(q.result || '{}')); } catch(_){} res(); }; q.onerror = res; } catch(_){ res(); } });
+  friendIndex = null;
+}
+async function friendCacheSave(){
+  const d = await journalStore(); if (!d) return;
+  await new Promise(res => { try { const tx = d.transaction('kv', 'readwrite'); tx.objectStore('kv').put(JSON.stringify(friendCache), 'friendCache'); tx.oncomplete = res; tx.onerror = res; } catch(_){ res(); } });
+}
+async function fetchProfile(id){
+  const cfg = syncCfg();
+  const r = await fetch(`https://api.github.com/gists/${id}`, { cache: 'no-store', headers: { Accept: 'application/vnd.github+json', ...(cfg?.token ? { Authorization: 'Bearer ' + cfg.token } : {}) } });
+  if (r.status === 404) throw new Error(tl('that friend code doesn\'t work anymore — they may have stopped sharing'));
+  if (!r.ok) throw new Error('github ' + r.status);
+  const f = (await r.json()).files?.[PROFILE_FILE];
+  if (!f) throw new Error(tl('that isn\'t a mood friend code'));
+  const p = JSON.parse(f.truncated ? await (await fetch(f.raw_url, { cache: 'no-store' })).text() : f.content);
+  if (p.app !== 'mood-profile' || !Array.isArray(p.items)) throw new Error(tl('that isn\'t a mood friend code'));
+  return p;
+}
+let friendsBusy = false;
+async function loadFriends(force){
+  const F = friendsList(); if (!F.length || friendsBusy) return;
+  if (!navigator.onLine) return;
+  friendsBusy = true;
+  let changed = false;
+  try {
+    for (const f of F){
+      if (!force && friendCache[f.id]?.at > Date.now() - 30 * 60e3) continue;
+      try { friendCache[f.id] = { at: Date.now(), p: await fetchProfile(f.id) }; changed = true; }
+      catch(e){ friendCache[f.id] = { ...(friendCache[f.id] || {}), at: Date.now(), err: e.message }; }
+    }
+  } finally { friendsBusy = false; }
+  if (changed){ friendIndex = null; await friendCacheSave(); if (ui.view === 'home') render(); }
+}
+const friendName = f => f.nick || friendCache[f.id]?.p?.name || tl('friend');
+// type + title → what each friend did with it
+function friendsFor(type, title){
+  if (!friendIndex){
+    friendIndex = new Map();
+    friendsList().forEach(f => (friendCache[f.id]?.p?.items || []).forEach(it => {
+      const k = it.t + ':' + normTitle(it.title);
+      (friendIndex.get(k) || friendIndex.set(k, []).get(k)).push({ f, it });
+    }));
+  }
+  return friendIndex.get(type + ':' + normTitle(title)) || [];
+}
+const statusWord = (it) => it.s === 'active' ? tl(it.t === 'book' ? 'reading' : it.t === 'game' ? 'playing' : 'watching') : it.s === 'dropped' ? tl('dropped it') : tl('finished');
+function friendChipsHTML(e){
+  const list = friendsFor(e.type, e.title);
+  if (!list.length) return '';
+  return `<div class="dt-rate fr-rate"><span class="k">${tl('friends')}</span><span class="fr-chips">${list.map(x => `<button class="fr-chip" data-friend="${x.f.id}">
+    <b>${esc(friendName(x.f))}</b>${x.it.r ? `<em>★ ${x.it.r}</em>` : `<em>${statusWord(x.it)}</em>`}</button>`).join('')}</span></div>
+    ${list.filter(x => x.it.n).map(x => `<div class="fr-note"><b>${esc(friendName(x.f))}:</b> “${esc(x.it.n)}”</div>`).join('')}`;
+}
+
+/* ---- what friends loved that you don't have yet ---- */
+function friendPicks(){
+  const owned = new Set(db.media.map(e => e.type + ':' + normTitle(e.title)));
+  const nope = new Set(aiState().nope || []);
+  const best = new Map();
+  friendsList().forEach(f => (friendCache[f.id]?.p?.items || []).forEach(it => {
+    const k = it.t + ':' + normTitle(it.title);
+    if (!TYPES[it.t] || it.r < 4.5 || owned.has(k) || nope.has(k)) return;
+    const cur = best.get(k);
+    if (!cur) best.set(k, { type: it.t, title: it.title, year: yearOf(it.y), cover: it.c || '', by: [{ name: friendName(f), r: it.r, n: it.n }], d: it.d });
+    else cur.by.push({ name: friendName(f), r: it.r, n: it.n });
+  }));
+  return [...best.values()].sort((a, b) => b.by.length - a.by.length || (b.d || '').localeCompare(a.d || '')).slice(0, 12)
+    .map(x => ({ ...x, why: x.by.map(b => `${b.name} ★${b.r}`).join(' · ') + (x.by[0].n ? ` — “${x.by[0].n}”` : '') }));
+}
+function friendFeed(){
+  const out = [];
+  friendsList().forEach(f => (friendCache[f.id]?.p?.items || []).slice(0, 15).forEach(it => out.push({ f, it })));
+  return out.filter(x => x.it.d).sort((a, b) => b.it.d.localeCompare(a.it.d)).slice(0, 6);
+}
+function friendsHomeHTML(){
+  if (!friendsList().length) return '';
+  const picks = friendPicks(), feed = friendFeed();
+  if (!picks.length && !feed.length) return '';
+  return `
+    <section class="panel" data-sec="friends" data-sec-label="${tl('friends')}">
+      <div class="dt-h"><span>${tl('friends')}</span><button class="dt-link" id="fr-open">${ICONS.users} ${tl('all')}</button></div>
+      ${feed.map(x => `<button class="fr-feed" data-ffeed="${x.f.id}">
+        <span class="fr-av">${esc(friendName(x.f).slice(0, 1).toUpperCase())}</span>
+        <span class="ri-t"><b>${esc(friendName(x.f))} · ${statusWord(x.it)}</b><em>${esc(x.it.title)}${x.it.r ? ` · ★ ${x.it.r}` : ''} · ${fmtNice(x.it.d)}</em></span></button>`).join('')}
+      ${picks.length ? `<div class="dt-h" style="margin-top:10px"><span>${tl('your friends loved')}</span></div>
+        <div class="sg-row">${picks.map((s, i) => sugCardHTML(s, i, 'friends')).join('')}</div>` : ''}
+    </section>`;
+}
+function wireFriendsHome(root){
+  const picks = friendPicks();
+  $$('[data-scope="friends"]', root).forEach(c => c.addEventListener('click', () => { const s = picks[+c.dataset.sg]; if (s) openSuggestion(s); }));
+  $$('[data-ffeed]', root).forEach(b => b.addEventListener('click', () => openFriendProfile(b.dataset.ffeed)));
+  $('#fr-open', root)?.addEventListener('click', () => openFriends());
+  const undressed = picks.filter(s => !s.cover && !s.looked);
+  if (undressed.length) dressSuggestions(undressed.slice(0, 6), () => {});
+}
+
+/* ---- a friend's page ---- */
+function openFriendProfile(id){
+  const f = friendsList().find(x => x.id === id); if (!f) return;
+  const C = friendCache[id], items = C?.p?.items || [];
+  const mine = it => db.media.find(e => e.type === it.t && normTitle(e.title) === normTitle(it.title));
+  const row = (it, i) => { const m = mine(it); return `
+    <button class="fr-row" data-fi="${i}">
+      <span class="ri-cov">${it.c ? `<img src="${esc(it.c)}" alt="" loading="lazy" data-ph="${esc(TYPES[it.t]?.icon || '')}" onerror="imgFb(this)">` : TYPES[it.t]?.icon || ''}</span>
+      <span class="ri-t"><b>${esc(it.title)}</b><em>${TYPES[it.t]?.label || ''}${it.y ? ' · ' + esc(it.y) : ''} · ${statusWord(it)}${it.r ? ' · ★ ' + it.r : ''}${m ? ` · <i class="mn-tag">${tl('you: {s}', { s: m.rating ? '★ ' + m.rating : STATUS[m.status].label })}</i>` : ''}</em>
+      ${it.n ? `<em class="fr-n">“${esc(it.n)}”</em>` : ''}</span>
+    </button>`; };
+  const now = items.filter(it => it.s === 'active'), loved = items.filter(it => it.r >= 4.5), recent = items.filter(it => it.s === 'done').slice(0, 20);
+  const groups = [[tl('into right now'), now], [tl('loved'), loved], [tl('recently finished'), recent]];
+  const flat = [];
+  openModal(`
+    <div class="ig-head"><span class="fr-av big">${esc(friendName(f).slice(0, 1).toUpperCase())}</span><div><div class="sheet-title" style="margin:0">${esc(friendName(f))}</div>
+      <div class="mono small muted">${C?.err ? esc(C.err) : C?.p ? tl('{n} titles · updated {t}', { n: items.length, t: C.p.updated ? fmtNice(C.p.updated.slice(0, 10)) : '—' }) : tl('loading…')}</div></div></div>
+    ${groups.filter(g => g[1].length).map(([label, list]) => `<div class="dt-h" style="margin-top:12px"><span>${label}</span><em>${list.length}</em></div>
+      ${list.map(it => { flat.push(it); return row(it, flat.length - 1); }).join('')}`).join('') || `<div class="dt-empty">${tl('nothing shared yet')}</div>`}
+    <div class="row" style="justify-content:space-between; margin-top:14px">
+      <button class="btn ghost" id="fp-remove">${ICONS.trash} ${tl('remove friend')}</button>
+      <button class="btn" id="fp-rename">${ICONS.edit} ${tl('nickname')}</button>
+    </div>`);
+  $$('[data-fi]').forEach(b => b.addEventListener('click', () => {
+    const it = flat[+b.dataset.fi], m = mine(it);
+    if (m){ openDetail(m.id); return; }
+    openSuggestion({ type: it.t, title: it.title, year: yearOf(it.y), cover: it.c || '', why: `${friendName(f)}${it.r ? ' ★' + it.r : ' · ' + statusWord(it)}${it.n ? ` — “${it.n}”` : ''}` });
+  }));
+  $('#fp-remove').addEventListener('click', async () => {
+    if (!await askConfirm(tl('Remove {name}?', { name: friendName(f) }), { detail: tl('you stop seeing their ratings. they can still see yours until you stop sharing.'), ok: tl('remove'), danger: true })) return;
+    db.friends = friendsList().filter(x => x.id !== id); delete friendCache[id]; friendIndex = null; friendCacheSave(); save(); closeModal(); render();
+  });
+  $('#fp-rename').addEventListener('click', async () => {
+    const n = await askText(tl('Nickname'), { value: f.nick || friendName(f), ok: tl('save') });
+    if (n == null) return; f.nick = n.trim() || undefined; friendIndex = null; save(); openFriendProfile(id);
+  });
+}
+
+/* ---- the friends screen: sharing, my code, adding, the list ---- */
+function openFriends(){
+  if (!syncOn()){
+    sheet(`<div class="ig-head"><span class="fr-av big">${ICONS.users}</span><div><div class="sheet-title" style="margin:0">${tl('Friends')}</div></div></div>
+      <div class="k-form"><div class="kg-unlocks">${ICONS.users}<span>${tl('see what your friends rated, and what they loved that you haven\'t seen. it uses the same github connection as sync — connect that first (2 minutes).')}</span></div>
+      <button class="btn primary" id="fr-sync">${tl('set up sync first')}</button>
+      <button class="sheet-btn sheet-cancel" id="fr-x">${tl('close')}</button></div>`);
+    $('#fr-sync').addEventListener('click', () => openSyncSetup(openFriends));
+    $('#fr-x').addEventListener('click', closeModal);
+    return;
+  }
+  const S = shareCfg(), code = myFriendCode();
+  openModal(`
+    <h2>${tl('Friends')}</h2>
+    <div class="modal-sub">${tl('share your ratings, add friends with their code')}</div>
+    <section class="fr-box">
+      <div class="tabrow"><span class="tn"><b>${tl('share my ratings with friends')}</b><em>${tl('titles, ratings and status only — never body, money or habits')}</em></span><span class="tgl ${S.on ? 'on' : ''}" id="fr-share"></span></div>
+      ${S.on ? `
+        <div class="field"><label>${tl('name your friends see')}</label><input class="input" id="fr-name" value="${esc(S.name || db.settings.name || syncCfg()?.user || '')}"></div>
+        <div class="tabrow"><span class="tn">${tl('include my short notes')}</span><span class="tgl ${S.notes ? 'on' : ''}" id="fr-notes"></span></div>
+        <div class="fr-code">${code ? `<span class="mono">${esc(code)}</span><div class="row" style="gap:6px"><button class="btn" id="fr-copy">${ICONS.copy} ${tl('copy')}</button><button class="btn primary" id="fr-send">${ICONS.share} ${tl('send')}</button></div>`
+          : `<span class="mono small muted">${tl('making your friend code…')}</span>`}</div>
+        <div class="mn-fine">${tl('anyone with your code can see what you share. stopping sharing deletes it from github.')}</div>` : ''}
+    </section>
+    <section class="fr-box">
+      <div class="dt-h"><span>${tl('add a friend')}</span></div>
+      <div class="row" style="gap:6px; flex-wrap:nowrap"><input class="input mono" id="fr-add" placeholder="MOOD-FRIEND:…" style="flex:1"><button class="btn primary" id="fr-add-go">${ICONS.plus}</button></div>
+    </section>
+    <section class="fr-box">
+      <div class="dt-h"><span>${tl('your friends')}</span>${friendsList().length ? `<button class="dt-link" id="fr-refresh">${ICONS.refresh} ${tl('refresh')}</button>` : ''}</div>
+      ${friendsList().length ? friendsList().map(f => { const C = friendCache[f.id]; return `<button class="fr-feed" data-fopen="${f.id}">
+        <span class="fr-av">${esc(friendName(f).slice(0, 1).toUpperCase())}</span>
+        <span class="ri-t"><b>${esc(friendName(f))}</b><em>${C?.err ? esc(C.err) : C?.p ? tl('{n} titles', { n: C.p.items.length }) : tl('loading…')}</em></span>${ICONS.right}</button>`; }).join('')
+        : `<div class="dt-empty">${tl('no friends yet — paste a friend\'s code above')}</div>`}
+    </section>`);
+  $('#fr-share').addEventListener('click', async () => {
+    if (S.on){
+      if (!await askConfirm(tl('Stop sharing?'), { detail: tl('your shared profile is deleted from github. friends stop seeing your ratings.'), ok: tl('stop sharing'), danger: true })) return;
+      await stopSharing(); openFriends(); return;
+    }
+    S.on = true; save(); openFriends(); await publishProfile(true); if ($('#fr-share')) openFriends();
+  });
+  $('#fr-notes')?.addEventListener('click', () => { S.notes = !S.notes; save(); publishProfile(true); openFriends(); });
+  $('#fr-name')?.addEventListener('change', ev => { S.name = ev.target.value.trim(); save(); publishProfile(true); });
+  const txt = () => tl('Add me on mood: settings → connections → friends → add a friend, and paste this:') + '\n\n' + code;
+  $('#fr-copy')?.addEventListener('click', () => copyText(code));
+  $('#fr-send')?.addEventListener('click', () => { if (NATIVE && MoodNative.shareText){ try { MoodNative.shareText(txt()); return; } catch(_){} } if (navigator.share) navigator.share({ text: txt() }).catch(() => copyText(txt())); else copyText(txt()); });
+  $('#fr-add-go').addEventListener('click', async () => {
+    const raw = $('#fr-add').value.trim();
+    const id = (raw.match(/MOOD-FRIEND:([a-f0-9]+)/i) || raw.match(/gist\.github\.com\/[^/]+\/([a-f0-9]+)/i) || raw.match(/^([a-f0-9]{20,})$/i) || [])[1];
+    if (!id){ toast('⚠ ' + tl('that isn\'t a mood friend code')); return; }
+    if (id === S.gistId){ toast(tl('that\'s your own code')); return; }
+    if (friendsList().some(f => f.id === id)){ toast(tl('already your friend')); return; }
+    try {
+      toast(tl('looking them up…'));
+      const p = await fetchProfile(id);
+      friendsList().push({ id, addedAt: todayStr() });
+      friendCache[id] = { at: Date.now(), p }; friendIndex = null; friendCacheSave(); save();
+      toast(tl('{name} added — {n} titles', { name: p.name, n: p.items.length }) + ' ✓');
+      openFriends();
+    } catch(e){ toast('⚠ ' + e.message); }
+  });
+  $('#fr-refresh')?.addEventListener('click', async () => { toast(tl('refreshing…')); await loadFriends(true); openFriends(); });
+  $$('[data-fopen]').forEach(b => b.addEventListener('click', () => openFriendProfile(b.dataset.fopen)));
+}
+function friendsCardHTML(){
+  const n = friendsList().length, S = shareCfg();
+  return `<button class="cn-card ${S.on || n ? 'on' : ''}" id="s-friends"><span class="fr-av big">${ICONS.users}</span>
+    <span class="cn-t"><b>${tl('Friends')}</b><em>${esc(tl('see what friends rated · they see yours'))}</em></span>
+    <span class="cn-st">${n ? `<span>${tl('{n} friends', { n })}</span>` : S.on ? `${ICONS.check}<span>${tl('sharing')}</span>` : `<span>${tl('set up')}</span>${ICONS.right}`}</span></button>`;
+}
+
 /* ============ settings ============ */
 function openSettings(){
   const s = db.settings;
@@ -10825,6 +11142,7 @@ function openSettings(){
       <div class="cn-group">
         <div class="cn-h"><b>${tl('sync')}</b><em>${tl('the same journal on your phone and your pc')}</em></div>
         ${syncCardHTML()}
+        ${friendsCardHTML()}
       </div>
       <div class="cn-group">
         <div class="cn-h"><b>${tl('AI')}</b><em>${tl('gemini goes first — when its free daily limit runs out, groq and openrouter take over')}</em></div>
@@ -10937,6 +11255,7 @@ function openSettings(){
   });
   $$('[data-kguide]').forEach(b => b.addEventListener('click', () => openKeyGuide(b.dataset.kguide, openSettings)));
   $('#s-sync')?.addEventListener('click', () => openSyncSetup(openSettings));
+  $('#s-friends')?.addEventListener('click', () => openFriends());
   $('#s-save').addEventListener('click', () => {
     db.settings.stepGoal = Math.max(500, +($('#s-goal').value || 8000));
     db.settings.waterGoal = Math.max(250, +($('#s-water').value || 2000));
@@ -11044,6 +11363,7 @@ switchView(enabledTabs()[0] || 'home', true);
 checkGame();
 if (needsSetup()) openSetup(0);
 storeReady.then(() => setTimeout(() => syncNow('start'), 800));
+friendCacheLoad().then(() => { if (ui.view === 'home') render(); setTimeout(() => loadFriends(), 2500); });
 // the installed pc app works offline (not for the android app — it carries its own files)
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(() => {});
 setTimeout(() => refreshAirdates(), 4000);
