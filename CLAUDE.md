@@ -66,7 +66,10 @@ since text written between tool calls may not reach them.
   holds `sdk.dir`. `build-local.bat` builds and copies `mood.apk` to the repo root (gitignored).
   On a new PC: copy that folder over, or install the same versions again.
 - **Signing:** `android/app/mood-signing.keystore` (alias `androiddebugkey`, password `android`) is the key the phone's
-  installed app was signed with. It is gitignored (public repo) and must be copied privately between machines.
+  installed app was signed with. It is gitignored (this repo is public and must stay public: GitHub Pages
+  on a free account needs that). The key lives in the **private repo `violec/mood-private`**. On a new machine:
+  `git clone https://github.com/violec/mood-private` next to this repo, then copy
+  `mood-private/mood-signing.keystore` → `android/app/mood-signing.keystore`. Never commit it here.
   Without it, gradle falls back to the machine's own debug key and the APK won't install over the old app
   ("App not installed"). GitHub Actions builds use their own key for the same reason, so they're not for the phone.
   Verify: `apksigner verify --print-certs mood.apk` → SHA-256 `4f6267e4…f475af49`.
