@@ -23,3 +23,6 @@ android/app/mood-signing.keystore
 
 # local tools / preview config
 .claude/
+
+# translation checker output
+tools/missing.json
